@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">FitnessLog</string>
+    <string name="label_workout">Workout</string>
+    <string name="label_history">History</string>
+    <string name="label_program">Program</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_workout_fragment">Hello workout fragment</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_history_fragment">Hello history fragment</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_program_fragment">Hello program fragment</string>
 </resources>

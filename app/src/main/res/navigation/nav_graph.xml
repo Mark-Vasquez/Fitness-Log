@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/workoutFragment">
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.fitnesslog.history.view.HistoryFragment"
+        android:label="@string/label_history"
+        tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_historyFragment_to_programFragment"
+            app:destination="@id/programFragment" />
+        <action
+            android:id="@+id/action_historyFragment_to_workoutFragment"
+            app:destination="@id/workoutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/workoutFragment"
+        android:name="com.example.fitnesslog.workout.view.WorkoutFragment"
+        android:label="@string/label_workout"
+        tools:layout="@layout/fragment_workout">
+        <action
+            android:id="@+id/action_workoutFragment_to_programFragment"
+            app:destination="@id/programFragment" />
+        <action
+            android:id="@+id/action_workoutFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/programFragment"
+        android:name="com.example.fitnesslog.program.view.ProgramFragment"
+        android:label="@string/label_program"
+        tools:layout="@layout/fragment_program">
+        <action
+            android:id="@+id/action_programFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_programFragment_to_workoutFragment"
+            app:destination="@id/workoutFragment" />
+    </fragment>
+</navigation>
