@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.fitnesslog.history.view.HistoryFragment"
+        android:name="com.example.fitnesslog.history.view.fragment.HistoryFragment"
         android:label="@string/label_history"
         tools:layout="@layout/fragment_history">
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/workoutFragment"
-        android:name="com.example.fitnesslog.workout.view.WorkoutFragment"
+        android:name="com.example.fitnesslog.workout.view.fragment.WorkoutFragment"
         android:label="@string/label_workout"
         tools:layout="@layout/fragment_workout">
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/programFragment"
-        android:name="com.example.fitnesslog.program.view.ProgramFragment"
+        android:name="com.example.fitnesslog.program.view.fragment.ProgramFragment"
         android:label="@string/label_program"
         tools:layout="@layout/fragment_program">
         <action
