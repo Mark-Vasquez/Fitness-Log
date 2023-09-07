@@ -5,7 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.R
+import com.example.fitnesslog.program.data.datasource.ProgramDataSource
+import com.example.fitnesslog.program.view.adapter.ProgramAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,6 +44,15 @@ class ProgramFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val programs = ProgramDataSource().loadPrograms()
+        val programAdapter = ProgramAdapter(programs)
+
+        val rvPrograms: RecyclerView = view.findViewById(R.id.rvPrograms)
+        rvPrograms.adapter = programAdapter
+        rvPrograms.layoutManager = GridLayoutManager(context, 2)
+
+
     }
 
     companion object {
