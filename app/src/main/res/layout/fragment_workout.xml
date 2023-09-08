@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".workout.view.WorkoutFragment">
+    tools:context=".workout.view.fragment.WorkoutFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

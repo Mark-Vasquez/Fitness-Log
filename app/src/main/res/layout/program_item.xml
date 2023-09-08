@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@drawable/rounded_bg"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/tvProgramName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Push Pull Legs" />
+
+    <TextView
+        android:id="@+id/tvNumberOfWorkouts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        app:layout_constraintStart_toStartOf="@+id/tvProgramName"
+        app:layout_constraintTop_toBottomOf="@+id/tvProgramName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="8 Workouts" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
