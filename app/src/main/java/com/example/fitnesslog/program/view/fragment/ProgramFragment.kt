@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.R
 import com.example.fitnesslog.program.data.datasource.ProgramDataSource
 import com.example.fitnesslog.program.view.adapter.ProgramAdapter
+import com.example.fitnesslog.program.view.utils.GridSpacingItemDecoration
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,6 +52,7 @@ class ProgramFragment : Fragment() {
         val rvPrograms: RecyclerView = view.findViewById(R.id.rvPrograms)
         rvPrograms.adapter = programAdapter
         rvPrograms.layoutManager = GridLayoutManager(context, 2)
+        rvPrograms.addItemDecoration(GridSpacingItemDecoration(20))
 
 
     }

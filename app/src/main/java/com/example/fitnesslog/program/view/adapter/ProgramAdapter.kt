@@ -31,7 +31,7 @@ class ProgramAdapter(private val programs: List<Program>) :
         val program = programs[position]
         holder.apply {
             tvProgramName.text = program.programName
-            tvNumberOfWorkouts.text = program.numberOfWorkouts.toString()
+            tvNumberOfWorkouts.text = "${program.numberOfWorkouts.toString()} workouts"
         }
     }
 }
