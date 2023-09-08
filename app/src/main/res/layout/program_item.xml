@@ -16,7 +16,7 @@
         android:textAppearance="?attr/textAppearanceLabelLarge"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Push Pull Legsadfasdfjad aalsdkfj " />
+        tools:text="Push Pull Legs" />
 
     <TextView
         android:id="@+id/tvNumberOfWorkouts"
