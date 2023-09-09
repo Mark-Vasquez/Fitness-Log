@@ -30,8 +30,8 @@ class ProgramAdapter(private val programs: List<Program>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val program = programs[position]
         holder.apply {
-            tvProgramName.text = program.programName
-            tvNumberOfWorkouts.text = "${program.numberOfWorkouts} workouts"
+//            tvProgramName.text = program.programName
+//            tvNumberOfWorkouts.text = "${program.numberOfWorkouts} workouts"
         }
     }
 }
