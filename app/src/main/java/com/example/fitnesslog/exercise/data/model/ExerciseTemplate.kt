@@ -3,15 +3,15 @@ package com.example.fitnesslog.exercise.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.example.fitnesslog.core.converter.ExerciseEnumConverter
 import com.example.fitnesslog.core.enums.ExerciseMuscle
 import com.example.fitnesslog.core.enums.ExerciseResistance
 
 @Entity(
     tableName = "exercise_template"
 )
-@TypeConverters(ExerciseEnumConverters::class)
+@TypeConverters(ExerciseEnumConverter::class)
 data class ExerciseTemplate(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo(name = "name") val name: String,
@@ -23,19 +23,3 @@ data class ExerciseTemplate(
 )
 
 
-class ExerciseEnumConverters {
-    @TypeConverter
-    fun fromExerciseMuscle(exerciseMuscle: ExerciseMuscle): String = exerciseMuscle.name
-
-    @TypeConverter
-    fun toExerciseMuscle(exerciseMuscle: String): ExerciseMuscle =
-        ExerciseMuscle.valueOf(exerciseMuscle)
-
-    @TypeConverter
-    fun fromExerciseResistance(exerciseResistance: ExerciseResistance): String =
-        exerciseResistance.name
-
-    @TypeConverter
-    fun toExerciseResistance(exerciseResistance: String): ExerciseResistance =
-        ExerciseResistance.valueOf(exerciseResistance)
-}

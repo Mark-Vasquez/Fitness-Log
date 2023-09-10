@@ -3,8 +3,8 @@ package com.example.fitnesslog.program.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.example.fitnesslog.core.converter.ScheduleConverter
 
 @Entity(tableName = "program")
 @TypeConverters(ScheduleConverter::class)
@@ -22,18 +22,4 @@ data class Program(
     @ColumnInfo(name = "updated_at") val updatedAt: Long
 )
 
-/**
- * Provides conversion methods for storing and retrieving a Set<String> as a single String in the SQLite database.
- * A pair of inverse conversions must contain a data type not compatible with SQLite that is used
- * in one of the entity fields.
- *
- * - For storing: The set is converted to a comma-separated string.
- * - For retrieval: The comma-separated string is converted back to a Set<String>.
- */
-class ScheduleConverter {
-    @TypeConverter
-    fun fromSet(schedule: Set<String>): String = schedule.joinToString(",")
 
-    @TypeConverter
-    fun fromSet(schedule: String): Set<String> = schedule.split(",").toSet()
-}
