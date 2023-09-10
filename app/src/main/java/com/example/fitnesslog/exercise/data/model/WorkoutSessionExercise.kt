@@ -3,6 +3,8 @@ package com.example.fitnesslog.exercise.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.example.fitnesslog.workout.data.model.WorkoutSession
 
 /**
@@ -17,7 +19,7 @@ import com.example.fitnesslog.workout.data.model.WorkoutSession
 
 @Entity(
     tableName = "workout_session_exercise",
-    primaryKeys = ["workout_session_id", "position"],
+    indices = [Index(value = ["workout_session_id", "position"], unique = true)],
     foreignKeys = [
         ForeignKey(
             entity = WorkoutSession::class,
@@ -28,6 +30,7 @@ import com.example.fitnesslog.workout.data.model.WorkoutSession
     ]
 )
 data class WorkoutSessionExercise(
+    @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo(name = "workout_session_id") val workoutSessionId: Int,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "position") val position: Int,

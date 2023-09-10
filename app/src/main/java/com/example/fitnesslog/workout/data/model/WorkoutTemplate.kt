@@ -3,12 +3,14 @@ package com.example.fitnesslog.workout.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.fitnesslog.program.data.model.Program
 
 
 @Entity(
     tableName = "workout_template",
+    indices = [Index(value = ["program_id", "position"], unique = true)],
     foreignKeys = [
         ForeignKey(
             entity = Program::class,
