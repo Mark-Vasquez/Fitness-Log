@@ -14,9 +14,9 @@ data class WorkoutSession(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "is_completed", defaultValue = "0") val isCompleted: Boolean = false,
-    @ColumnInfo(name = "duration_minutes") val durationMinutes: Int?,
-    @ColumnInfo(name = "started_at") val startedAt: Long?,
-    @ColumnInfo(name = "completed_at") val completedAt: Long?,
+    @ColumnInfo(name = "duration_minutes") val durationMinutes: Int? = null,
+    @ColumnInfo(name = "started_at") val startedAt: Long? = null,
+    @ColumnInfo(name = "completed_at") val completedAt: Long? = null,
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long
 )
