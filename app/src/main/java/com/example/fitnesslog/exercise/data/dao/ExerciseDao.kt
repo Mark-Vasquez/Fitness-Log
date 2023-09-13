@@ -26,12 +26,33 @@ interface ExerciseDao {
     fun getAllExercisesOrderedByName()
 
 
-    // **Exercises for Workout Template**
+    // **Exercises for Specific Workout Template**
 
     // Use to set as last "position" on field for inserted workoutTemplateExercise object
     @Query("SELECT COUNT(*) FROM workout_template_exercise WHERE workout_template_id = :workoutTemplateId")
     fun getExerciseCountForWorkout(workoutTemplateId: Int): Int
 
+    // Method for addExercisesToWorkoutTemplate @Transaction
+    @Insert
+    fun insertExercisesIntoWorkoutTemplate(exerciseTemplates: List<WorkoutTemplateExercise>)
+
+    @Transaction
+    fun addExercisesToWorkoutTemplate(exerciseTemplateIds: List<Int>, workoutTemplateId: Int) {
+        val currentExerciseCount = getExerciseCountForWorkout(workoutTemplateId)
+        val workoutTemplateExercises =
+            exerciseTemplateIds.mapIndexed { index, exerciseTemplateId ->
+                WorkoutTemplateExercise(
+                    workoutTemplateId = workoutTemplateId,
+                    exerciseTemplateId = exerciseTemplateId,
+                    position = currentExerciseCount + index,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                )
+            }
+        insertExercisesIntoWorkoutTemplate(workoutTemplateExercises)
+    }
+
+    // Todo: May not even need because bulk inserting
     @Insert
     fun insertExerciseIntoWorkoutTemplate(workoutTemplateExercise: WorkoutTemplateExercise)
 
@@ -53,10 +74,7 @@ interface ExerciseDao {
         exerciseTemplates: List<ExerciseTemplate>,
         workoutTemplateId: Int
     ) {
-        /*
-         Set invalid positions to each exercise belonging to the workout template to avoid
-         unique pair violations
-         */
+        // Assign invalid positions to the UI ordered list to avoid unique pair constraints
         var invalidPosition: Int = -1
         exerciseTemplates.forEach { exerciseTemplate ->
             exerciseTemplate.id?.let {
@@ -68,6 +86,7 @@ interface ExerciseDao {
             invalidPosition--
         }
 
+        // Assign UI ordered positions by index
         exerciseTemplates.forEachIndexed { index, exerciseTemplate ->
             exerciseTemplate.id?.let {
                 updateExercisePositionInWorkoutTemplate(

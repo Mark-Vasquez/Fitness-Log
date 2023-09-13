@@ -22,12 +22,20 @@ interface WorkoutDao {
     @Update
     fun updateWorkoutTemplate(workoutTemplate: WorkoutTemplate)
 
+    // Method for deleteWorkoutTemplateAndRearrange @Transaction
     @Delete
     fun deleteWorkoutTemplate(workoutTemplate: WorkoutTemplate)
 
-    @Query("")
+    @Transaction
+    fun deleteWorkoutTemplateAndRearrange(workoutTemplate: WorkoutTemplate) {
+        deleteWorkoutTemplate(workoutTemplate)
+        
+    }
+
+    @Query("SELECT * FROM workout_template WHERE program_id = :programId ORDER BY position")
     fun getWorkoutTemplatesForProgramOrderedByPosition(programId: Int)
 
+    // Method for updateWorkoutTemplatePositionsForProgram @Transaction
     @Query("UPDATE workout_template SET position = :newPosition WHERE id = :workoutTemplateId")
     fun updateWorkoutTemplatePosition(workoutTemplateId: Int, newPosition: Int)
 
@@ -36,20 +44,19 @@ interface WorkoutDao {
         workoutTemplates: List<WorkoutTemplate>,
         programId: Int
     ) {
-        var invalidPosition: Int = 1
-        workoutTemplates.forEachIndexed { index, workoutTemplate ->
-            // Layer of protection ensures List<WorkoutTemplate> all belong to the specific program
+        // Assign invalid positions to the UI ordered list to avoid unique pair constraints
+        var invalidPosition: Int = -1
+        workoutTemplates.forEach { workoutTemplate ->
+            // Ensure all templates belong to programId
             if (workoutTemplate.programId == programId) {
                 workoutTemplate.id?.let { updateWorkoutTemplatePosition(it, invalidPosition) }
             }
             invalidPosition--
         }
 
+        // Assign UI ordered positions by index
         workoutTemplates.forEachIndexed { index, workoutTemplate ->
-            // Layer of protection ensures List<WorkoutTemplate> all belong to the specific program
-            if (workoutTemplate.programId == programId) {
-                workoutTemplate.id?.let { updateWorkoutTemplatePosition(it, index) }
-            }
+            workoutTemplate.id?.let { updateWorkoutTemplatePosition(it, index) }
         }
     }
 }
