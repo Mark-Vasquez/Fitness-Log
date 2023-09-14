@@ -25,7 +25,6 @@ interface ExerciseDao {
     @Query("")
     fun getAllExercisesOrderedByName()
 
-
     // **Exercises for Specific Workout Template**
 
     // Use to set as last "position" on field for inserted workoutTemplateExercise object

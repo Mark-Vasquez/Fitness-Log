@@ -23,17 +23,16 @@ interface ProgramDao {
     @Query("SELECT * FROM program ORDER BY is_selected DESC")
     fun getAllProgramsOrderedBySelected(): Flow<List<Program>>
 
-    // Methods for setProgramAsSelected @Transaction
-    @Query("UPDATE program SET is_selected = 0 WHERE is_selected = 1")
-    suspend fun deselectAllPrograms()
-
-    @Query("UPDATE program SET is_selected = 1 WHERE program.id = :programId")
-    suspend fun selectProgram(programId: Int)
-
     @Transaction
     suspend fun setProgramAsSelected(programId: Int) {
         deselectAllPrograms()
         selectProgram(programId)
     }
+
+    @Query("UPDATE program SET is_selected = 0 WHERE is_selected = 1")
+    suspend fun deselectAllPrograms()
+
+    @Query("UPDATE program SET is_selected = 1 WHERE program.id = :programId")
+    suspend fun selectProgram(programId: Int)
 
 }
