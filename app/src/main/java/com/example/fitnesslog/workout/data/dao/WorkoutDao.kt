@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.fitnesslog.workout.data.model.WorkoutTemplate
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WorkoutDao {
@@ -29,18 +30,18 @@ interface WorkoutDao {
     @Transaction
     fun deleteWorkoutTemplateAndRearrange(workoutTemplate: WorkoutTemplate) {
         deleteWorkoutTemplate(workoutTemplate)
-        
+
     }
 
     @Query("SELECT * FROM workout_template WHERE program_id = :programId ORDER BY position")
-    fun getWorkoutTemplatesForProgramOrderedByPosition(programId: Int)
+    fun getWorkoutTemplatesForProgramOrderedByPosition(programId: Int): Flow<List<WorkoutTemplate>>
 
     // Method for updateWorkoutTemplatePositionsForProgram @Transaction
     @Query("UPDATE workout_template SET position = :newPosition WHERE id = :workoutTemplateId")
-    fun updateWorkoutTemplatePosition(workoutTemplateId: Int, newPosition: Int)
+    suspend fun updateWorkoutTemplatePosition(workoutTemplateId: Int, newPosition: Int)
 
     @Transaction
-    fun updateWorkoutTemplatePositionsForProgram(
+    suspend fun updateWorkoutTemplatePositionsForProgram(
         workoutTemplates: List<WorkoutTemplate>,
         programId: Int
     ) {

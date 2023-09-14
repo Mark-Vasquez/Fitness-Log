@@ -7,32 +7,31 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.fitnesslog.program.data.model.Program
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProgramDao {
     @Insert
-    fun insertProgram(program: Program)
+    suspend fun insertProgram(program: Program): Long
 
     @Update
-    fun updateProgram(program: Program)
+    suspend fun updateProgram(program: Program): Int
 
     @Delete
-    fun deleteProgram(program: Program)
+    suspend fun deleteProgram(program: Program): Int
 
-    @Query("")
-    fun getAllProgramsOrderedBySelected()
+    @Query("SELECT * FROM program ORDER BY is_selected DESC")
+    fun getAllProgramsOrderedBySelected(): Flow<List<Program>>
 
-    /* Atomicity
-     *
-     */
-    @Query("")
-    fun deselectAllPrograms()
+    // Methods for setProgramAsSelected @Transaction
+    @Query("UPDATE program SET is_selected = 0 WHERE is_selected = 1")
+    suspend fun deselectAllPrograms()
 
-    @Query("")
-    fun selectProgram(programId: Int)
+    @Query("UPDATE program SET is_selected = 1 WHERE program.id = :programId")
+    suspend fun selectProgram(programId: Int)
 
     @Transaction
-    fun setProgramAsSelected(programId: Int) {
+    suspend fun setProgramAsSelected(programId: Int) {
         deselectAllPrograms()
         selectProgram(programId)
     }
