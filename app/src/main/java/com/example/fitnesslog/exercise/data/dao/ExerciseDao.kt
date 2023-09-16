@@ -7,43 +7,44 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.fitnesslog.exercise.data.model.ExerciseTemplate
+import com.example.fitnesslog.exercise.data.model.WorkoutExerciseWithTemplateName
 import com.example.fitnesslog.exercise.data.model.WorkoutTemplateExercise
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ExerciseDao {
     // **Exercise Template**
 
     @Insert
-    fun insertExerciseTemplate(exerciseTemplate: ExerciseTemplate)
+    suspend fun insertExerciseTemplate(exerciseTemplate: ExerciseTemplate): Long
+
+    @Query("SELECT * FROM exercise_template ORDER BY name")
+    fun getAllExercisesOrderedByName(): Flow<List<ExerciseTemplate>>
 
     @Update
-    fun updateExerciseTemplate(exerciseTemplate: ExerciseTemplate)
+    suspend fun updateExerciseTemplate(exerciseTemplate: ExerciseTemplate): Int
+
+    @Transaction
+    suspend fun deleteExerciseTemplateAndRearrange()
 
     @Delete
-    fun deleteExerciseTemplate(exerciseTemplate: ExerciseTemplate)
+    suspend fun deleteExerciseTemplate(exerciseTemplate: ExerciseTemplate): Int
 
-    @Query("")
-    fun getAllExercisesOrderedByName()
 
     // **Exercises for Specific Workout Template**
 
-    // Use to set as last "position" on field for inserted workoutTemplateExercise object
-    @Query("SELECT COUNT(*) FROM workout_template_exercise WHERE workout_template_id = :workoutTemplateId")
-    fun getExerciseCountForWorkout(workoutTemplateId: Int): Int
-
-    // Method for addExercisesToWorkoutTemplate @Transaction
-    @Insert
-    fun insertExercisesIntoWorkoutTemplate(exerciseTemplates: List<WorkoutTemplateExercise>)
-
     @Transaction
-    fun addExercisesToWorkoutTemplate(exerciseTemplateIds: List<Int>, workoutTemplateId: Int) {
-        val currentExerciseCount = getExerciseCountForWorkout(workoutTemplateId)
+    suspend fun addExercisesToWorkoutTemplate(
+        exerciseTemplateIds: List<Int>,
+        workoutTemplateId: Int
+    ) {
+        val lastInsertPosition = getPositionForInsert(workoutTemplateId)
         val workoutTemplateExercises =
             exerciseTemplateIds.mapIndexed { index, exerciseTemplateId ->
                 WorkoutTemplateExercise(
                     workoutTemplateId = workoutTemplateId,
                     exerciseTemplateId = exerciseTemplateId,
-                    position = currentExerciseCount + index,
+                    position = lastInsertPosition + index,
                     createdAt = System.currentTimeMillis(),
                     updatedAt = System.currentTimeMillis()
                 )
@@ -51,25 +52,26 @@ interface ExerciseDao {
         insertExercisesIntoWorkoutTemplate(workoutTemplateExercises)
     }
 
-    // Todo: May not even need because bulk inserting
     @Insert
-    fun insertExerciseIntoWorkoutTemplate(workoutTemplateExercise: WorkoutTemplateExercise)
+    suspend fun insertExercisesIntoWorkoutTemplate(exerciseTemplates: List<WorkoutTemplateExercise>): Long
 
-    @Delete
-    fun deleteExerciseFromWorkoutTemplate(workoutTemplateExercise: WorkoutTemplateExercise)
+    @Query("SELECT COUNT(*) FROM workout_template_exercise WHERE workout_template_id = :workoutTemplateId")
+    suspend fun getPositionForInsert(workoutTemplateId: Int): Int
 
-    @Query("")
-    fun getExercisesForWorkoutTemplateOrderedByPosition(workoutTemplateId: Int)
-
-    @Query("UPDATE workout_template_exercise SET position = :newPosition WHERE workout_template_id = :workoutTemplateId AND exercise_template_id = :exerciseTemplateId")
-    fun updateExercisePositionInWorkoutTemplate(
-        workoutTemplateId: Int,
-        exerciseTemplateId: Int,
-        newPosition: Int
+    @Query(
+        """
+        SELECT workout_template_exercise.*, exercise_template.name
+        FROM workout_template_exercise
+        JOIN exercise_template
+        ON exercise_template.id = workout_template_exercise.exercise_template_id
+        WHERE  workout_template_exercise.workout_template_id = :workoutTemplateId
+        ORDER BY workout_template_exercise.position
+    """
     )
+    fun getExercisesForWorkoutTemplateOrderedByPosition(workoutTemplateId: Int): Flow<List<WorkoutExerciseWithTemplateName>>
 
     @Transaction
-    fun updateExercisePositionsForWorkoutTemplate(
+    suspend fun updateExercisePositionsForWorkoutTemplate(
         exerciseTemplates: List<ExerciseTemplate>,
         workoutTemplateId: Int
     ) {
@@ -95,4 +97,24 @@ interface ExerciseDao {
             }
         }
     }
+
+    @Query(
+        """
+        UPDATE workout_template_exercise
+        SET position = :newPosition
+        WHERE workout_template_id = :workoutTemplateId 
+        AND exercise_template_id = :exerciseTemplateId
+        """
+    )
+    suspend fun updateExercisePositionInWorkoutTemplate(
+        workoutTemplateId: Int,
+        exerciseTemplateId: Int,
+        newPosition: Int
+    )
+
+    @Transaction
+    suspend fun deleteExerciseFromWorkoutTemplateAndRearrange(exerciseTemplate: ExerciseTemplate)
+
+    @Delete
+    suspend fun deleteExerciseFromWorkoutTemplate(workoutTemplateExercise: WorkoutTemplateExercise)
 }

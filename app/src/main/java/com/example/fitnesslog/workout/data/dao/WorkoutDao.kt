@@ -16,15 +16,42 @@ import kotlinx.coroutines.withContext
 interface WorkoutDao {
     // **Workout Template**
 
-    // Use to set as last "position" on field for inserted workoutTemplate object
-    @Query("SELECT COUNT(*) FROM workout_template WHERE program_id = :programId")
-    suspend fun getWorkoutTemplateCountForProgram(programId: Int): Int
-
     @Insert
     suspend fun insertWorkoutTemplate(workoutTemplate: WorkoutTemplate): Long
 
+    @Query("SELECT COUNT(*) FROM workout_template WHERE program_id = :programId")
+    suspend fun getPositionForInsert(programId: Int): Int
+
+    @Query("SELECT * FROM workout_template WHERE program_id = :programId ORDER BY position")
+    fun getWorkoutTemplatesForProgramOrderedByPosition(programId: Int): Flow<List<WorkoutTemplate>>
+
     @Update
     suspend fun updateWorkoutTemplate(workoutTemplate: WorkoutTemplate): Int
+
+    @Transaction
+    suspend fun updateWorkoutTemplatePositionsForProgram(
+        workoutTemplates: List<WorkoutTemplate>,
+        programId: Int
+    ) {
+        // First assign invalid positions to the UI ordered list to avoid unique pair constraints
+        var invalidPosition: Int = -1
+        workoutTemplates.forEach { workoutTemplate ->
+            // Ensure all templates belong to programId
+            if (workoutTemplate.programId == programId) {
+                workoutTemplate.id?.let { updateWorkoutTemplatePosition(it, invalidPosition) }
+            }
+            invalidPosition--
+        }
+
+        // Then assign UI ordered positions by index
+        workoutTemplates.forEachIndexed { index, workoutTemplate ->
+            workoutTemplate.id?.let { updateWorkoutTemplatePosition(it, index) }
+        }
+    }
+
+    @Query("UPDATE workout_template SET position = :newPosition WHERE id = :workoutTemplateId")
+    suspend fun updateWorkoutTemplatePosition(workoutTemplateId: Int, newPosition: Int)
+
 
     @Transaction
     suspend fun deleteWorkoutTemplateAndRearrange(workoutTemplate: WorkoutTemplate) {
@@ -47,31 +74,4 @@ interface WorkoutDao {
     @Delete
     suspend fun deleteWorkoutTemplate(workoutTemplate: WorkoutTemplate): Int
 
-    @Query("SELECT * FROM workout_template WHERE program_id = :programId ORDER BY position")
-    fun getWorkoutTemplatesForProgramOrderedByPosition(programId: Int): Flow<List<WorkoutTemplate>>
-
-
-    @Transaction
-    suspend fun updateWorkoutTemplatePositionsForProgram(
-        workoutTemplates: List<WorkoutTemplate>,
-        programId: Int
-    ) {
-        // Assign invalid positions to the UI ordered list to avoid unique pair constraints
-        var invalidPosition: Int = -1
-        workoutTemplates.forEach { workoutTemplate ->
-            // Ensure all templates belong to programId
-            if (workoutTemplate.programId == programId) {
-                workoutTemplate.id?.let { updateWorkoutTemplatePosition(it, invalidPosition) }
-            }
-            invalidPosition--
-        }
-
-        // Assign UI ordered positions by index
-        workoutTemplates.forEachIndexed { index, workoutTemplate ->
-            workoutTemplate.id?.let { updateWorkoutTemplatePosition(it, index) }
-        }
-    }
-
-    @Query("UPDATE workout_template SET position = :newPosition WHERE id = :workoutTemplateId")
-    suspend fun updateWorkoutTemplatePosition(workoutTemplateId: Int, newPosition: Int)
 }

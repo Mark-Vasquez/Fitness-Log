@@ -14,14 +14,15 @@ interface ProgramDao {
     @Insert
     suspend fun insertProgram(program: Program): Long
 
+    @Query("SELECT * FROM program ORDER BY is_selected DESC")
+    fun getAllProgramsOrderedBySelected(): Flow<List<Program>>
+
     @Update
     suspend fun updateProgram(program: Program): Int
 
     @Delete
     suspend fun deleteProgram(program: Program): Int
 
-    @Query("SELECT * FROM program ORDER BY is_selected DESC")
-    fun getAllProgramsOrderedBySelected(): Flow<List<Program>>
 
     @Transaction
     suspend fun setProgramAsSelected(programId: Int) {

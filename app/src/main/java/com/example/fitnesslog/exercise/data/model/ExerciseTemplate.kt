@@ -22,4 +22,3 @@ data class ExerciseTemplate(
     @ColumnInfo(name = "updated_at") val updatedAt: Long
 )
 
-
