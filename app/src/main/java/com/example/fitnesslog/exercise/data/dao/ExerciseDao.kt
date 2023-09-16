@@ -24,8 +24,27 @@ interface ExerciseDao {
     @Update
     suspend fun updateExerciseTemplate(exerciseTemplate: ExerciseTemplate): Int
 
+    // TODO: Handle this exception later
     @Transaction
-    suspend fun deleteExerciseTemplateAndRearrange()
+    suspend fun canDeleteExerciseTemplate(exerciseTemplate: ExerciseTemplate): Boolean {
+        val usageCount = exerciseTemplate.id?.let { countWorkoutsUsingExerciseTemplate(it) }
+            ?: throw IllegalArgumentException("ExerciseTemplate ID is null!")
+        return if (usageCount > 0) {
+            false
+        } else {
+            deleteExerciseTemplate(exerciseTemplate)
+            true
+        }
+    }
+
+    @Query(
+        """
+        SELECT COUNT(*)
+        FROM workout_template_exercise
+        WHERE exercise_template_id = :exerciseTemplateId
+    """
+    )
+    suspend fun countWorkoutsUsingExerciseTemplate(exerciseTemplateId: Int): Int
 
     @Delete
     suspend fun deleteExerciseTemplate(exerciseTemplate: ExerciseTemplate): Int
@@ -66,35 +85,31 @@ interface ExerciseDao {
         ON exercise_template.id = workout_template_exercise.exercise_template_id
         WHERE  workout_template_exercise.workout_template_id = :workoutTemplateId
         ORDER BY workout_template_exercise.position
-    """
+        """
     )
     fun getExercisesForWorkoutTemplateOrderedByPosition(workoutTemplateId: Int): Flow<List<WorkoutExerciseWithTemplateName>>
 
     @Transaction
-    suspend fun updateExercisePositionsForWorkoutTemplate(
-        exerciseTemplates: List<ExerciseTemplate>,
-        workoutTemplateId: Int
+    suspend fun updateOrRemoveExercisePositionsForWorkoutTemplate(
+        workoutExercises: List<WorkoutExerciseWithTemplateName>,
     ) {
         // Assign invalid positions to the UI ordered list to avoid unique pair constraints
         var invalidPosition: Int = -1
-        exerciseTemplates.forEach { exerciseTemplate ->
-            exerciseTemplate.id?.let {
-                updateExercisePositionInWorkoutTemplate(
-                    workoutTemplateId,
-                    it, invalidPosition
-                )
-            }
-            invalidPosition--
+        workoutExercises.forEach { workoutExercise ->
+            updateExercisePositionInWorkoutTemplate(
+                workoutExercise.workoutTemplateId,
+                workoutExercise.exerciseTemplateId,
+                invalidPosition
+            )
         }
+        invalidPosition--
+
 
         // Assign UI ordered positions by index
-        exerciseTemplates.forEachIndexed { index, exerciseTemplate ->
-            exerciseTemplate.id?.let {
-                updateExercisePositionInWorkoutTemplate(
-                    workoutTemplateId,
-                    it, index
-                )
-            }
+        workoutExercises.forEachIndexed { index, workoutExercise ->
+            updateExercisePositionInWorkoutTemplate(
+                workoutExercise.workoutTemplateId, workoutExercise.exerciseTemplateId, index
+            )
         }
     }
 
@@ -112,9 +127,4 @@ interface ExerciseDao {
         newPosition: Int
     )
 
-    @Transaction
-    suspend fun deleteExerciseFromWorkoutTemplateAndRearrange(exerciseTemplate: ExerciseTemplate)
-
-    @Delete
-    suspend fun deleteExerciseFromWorkoutTemplate(workoutTemplateExercise: WorkoutTemplateExercise)
 }
