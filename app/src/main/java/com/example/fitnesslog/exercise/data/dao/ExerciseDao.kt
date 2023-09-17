@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ExerciseDao {
-    // **Exercise Template**
 
+    // **Exercise Template**
     @Insert
     suspend fun insertExerciseTemplate(exerciseTemplate: ExerciseTemplate): Long
 
@@ -51,7 +51,6 @@ interface ExerciseDao {
 
 
     // **Exercises for Specific Workout Template**
-
     @Transaction
     suspend fun addExercisesToWorkoutTemplate(
         exerciseTemplateIds: List<Int>,
@@ -101,9 +100,8 @@ interface ExerciseDao {
                 workoutExercise.exerciseTemplateId,
                 invalidPosition
             )
+            invalidPosition--
         }
-        invalidPosition--
-
 
         // Assign UI ordered positions by index
         workoutExercises.forEachIndexed { index, workoutExercise ->
