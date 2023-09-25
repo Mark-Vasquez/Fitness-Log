@@ -7,10 +7,8 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.fitnesslog.workout.data.model.WorkoutTemplate
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.first
 
 @Dao
 interface WorkoutDao {
@@ -57,10 +55,8 @@ interface WorkoutDao {
     suspend fun deleteWorkoutTemplateAndRearrange(workoutTemplate: WorkoutTemplate) {
         deleteWorkoutTemplate(workoutTemplate)
 
-        val remainingWorkoutTemplates = withContext(Dispatchers.IO) {
-            getWorkoutTemplatesForProgramOrderedByPosition(workoutTemplate.programId).firstOrNull()
-                ?: listOf()
-        }
+        val remainingWorkoutTemplates =
+            getWorkoutTemplatesForProgramOrderedByPosition(workoutTemplate.programId).first()
 
         if (remainingWorkoutTemplates.isNotEmpty()) {
             updateWorkoutTemplatePositionsForProgram(

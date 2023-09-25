@@ -1,5 +1,6 @@
 package com.example.fitnesslog.set.data.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -8,6 +9,7 @@ import com.example.fitnesslog.set.data.model.SetTemplate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
+@Dao
 interface SetDao {
 
     // **SetTemplate**

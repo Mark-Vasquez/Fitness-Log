@@ -24,7 +24,7 @@ interface ExerciseDao {
     @Update
     suspend fun updateExerciseTemplate(exerciseTemplate: ExerciseTemplate): Int
 
-    // TODO: Handle this exception later
+    // TODO: wrap this function with a try/catch
     @Transaction
     suspend fun canDeleteExerciseTemplate(exerciseTemplate: ExerciseTemplate): Boolean {
         val usageCount = exerciseTemplate.id?.let { countWorkoutsUsingExerciseTemplate(it) }
