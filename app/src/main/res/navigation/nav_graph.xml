@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/workoutFragment">
+    app:startDestination="@id/workoutHomeFragment">
 
     <fragment
         android:id="@+id/historyFragment"
@@ -15,13 +15,13 @@
             app:destination="@id/programFragment" />
         <action
             android:id="@+id/action_historyFragment_to_workoutFragment"
-            app:destination="@id/workoutFragment" />
+            app:destination="@id/workoutHomeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/workoutFragment"
-        android:name="com.example.fitnesslog.workout.view.fragment.WorkoutFragment"
+        android:id="@+id/workoutHomeFragment"
+        android:name="com.example.fitnesslog.workout.view.fragment.WorkoutHomeFragment"
         android:label="@string/label_workout"
-        tools:layout="@layout/fragment_workout">
+        tools:layout="@layout/fragment_workout_home">
         <action
             android:id="@+id/action_workoutFragment_to_programFragment"
             app:destination="@id/programFragment" />
@@ -39,6 +39,6 @@
             app:destination="@id/historyFragment" />
         <action
             android:id="@+id/action_programFragment_to_workoutFragment"
-            app:destination="@id/workoutFragment" />
+            app:destination="@id/workoutHomeFragment" />
     </fragment>
 </navigation>

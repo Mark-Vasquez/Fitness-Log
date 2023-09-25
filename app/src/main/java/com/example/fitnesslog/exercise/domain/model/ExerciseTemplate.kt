@@ -1,4 +1,4 @@
-package com.example.fitnesslog.exercise.data.model
+package com.example.fitnesslog.exercise.domain.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

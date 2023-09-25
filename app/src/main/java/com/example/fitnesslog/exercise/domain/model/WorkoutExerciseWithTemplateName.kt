@@ -1,4 +1,4 @@
-package com.example.fitnesslog.exercise.data.model
+package com.example.fitnesslog.exercise.domain.model
 
 data class WorkoutExerciseWithTemplateName(
     val id: Int,

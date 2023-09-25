@@ -1,11 +1,11 @@
-package com.example.fitnesslog.workout.data.model
+package com.example.fitnesslog.workout.domain.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.fitnesslog.program.data.model.Program
+import com.example.fitnesslog.program.domain.model.Program
 
 
 @Entity(

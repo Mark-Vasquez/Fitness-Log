@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.R
-import com.example.fitnesslog.program.data.model.Program
+import com.example.fitnesslog.program.domain.model.Program
 
 class ProgramAdapter(private val programs: List<Program>) :
     RecyclerView.Adapter<ProgramAdapter.ViewHolder>() {

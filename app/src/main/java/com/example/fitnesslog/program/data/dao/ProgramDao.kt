@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.fitnesslog.program.data.model.Program
+import com.example.fitnesslog.program.domain.model.Program
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -6,9 +6,9 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.fitnesslog.exercise.data.model.ExerciseTemplate
-import com.example.fitnesslog.exercise.data.model.WorkoutExerciseWithTemplateName
-import com.example.fitnesslog.exercise.data.model.WorkoutTemplateExercise
+import com.example.fitnesslog.exercise.domain.model.ExerciseTemplate
+import com.example.fitnesslog.exercise.domain.model.WorkoutExerciseWithTemplateName
+import com.example.fitnesslog.exercise.domain.model.WorkoutTemplateExercise
 import kotlinx.coroutines.flow.Flow
 
 @Dao
