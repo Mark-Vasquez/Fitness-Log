@@ -20,7 +20,10 @@ import com.example.fitnesslog.workout.domain.model.WorkoutTemplate
  */
 @Entity(
     tableName = "workout_template_exercise",
-    indices = [Index(value = ["workout_template_id", "position"], unique = true)],
+    indices = [
+        Index(value = ["workout_template_id", "position"], unique = true),
+        Index(value = ["exercise_template_id"])
+    ],
     foreignKeys = [
         ForeignKey(
             entity = WorkoutTemplate::class,

@@ -1,4 +1,4 @@
-package com.example.fitnesslog.workout.view.fragment
+package com.example.fitnesslog.workout.ui.workout_home.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

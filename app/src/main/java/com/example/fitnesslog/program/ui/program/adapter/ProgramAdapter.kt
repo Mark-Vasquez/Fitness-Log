@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.view.adapter
+package com.example.fitnesslog.program.ui.program.adapter
 
 import android.view.LayoutInflater
 import android.view.View
