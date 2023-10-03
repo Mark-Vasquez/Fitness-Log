@@ -4,17 +4,17 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.fitnesslog.exercise.data.dao.ExerciseDao
 import com.example.fitnesslog.exercise.data.dao.SetDao
-import com.example.fitnesslog.exercise.domain.model.ExerciseTemplate
-import com.example.fitnesslog.exercise.domain.model.SetTemplate
-import com.example.fitnesslog.exercise.domain.model.WorkoutSessionExercise
-import com.example.fitnesslog.exercise.domain.model.WorkoutSessionExerciseSet
-import com.example.fitnesslog.exercise.domain.model.WorkoutTemplateExercise
+import com.example.fitnesslog.exercise.data.entity.ExerciseTemplate
+import com.example.fitnesslog.exercise.data.entity.SetTemplate
+import com.example.fitnesslog.exercise.data.entity.WorkoutSessionExercise
+import com.example.fitnesslog.exercise.data.entity.WorkoutSessionExerciseSet
+import com.example.fitnesslog.exercise.data.entity.WorkoutTemplateExercise
 import com.example.fitnesslog.history.data.dao.HistoryDao
 import com.example.fitnesslog.program.data.dao.ProgramDao
-import com.example.fitnesslog.program.domain.model.Program
+import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.workout.data.dao.WorkoutDao
-import com.example.fitnesslog.workout.domain.model.WorkoutSession
-import com.example.fitnesslog.workout.domain.model.WorkoutTemplate
+import com.example.fitnesslog.workout.data.entity.WorkoutSession
+import com.example.fitnesslog.workout.data.entity.WorkoutTemplate
 
 @Database(
     entities = [

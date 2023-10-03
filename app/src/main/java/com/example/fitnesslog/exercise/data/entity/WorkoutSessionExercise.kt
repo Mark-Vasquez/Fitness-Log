@@ -1,11 +1,11 @@
-package com.example.fitnesslog.exercise.domain.model
+package com.example.fitnesslog.exercise.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.fitnesslog.workout.domain.model.WorkoutSession
+import com.example.fitnesslog.workout.data.entity.WorkoutSession
 
 /**
  * Represents an exercise within a specific workout session.
