@@ -6,9 +6,9 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.fitnesslog.exercise.data.model.ExerciseTemplate
-import com.example.fitnesslog.exercise.data.model.WorkoutExerciseWithTemplateName
-import com.example.fitnesslog.exercise.data.model.WorkoutTemplateExercise
+import com.example.fitnesslog.exercise.data.entity.ExerciseTemplate
+import com.example.fitnesslog.exercise.data.entity.WorkoutTemplateExercise
+import com.example.fitnesslog.exercise.domain.model.WorkoutExerciseWithTemplateName
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -71,14 +71,21 @@ interface ExerciseDao {
     }
 
     @Insert
-    suspend fun insertExercisesIntoWorkoutTemplate(exerciseTemplates: List<WorkoutTemplateExercise>): Long
+    suspend fun insertExercisesIntoWorkoutTemplate(exerciseTemplates: List<WorkoutTemplateExercise>): LongArray
 
     @Query("SELECT COUNT(*) FROM workout_template_exercise WHERE workout_template_id = :workoutTemplateId")
     suspend fun getPositionForInsert(workoutTemplateId: Int): Int
 
     @Query(
         """
-        SELECT workout_template_exercise.*, exercise_template.name
+        SELECT 
+            workout_template_exercise.id as id,
+            exercise_template.name as name,
+            workout_template_exercise.workout_template_id as workoutTemplateId,
+            workout_template_exercise.exercise_template_id as exerciseTemplateId,
+            workout_template_exercise.position as position,
+            workout_template_exercise.created_at as createdAt,
+            workout_template_exercise.updated_at as updatedAt
         FROM workout_template_exercise
         JOIN exercise_template
         ON exercise_template.id = workout_template_exercise.exercise_template_id

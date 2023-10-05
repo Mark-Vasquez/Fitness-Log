@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.fitnesslog.workout.data.model.WorkoutTemplate
+import com.example.fitnesslog.workout.data.entity.WorkoutTemplate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
