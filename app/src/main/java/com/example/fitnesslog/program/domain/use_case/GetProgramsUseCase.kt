@@ -2,11 +2,12 @@ package com.example.fitnesslog.program.domain.use_case
 
 import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.program.domain.repository.ProgramRepository
+import kotlinx.coroutines.flow.Flow
 
-class CreateProgramUseCase(
+class GetProgramsUseCase(
     private val programRepository: ProgramRepository
 ) {
-    suspend operator fun invoke(program: Program): Long {
-        return programRepository.insertProgram(program)
+    operator fun invoke(): Flow<List<Program>> {
+        return programRepository.getAllProgramsOrderedBySelected()
     }
 }

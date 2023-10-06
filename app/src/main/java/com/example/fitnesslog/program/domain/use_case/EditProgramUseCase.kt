@@ -7,7 +7,7 @@ class EditProgramUseCase(
     private val programRepository: ProgramRepository
 ) {
 
-    suspend operator fun invoke(program: Program) {
-        programRepository.updateProgram(program)
+    suspend operator fun invoke(program: Program): Int {
+        return programRepository.updateProgram(program)
     }
 }
