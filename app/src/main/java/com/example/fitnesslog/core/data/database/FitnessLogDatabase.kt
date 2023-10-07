@@ -29,7 +29,12 @@ import com.example.fitnesslog.workout.data.entity.WorkoutTemplate
     ],
     version = 1
 )
-abstract class AppDatabase : RoomDatabase() {
+abstract class FitnessLogDatabase : RoomDatabase() {
+
+    companion object {
+        const val DATABASE_NAME = "fitness_log.db"
+    }
+
     abstract fun programDao(): ProgramDao
     abstract fun workoutDao(): WorkoutDao
     abstract fun exerciseDao(): ExerciseDao
