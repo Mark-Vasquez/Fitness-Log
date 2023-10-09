@@ -7,6 +7,7 @@ inline fun <reified VM : ViewModel> viewModelFactory(crossinline creator: () -> 
     return object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(VM::class.java)) {
+                @Suppress("UNCHECKED_CAST")
                 return creator() as T
             }
             throw IllegalArgumentException("ViewModel passed in the Provider does not match ViewModel configured in the Factory")
