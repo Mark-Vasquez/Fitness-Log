@@ -3,12 +3,12 @@ package com.example.fitnesslog.program.di
 import com.example.fitnesslog.core.data.database.FitnessLogDatabase
 import com.example.fitnesslog.program.data.repository.ProgramRepositoryImpl
 import com.example.fitnesslog.program.domain.repository.ProgramRepository
-import com.example.fitnesslog.program.domain.use_case.CreateProgramUseCase
-import com.example.fitnesslog.program.domain.use_case.DeleteProgramUseCase
-import com.example.fitnesslog.program.domain.use_case.EditProgramUseCase
-import com.example.fitnesslog.program.domain.use_case.GetProgramsUseCase
+import com.example.fitnesslog.program.domain.use_case.CreateProgram
+import com.example.fitnesslog.program.domain.use_case.DeleteProgram
+import com.example.fitnesslog.program.domain.use_case.EditProgram
+import com.example.fitnesslog.program.domain.use_case.GetPrograms
 import com.example.fitnesslog.program.domain.use_case.ProgramUseCases
-import com.example.fitnesslog.program.domain.use_case.SelectProgramUseCase
+import com.example.fitnesslog.program.domain.use_case.SelectProgram
 
 interface ProgramModule {
     val programRepository: ProgramRepository
@@ -24,11 +24,11 @@ class ProgramModuleImpl(
 
     override val programUseCases: ProgramUseCases by lazy {
         ProgramUseCases(
-            createProgramUseCase = CreateProgramUseCase(programRepository),
-            getProgramUseCase = GetProgramsUseCase(programRepository),
-            editProgramUseCase = EditProgramUseCase(programRepository),
-            deleteProgramUseCase = DeleteProgramUseCase(programRepository),
-            selectProgramUseCase = SelectProgramUseCase(programRepository)
+            createProgram = CreateProgram(programRepository),
+            getPrograms = GetPrograms(programRepository),
+            editProgram = EditProgram(programRepository),
+            deleteProgram = DeleteProgram(programRepository),
+            selectProgram = SelectProgram(programRepository)
         )
     }
 }
