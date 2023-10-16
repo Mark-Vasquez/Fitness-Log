@@ -8,11 +8,11 @@ interface ProgramRepository {
 
     suspend fun insertProgram(program: Program): Resource<Long>
 
-    fun getAllProgramsOrderedBySelected(): Flow<List<Program>>
+    fun getAllProgramsOrderedBySelected(): Flow<Resource<List<Program>>>
 
-    suspend fun updateProgram(program: Program): Int
+    suspend fun updateProgram(program: Program): Resource<Int>
 
-    suspend fun deleteProgram(program: Program): Int
+    suspend fun deleteProgram(program: Program): Resource<Int>
 
-    suspend fun setProgramAsSelected(programId: Int)
+    suspend fun setProgramAsSelected(programId: Int): Resource<Unit>
 }

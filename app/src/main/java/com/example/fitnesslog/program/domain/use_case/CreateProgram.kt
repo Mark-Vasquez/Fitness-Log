@@ -11,6 +11,6 @@ class CreateProgram(
         if (true) {
             return programRepository.insertProgram(program)
         }
-        return Resource.Error<Long>("hello")
+        return Resource.Error("hello")
     }
 }
