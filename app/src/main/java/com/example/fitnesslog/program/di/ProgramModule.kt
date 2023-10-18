@@ -15,9 +15,7 @@ interface ProgramModule {
     val programUseCases: ProgramUseCases
 }
 
-class ProgramModuleImpl(
-    private val db: FitnessLogDatabase
-) : ProgramModule {
+class ProgramModuleImpl(private val db: FitnessLogDatabase) : ProgramModule {
     override val programRepository: ProgramRepository by lazy {
         ProgramRepositoryImpl(db.programDao())
     }
