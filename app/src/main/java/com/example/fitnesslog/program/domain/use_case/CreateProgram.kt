@@ -8,9 +8,6 @@ class CreateProgram(
     private val programRepository: ProgramRepository
 ) {
     suspend operator fun invoke(program: Program): Resource<Long> {
-        if (true) {
-            return programRepository.insertProgram(program)
-        }
-        return Resource.Error("hello")
+        return programRepository.insertProgram(program)
     }
 }

@@ -2,6 +2,7 @@ package com.example.fitnesslog.program.data.repository
 
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.core.utils.safeCall
+import com.example.fitnesslog.core.utils.toErrorMessage
 import com.example.fitnesslog.program.data.dao.ProgramDao
 import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.program.domain.repository.ProgramRepository
@@ -17,7 +18,7 @@ class ProgramRepositoryImpl(private val dao: ProgramDao) : ProgramRepository {
     override fun getAllProgramsOrderedBySelected(): Flow<Resource<List<Program>>> {
         return dao.getAllProgramsOrderedBySelected()
             .map { Resource.Success(it) as Resource<List<Program>> }
-            .catch { e -> emit(Resource.Error("Error")) }
+            .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
     override suspend fun updateProgram(program: Program): Resource<Int> {
