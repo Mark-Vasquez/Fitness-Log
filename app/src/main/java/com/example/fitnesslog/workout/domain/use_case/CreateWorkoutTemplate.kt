@@ -24,7 +24,7 @@ class CreateWorkoutTemplate(
             }
 
             else -> {
-                Resource.Error("Failed to get the last position ${lastPosition.message}")
+                Resource.Error("Failed to get the last position ${lastPosition.errorMessage}")
             }
         }
     }
