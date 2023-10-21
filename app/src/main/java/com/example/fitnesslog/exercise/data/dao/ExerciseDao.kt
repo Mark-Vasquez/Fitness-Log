@@ -8,7 +8,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.fitnesslog.exercise.data.entity.ExerciseTemplate
 import com.example.fitnesslog.exercise.data.entity.WorkoutTemplateExercise
-import com.example.fitnesslog.exercise.domain.model.WorkoutExerciseWithTemplateName
+import com.example.fitnesslog.exercise.domain.model.WorkoutTemplateExerciseWithName
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -26,9 +26,9 @@ interface ExerciseDao {
 
     // TODO: wrap this function with a try/catch
     @Transaction
-    suspend fun canDeleteExerciseTemplate(exerciseTemplate: ExerciseTemplate): Boolean {
+    suspend fun tryDeleteExerciseTemplate(exerciseTemplate: ExerciseTemplate): Boolean {
         val usageCount = exerciseTemplate.id?.let { countWorkoutsUsingExerciseTemplate(it) }
-            ?: throw IllegalArgumentException("ExerciseTemplate ID is null!")
+            ?: throw IllegalArgumentException("ExerciseTemplate ID is null")
         return if (usageCount > 0) {
             false
         } else {
@@ -42,7 +42,7 @@ interface ExerciseDao {
         SELECT COUNT(*)
         FROM workout_template_exercise
         WHERE exercise_template_id = :exerciseTemplateId
-    """
+        """
     )
     suspend fun countWorkoutsUsingExerciseTemplate(exerciseTemplateId: Int): Int
 
@@ -79,7 +79,7 @@ interface ExerciseDao {
     @Query(
         """
         SELECT 
-            workout_template_exercise.id as id,
+            workout_template_exercise.id as workoutTemplateExerciseId,
             exercise_template.name as name,
             workout_template_exercise.workout_template_id as workoutTemplateId,
             workout_template_exercise.exercise_template_id as exerciseTemplateId,
@@ -93,18 +93,17 @@ interface ExerciseDao {
         ORDER BY workout_template_exercise.position
         """
     )
-    fun getExercisesForWorkoutTemplateOrderedByPosition(workoutTemplateId: Int): Flow<List<WorkoutExerciseWithTemplateName>>
+    fun getExercisesForWorkoutTemplateOrderedByPosition(workoutTemplateId: Int): Flow<List<WorkoutTemplateExerciseWithName>>
 
     @Transaction
     suspend fun updateOrRemoveExercisePositionsForWorkoutTemplate(
-        workoutExercises: List<WorkoutExerciseWithTemplateName>,
+        workoutExercises: List<WorkoutTemplateExerciseWithName>,
     ) {
         // Assign invalid positions to the UI ordered list to avoid unique pair constraints
         var invalidPosition: Int = -1
-        workoutExercises.forEach { workoutExercise ->
+        workoutExercises.forEach {
             updateExercisePositionInWorkoutTemplate(
-                workoutExercise.workoutTemplateId,
-                workoutExercise.exerciseTemplateId,
+                workoutTemplateExerciseId = it.workoutTemplateExerciseId,
                 invalidPosition
             )
             invalidPosition--
@@ -113,7 +112,8 @@ interface ExerciseDao {
         // Assign UI ordered positions by index
         workoutExercises.forEachIndexed { index, workoutExercise ->
             updateExercisePositionInWorkoutTemplate(
-                workoutExercise.workoutTemplateId, workoutExercise.exerciseTemplateId, index
+                workoutTemplateExerciseId = workoutExercise.workoutTemplateExerciseId,
+                index
             )
         }
     }
@@ -122,13 +122,11 @@ interface ExerciseDao {
         """
         UPDATE workout_template_exercise
         SET position = :newPosition
-        WHERE workout_template_id = :workoutTemplateId 
-        AND exercise_template_id = :exerciseTemplateId
+        WHERE id = :workoutTemplateExerciseId
         """
     )
     suspend fun updateExercisePositionInWorkoutTemplate(
-        workoutTemplateId: Int,
-        exerciseTemplateId: Int,
+        workoutTemplateExerciseId: Int,
         newPosition: Int
     )
 

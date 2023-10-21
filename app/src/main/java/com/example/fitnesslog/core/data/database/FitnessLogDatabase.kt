@@ -6,14 +6,14 @@ import com.example.fitnesslog.exercise.data.dao.ExerciseDao
 import com.example.fitnesslog.exercise.data.dao.SetDao
 import com.example.fitnesslog.exercise.data.entity.ExerciseTemplate
 import com.example.fitnesslog.exercise.data.entity.SetTemplate
-import com.example.fitnesslog.exercise.data.entity.WorkoutSessionExercise
-import com.example.fitnesslog.exercise.data.entity.WorkoutSessionExerciseSet
 import com.example.fitnesslog.exercise.data.entity.WorkoutTemplateExercise
 import com.example.fitnesslog.history.data.dao.HistoryDao
+import com.example.fitnesslog.history.data.entity.WorkoutSession
+import com.example.fitnesslog.history.data.entity.WorkoutSessionExercise
+import com.example.fitnesslog.history.data.entity.WorkoutSessionExerciseSet
 import com.example.fitnesslog.program.data.dao.ProgramDao
 import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.workout.data.dao.WorkoutDao
-import com.example.fitnesslog.workout.data.entity.WorkoutSession
 import com.example.fitnesslog.workout.data.entity.WorkoutTemplate
 
 @Database(

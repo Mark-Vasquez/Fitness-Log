@@ -1,4 +1,4 @@
-package com.example.fitnesslog.exercise.data.entity
+package com.example.fitnesslog.history.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

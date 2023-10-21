@@ -1,7 +1,7 @@
 package com.example.fitnesslog.exercise.domain.model
 
-data class WorkoutExerciseWithTemplateName(
-    val id: Int,
+data class WorkoutTemplateExerciseWithName(
+    val workoutTemplateExerciseId: Int,
     val name: String,
     val workoutTemplateId: Int,
     val exerciseTemplateId: Int,

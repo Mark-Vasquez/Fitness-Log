@@ -5,9 +5,9 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.fitnesslog.exercise.data.entity.WorkoutSessionExercise
-import com.example.fitnesslog.exercise.data.entity.WorkoutSessionExerciseSet
-import com.example.fitnesslog.workout.data.entity.WorkoutSession
+import com.example.fitnesslog.history.data.entity.WorkoutSession
+import com.example.fitnesslog.history.data.entity.WorkoutSessionExercise
+import com.example.fitnesslog.history.data.entity.WorkoutSessionExerciseSet
 import kotlinx.coroutines.flow.Flow
 
 @Dao
