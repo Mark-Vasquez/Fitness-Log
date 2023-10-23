@@ -1,6 +1,7 @@
 package com.example.fitnesslog.core.converter
 
 import androidx.room.TypeConverter
+import com.example.fitnesslog.core.enums.Day
 
 /**
  * Provides conversion methods for storing and retrieving a Set<String> as a single String in the SQLite database.
@@ -12,8 +13,14 @@ import androidx.room.TypeConverter
  */
 class ScheduleConverter {
     @TypeConverter
-    fun fromSet(schedule: Set<String>): String = schedule.joinToString(",")
+    fun fromSet(schedule: Set<Day>): String {
+        return schedule.joinToString(",")
+    }
 
     @TypeConverter
-    fun fromSet(schedule: String): Set<String> = schedule.split(",").toSet()
+    fun toSet(schedule: String): Set<Day> {
+        return schedule.split(",")
+            .map { Day.valueOf(it) }
+            .toSet()
+    }
 }

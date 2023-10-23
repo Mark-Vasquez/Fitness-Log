@@ -10,6 +10,7 @@ import com.example.fitnesslog.exercise.data.entity.ExerciseTemplate
 import com.example.fitnesslog.exercise.data.entity.WorkoutTemplateExercise
 import com.example.fitnesslog.exercise.domain.model.WorkoutTemplateExerciseWithName
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 @Dao
 interface ExerciseDao {
@@ -55,7 +56,7 @@ interface ExerciseDao {
     suspend fun addExercisesToWorkoutTemplate(
         exerciseTemplateIds: List<Int>,
         workoutTemplateId: Int
-    ) {
+    ): LongArray {
         val lastInsertPosition = getPositionForInsert(workoutTemplateId)
         val workoutTemplateExercises =
             exerciseTemplateIds.mapIndexed { index, exerciseTemplateId ->
@@ -67,7 +68,7 @@ interface ExerciseDao {
                     updatedAt = System.currentTimeMillis()
                 )
             }
-        insertExercisesIntoWorkoutTemplate(workoutTemplateExercises)
+        return insertExercisesIntoWorkoutTemplate(workoutTemplateExercises)
     }
 
     @Insert
@@ -96,8 +97,17 @@ interface ExerciseDao {
     fun getExercisesForWorkoutTemplateOrderedByPosition(workoutTemplateId: Int): Flow<List<WorkoutTemplateExerciseWithName>>
 
     @Transaction
-    suspend fun updateOrRemoveExercisePositionsForWorkoutTemplate(
-        workoutExercises: List<WorkoutTemplateExerciseWithName>,
+    suspend fun updateExercisesForWorkoutTemplate(
+        workoutTemplateId: Int,
+        newExerciseList: List<WorkoutTemplateExerciseWithName>
+    ) {
+        val oldExerciseList =
+            getExercisesForWorkoutTemplateOrderedByPosition(workoutTemplateId).first()
+        val removedExercises = oldExerciseList - newExerciseList
+    }
+
+    suspend fun updateExercisePositionsForWorkoutTemplate(
+        workoutExercises: List<WorkoutTemplateExerciseWithName>
     ) {
         // Assign invalid positions to the UI ordered list to avoid unique pair constraints
         var invalidPosition: Int = -1

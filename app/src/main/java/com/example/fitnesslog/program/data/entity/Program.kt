@@ -11,7 +11,10 @@ import com.example.fitnesslog.core.converter.ScheduleConverter
 data class Program(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "scheduled_days") val scheduledDays: Set<String>,
+    @ColumnInfo(
+        name = "scheduled_days",
+        defaultValue = "Mo,Tu,We,Th,Fr"
+    ) val scheduledDays: Set<String> = setOf("Mo", "Tu", "We", "Th", "Fr"),
     @ColumnInfo(name = "is_selected", defaultValue = "0") val isSelected: Boolean = false,
     @ColumnInfo(
         name = "rest_duration_seconds",

@@ -2,6 +2,9 @@ package com.example.fitnesslog.core.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.fitnesslog.core.converter.ExerciseEnumConverter
+import com.example.fitnesslog.core.converter.ScheduleConverter
 import com.example.fitnesslog.exercise.data.dao.ExerciseDao
 import com.example.fitnesslog.exercise.data.dao.SetDao
 import com.example.fitnesslog.exercise.data.entity.ExerciseTemplate
@@ -29,6 +32,7 @@ import com.example.fitnesslog.workout.data.entity.WorkoutTemplate
     ],
     version = 1
 )
+@TypeConverters(ScheduleConverter::class, ExerciseEnumConverter::class)
 abstract class FitnessLogDatabase : RoomDatabase() {
 
     companion object {
