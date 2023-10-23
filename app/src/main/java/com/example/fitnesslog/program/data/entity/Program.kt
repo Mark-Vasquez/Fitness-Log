@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.fitnesslog.core.converter.ScheduleConverter
+import com.example.fitnesslog.core.enums.Day
 
 @Entity(tableName = "program")
 @TypeConverters(ScheduleConverter::class)
@@ -13,8 +14,14 @@ data class Program(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(
         name = "scheduled_days",
-        defaultValue = "Mo,Tu,We,Th,Fr"
-    ) val scheduledDays: Set<String> = setOf("Mo", "Tu", "We", "Th", "Fr"),
+        defaultValue = "MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY"
+    ) val scheduledDays: Set<Day> = setOf(
+        Day.MONDAY,
+        Day.TUESDAY,
+        Day.WEDNESDAY,
+        Day.THURSDAY,
+        Day.FRIDAY
+    ),
     @ColumnInfo(name = "is_selected", defaultValue = "0") val isSelected: Boolean = false,
     @ColumnInfo(
         name = "rest_duration_seconds",
