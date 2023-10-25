@@ -30,7 +30,7 @@ import com.example.fitnesslog.workout.data.entity.WorkoutTemplate
         WorkoutSessionExercise::class,
         WorkoutSessionExerciseSet::class
     ],
-    version = 1
+    version = 1, exportSchema = true
 )
 @TypeConverters(ScheduleConverter::class, ExerciseEnumConverter::class)
 abstract class FitnessLogDatabase : RoomDatabase() {

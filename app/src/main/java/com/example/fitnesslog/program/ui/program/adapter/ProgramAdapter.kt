@@ -18,7 +18,7 @@ class ProgramAdapter(private val programs: List<Program>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.program_item, parent, false)
+            .inflate(R.layout.item_program, parent, false)
         return ViewHolder(view)
     }
 

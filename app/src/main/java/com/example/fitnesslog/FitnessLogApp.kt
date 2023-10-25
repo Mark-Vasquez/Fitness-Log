@@ -20,5 +20,6 @@ class FitnessLogApp : Application() {
         appModule = AppModuleImpl(this)
         programModule = ProgramModuleImpl(appModule.db)
         workoutModule = WorkoutModuleImpl(appModule.db)
+
     }
 }

@@ -1,3 +1,13 @@
+class RoomSchemaProvider(
+    @get: InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    val schemaDir: File
+) : CommandLineArgumentProvider {
+    override fun asArguments(): Iterable<String> {
+        return listOf("room.schemaLocation=${schemaDir.path}")
+    }
+}
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -34,6 +44,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    packaging {
+        resources {
+            excludes.add("schemas/**")
+        }
+    }
+}
+
+ksp {
+    arg(RoomSchemaProvider(File(projectDir, "schemas")))
 }
 
 dependencies {

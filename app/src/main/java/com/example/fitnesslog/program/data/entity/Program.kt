@@ -27,7 +27,6 @@ data class Program(
         name = "rest_duration_seconds",
         defaultValue = "90"
     ) val restDurationSeconds: Int = 90,
-    // TODO: set default to System.currentTimeMillis() in actual insertion/update, not instantiation
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long
 )
