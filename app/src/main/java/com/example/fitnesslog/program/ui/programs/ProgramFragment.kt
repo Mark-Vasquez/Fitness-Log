@@ -1,11 +1,14 @@
-package com.example.fitnesslog.program.ui.program.fragment
+package com.example.fitnesslog.program.ui.programs
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.R
+import com.example.fitnesslog.core.ui.viewModelFactoryHelper
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,6 +31,10 @@ class ProgramFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        val programsViewModelFactory =
+            viewModelFactoryHelper { ProgramsViewModel(programModule.programUseCases) }
+        val viewModel =
+            ViewModelProvider(this, programsViewModelFactory)[ProgramsViewModel::class.java]
     }
 
     override fun onCreateView(

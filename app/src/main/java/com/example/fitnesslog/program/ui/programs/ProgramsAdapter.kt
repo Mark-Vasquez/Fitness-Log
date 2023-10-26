@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui.program.adapter
+package com.example.fitnesslog.program.ui.programs
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.R
 import com.example.fitnesslog.program.data.entity.Program
 
-class ProgramAdapter(private val programs: List<Program>) :
-    RecyclerView.Adapter<ProgramAdapter.ViewHolder>() {
+class ProgramsAdapter(private val programs: List<Program>) :
+    RecyclerView.Adapter<ProgramsAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvProgramName: TextView = view.findViewById(R.id.tvProgramName)
