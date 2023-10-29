@@ -5,10 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.ui.viewModelFactoryHelper
+import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,19 +28,15 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ProgramFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private lateinit var viewModel: ProgramsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
         val programsViewModelFactory =
             viewModelFactoryHelper { ProgramsViewModel(programModule.programUseCases) }
-        val viewModel =
+        viewModel =
             ViewModelProvider(this, programsViewModelFactory)[ProgramsViewModel::class.java]
     }
 
@@ -47,14 +50,18 @@ class ProgramFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        val programs = ProgramDataSource().loadPrograms()
-//        val programAdapter = ProgramAdapter(programs)
-//
-//        val rvPrograms: RecyclerView = view.findViewById(R.id.rvPrograms)
-//        rvPrograms.adapter = programAdapter
-//        rvPrograms.layoutManager = GridLayoutManager(context, 2)
-//        rvPrograms.addItemDecoration(GridSpacingItemDecoration(20))
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.stateFlow.collect {
+                    val programs = it.programs
+                    val programAdapter = ProgramsAdapter(programs)
+                    val rvPrograms: RecyclerView = view.findViewById(R.id.rvPrograms)
+                    rvPrograms.adapter = programAdapter
+                    rvPrograms.layoutManager = GridLayoutManager(context, 2)
+                    rvPrograms.addItemDecoration(GridSpacingItemDecoration(20))
+                }
+            }
+        }
 
 
     }

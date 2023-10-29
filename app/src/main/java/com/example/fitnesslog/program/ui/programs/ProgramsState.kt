@@ -4,5 +4,6 @@ import com.example.fitnesslog.program.data.entity.Program
 
 data class ProgramsState(
     val programs: List<Program> = emptyList(),
-    val selectedProgram: Program? = null
+    val selectedProgram: Program? = null,
+    val error: String? = null
 )
