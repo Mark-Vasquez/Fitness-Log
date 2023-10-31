@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.R
-import com.example.fitnesslog.program.data.entity.Program
+import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 
-class ProgramsAdapter(private val programs: List<Program>) :
+class ProgramsAdapter(private val programs: List<ProgramWithWorkoutCount>) :
     RecyclerView.Adapter<ProgramsAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -31,7 +31,8 @@ class ProgramsAdapter(private val programs: List<Program>) :
         val program = programs[position]
         holder.apply {
             tvProgramName.text = program.name
-            tvNumberOfWorkouts.text = "1 workout"
+            tvNumberOfWorkouts.text =
+                "${program.workoutCount.toString()} ${if (program.workoutCount == 1) "workout" else "workouts"}"
         }
     }
 }

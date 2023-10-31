@@ -80,7 +80,7 @@ interface ExerciseDao {
     @Query(
         """
         SELECT 
-            workout_template_exercise.id as workoutTemplateExerciseId,
+            workout_template_exercise.id as id,
             exercise_template.name as name,
             workout_template_exercise.workout_template_id as workoutTemplateId,
             workout_template_exercise.exercise_template_id as exerciseTemplateId,
@@ -113,7 +113,7 @@ interface ExerciseDao {
         var invalidPosition: Int = -1
         workoutExercises.forEach {
             updateExercisePositionInWorkoutTemplate(
-                workoutTemplateExerciseId = it.workoutTemplateExerciseId,
+                workoutTemplateExerciseId = it.id,
                 invalidPosition
             )
             invalidPosition--
@@ -122,7 +122,7 @@ interface ExerciseDao {
         // Assign UI ordered positions by index
         workoutExercises.forEachIndexed { index, workoutExercise ->
             updateExercisePositionInWorkoutTemplate(
-                workoutTemplateExerciseId = workoutExercise.workoutTemplateExerciseId,
+                workoutTemplateExerciseId = workoutExercise.id,
                 index
             )
         }

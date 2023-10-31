@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
-import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.program.data.entity.Program
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -28,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
         val testProgram = Program(
             name = "Program1_Test",
-            scheduledDays = setOf(Day.MONDAY),
             isSelected = true,
             restDurationSeconds = 90,
             createdAt = System.currentTimeMillis(),

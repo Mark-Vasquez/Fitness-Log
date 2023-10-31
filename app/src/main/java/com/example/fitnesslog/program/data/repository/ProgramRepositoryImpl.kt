@@ -5,6 +5,7 @@ import com.example.fitnesslog.core.utils.safeCall
 import com.example.fitnesslog.core.utils.toErrorMessage
 import com.example.fitnesslog.program.data.dao.ProgramDao
 import com.example.fitnesslog.program.data.entity.Program
+import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import com.example.fitnesslog.program.domain.repository.ProgramRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -15,9 +16,9 @@ class ProgramRepositoryImpl(private val dao: ProgramDao) : ProgramRepository {
         return safeCall { dao.insertProgram((program)) }
     }
 
-    override fun getAllProgramsOrderedBySelected(): Flow<Resource<List<Program>>> {
+    override fun getAllProgramsOrderedBySelected(): Flow<Resource<List<ProgramWithWorkoutCount>>> {
         return dao.getAllProgramsOrderedBySelected()
-            .map { Resource.Success(it) as Resource<List<Program>> }
+            .map { Resource.Success(it) as Resource<List<ProgramWithWorkoutCount>> }
             .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
