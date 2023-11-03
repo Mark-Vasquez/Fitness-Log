@@ -29,10 +29,14 @@ class ProgramsAdapter(private val programs: List<ProgramWithWorkoutCount>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val program = programs[position]
+        val workoutString = if (program.workoutCount == 1) "workout" else "workouts"
         holder.apply {
             tvProgramName.text = program.name
-            tvNumberOfWorkouts.text =
-                "${program.workoutCount.toString()} ${if (program.workoutCount == 1) "workout" else "workouts"}"
+            tvNumberOfWorkouts.text = holder.itemView.context.getString(
+                R.string.workout_count,
+                program.workoutCount,
+                workoutString
+            )
         }
     }
 }
