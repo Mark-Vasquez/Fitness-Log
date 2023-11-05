@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_workout"></fragment>
     <fragment
         android:id="@+id/programFragment"
-        android:name="com.example.fitnesslog.program.ui.programs.ProgramFragment"
+        android:name="com.example.fitnesslog.program.ui.programs.ProgramsFragment"
         android:label="@string/label_program"
         tools:layout="@layout/fragment_program"></fragment>
 </navigation>

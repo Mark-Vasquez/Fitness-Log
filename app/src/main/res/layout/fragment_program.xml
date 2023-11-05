@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".program.ui.programs.ProgramFragment">
+    tools:context=".program.ui.programs.ProgramsFragment">
 
     <TextView
-        android:id="@+id/tvProgramFragmentTitle"
+        android:id="@+id/tvProgramsFragmentTitle"
         style="@style/FragmentTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,17 +19,18 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPrograms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramFragmentTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvProgramsFragmentTitle"
+        app:layout_constraintBottom_toTopOf="@id/fabCreateProgram" />
 
     <!--TODO: Add "Edit ${programName}" button-->
     <!--TODO: Add "Create Program" button-->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabCreateProgram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_program_button"

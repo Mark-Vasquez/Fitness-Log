@@ -24,10 +24,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [ProgramFragment.newInstance] factory method to
+ * Use the [ProgramsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ProgramFragment : Fragment() {
+class ProgramsFragment : Fragment() {
 
     private lateinit var viewModel: ProgramsViewModel
 
@@ -52,8 +52,8 @@ class ProgramFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.stateFlow.collect {
-                    val programs = it.programs
+                viewModel.stateFlow.collect { programState ->
+                    val programs = programState.programs
                     val programAdapter = ProgramsAdapter(programs)
                     val rvPrograms: RecyclerView = view.findViewById(R.id.rvPrograms)
                     rvPrograms.adapter = programAdapter
@@ -78,7 +78,7 @@ class ProgramFragment : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ProgramFragment().apply {
+            ProgramsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
