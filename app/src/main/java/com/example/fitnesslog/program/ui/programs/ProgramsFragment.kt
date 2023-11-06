@@ -58,7 +58,7 @@ class ProgramsFragment : Fragment() {
                     val rvPrograms: RecyclerView = view.findViewById(R.id.rvPrograms)
                     rvPrograms.adapter = programAdapter
                     rvPrograms.layoutManager = GridLayoutManager(context, 2)
-                    rvPrograms.addItemDecoration(GridSpacingItemDecoration(15))
+                    rvPrograms.addItemDecoration(GridSpacingItemDecoration(25))
                 }
             }
         }
