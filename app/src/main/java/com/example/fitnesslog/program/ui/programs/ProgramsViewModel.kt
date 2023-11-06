@@ -43,7 +43,7 @@ class ProgramsViewModel(
         }
     }
 
-    fun getPrograms() {
+    private fun getPrograms() {
         viewModelScope.launch {
             programUseCases.getPrograms().collect() { resource ->
                 when (resource) {

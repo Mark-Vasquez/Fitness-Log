@@ -26,15 +26,32 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setupWithNavController(navController)
 
         val testProgram = Program(
-            name = "Program1_Test",
+            name = "1Program",
             isSelected = true,
             restDurationSeconds = 90,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
+        val testProgram2 = Program(
+            name = "2Program",
+            isSelected = false,
+            restDurationSeconds = 90,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
+        )
         CoroutineScope(Dispatchers.IO).launch {
+            val result2 = programModule.programUseCases.createProgram(testProgram2)
             val result = programModule.programUseCases.createProgram(testProgram)
             when (result) {
+                is Resource.Success -> {
+                    Log.d("MainActivity", "Inserted ${result.data}")
+                }
+
+                is Resource.Error -> {
+                    Log.e("MainActivity", "Error ${result.errorMessage}")
+                }
+            }
+            when (result2) {
                 is Resource.Success -> {
                     Log.d("MainActivity", "Inserted ${result.data}")
                 }

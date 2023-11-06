@@ -27,7 +27,7 @@ interface ProgramDao {
         FROM program 
         LEFT JOIN workout_template
         ON program.id = workout_template.program_id
-        GROUP BY workout_template.program_id
+        GROUP BY program.id
         ORDER BY is_selected DESC
         """
     )
