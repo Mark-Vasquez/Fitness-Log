@@ -1,5 +1,6 @@
 package com.example.fitnesslog.program.ui.programs
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.core.utils.Resource
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 class ProgramsViewModel(
     private val programUseCases: ProgramUseCases
 ) : ViewModel() {
+
 
     init {
         getPrograms()
@@ -27,10 +29,11 @@ class ProgramsViewModel(
             }
 
             is ProgramsEvent.Select -> {
+                val program = event.program
                 viewModelScope.launch {
-                    val programId = event.program.id
-                    programId?.let { programUseCases.selectProgram(it) }
+                    programUseCases.selectProgram(program.id)
                 }
+                Log.d("ProgramsViewModel", "Selected ${program.id}")
             }
 
             is ProgramsEvent.Edit -> {

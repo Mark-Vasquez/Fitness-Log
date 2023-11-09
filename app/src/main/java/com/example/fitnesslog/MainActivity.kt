@@ -1,12 +1,10 @@
 package com.example.fitnesslog
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
-import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.program.data.entity.Program
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
@@ -27,39 +25,21 @@ class MainActivity : AppCompatActivity() {
 
         val testProgram = Program(
             name = "1Program",
-            isSelected = true,
             restDurationSeconds = 90,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
         val testProgram2 = Program(
             name = "2Program",
-            isSelected = false,
             restDurationSeconds = 90,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
+
         CoroutineScope(Dispatchers.IO).launch {
-            val result2 = programModule.programUseCases.createProgram(testProgram2)
-            val result = programModule.programUseCases.createProgram(testProgram)
-            when (result) {
-                is Resource.Success -> {
-                    Log.d("MainActivity", "Inserted ${result.data}")
-                }
+            programModule.programUseCases.createProgram(testProgram)
+            programModule.programUseCases.createProgram(testProgram2)
 
-                is Resource.Error -> {
-                    Log.e("MainActivity", "Error ${result.errorMessage}")
-                }
-            }
-            when (result2) {
-                is Resource.Success -> {
-                    Log.d("MainActivity", "Inserted ${result.data}")
-                }
-
-                is Resource.Error -> {
-                    Log.e("MainActivity", "Error ${result.errorMessage}")
-                }
-            }
         }
     }
 }

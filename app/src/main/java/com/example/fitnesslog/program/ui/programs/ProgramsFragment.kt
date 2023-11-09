@@ -1,6 +1,7 @@
 package com.example.fitnesslog.program.ui.programs
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.ui.viewModelFactoryHelper
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
+import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
@@ -30,6 +32,7 @@ private const val ARG_PARAM2 = "param2"
 class ProgramsFragment : Fragment() {
 
     private lateinit var viewModel: ProgramsViewModel
+    private lateinit var programsAdapter: ProgramsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,27 +47,39 @@ class ProgramsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_program, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView(view)
+
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.stateFlow.collect { programState ->
-                    val programs = programState.programs
-                    val programAdapter = ProgramsAdapter(programs)
-                    val rvPrograms: RecyclerView = view.findViewById(R.id.rvPrograms)
-                    rvPrograms.adapter = programAdapter
-                    rvPrograms.layoutManager = GridLayoutManager(context, 2)
-                    rvPrograms.addItemDecoration(GridSpacingItemDecoration(25))
+                    Log.d("ProgramFragment", "$programsAdapter")
+                    programsAdapter.submitList(programState.programs)
+
                 }
             }
         }
-
-
     }
+
+    private fun setupRecyclerView(view: View) {
+        val rvPrograms: RecyclerView = view.findViewById(R.id.rvPrograms)
+        rvPrograms.layoutManager = GridLayoutManager(context, 2)
+        rvPrograms.addItemDecoration(GridSpacingItemDecoration(25))
+
+        programsAdapter =
+            ProgramsAdapter(object : ProgramsAdapter.ProgramClickListener {
+                override fun onProgramClicked(program: ProgramWithWorkoutCount) {
+                    viewModel.onEvent(ProgramsEvent.Select(program))
+                }
+            })
+        rvPrograms.adapter = programsAdapter
+    }
+
 
     companion object {
         /**
