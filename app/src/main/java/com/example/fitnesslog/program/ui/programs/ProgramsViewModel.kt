@@ -1,6 +1,5 @@
 package com.example.fitnesslog.program.ui.programs
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.core.utils.Resource
@@ -33,7 +32,6 @@ class ProgramsViewModel(
                 viewModelScope.launch {
                     programUseCases.selectProgram(program.id)
                 }
-                Log.d("ProgramsViewModel", "Selected ${program.id}")
             }
 
             is ProgramsEvent.Edit -> {

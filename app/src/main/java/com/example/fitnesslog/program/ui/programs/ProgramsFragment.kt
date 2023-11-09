@@ -1,7 +1,6 @@
 package com.example.fitnesslog.program.ui.programs
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +57,6 @@ class ProgramsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.stateFlow.collect { programState ->
-                    Log.d("ProgramFragment", "$programsAdapter")
                     programsAdapter.submitList(programState.programs)
 
                 }
