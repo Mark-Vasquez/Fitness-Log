@@ -24,13 +24,13 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setupWithNavController(navController)
 
         val testProgram = Program(
-            name = "1Program",
+            name = "Push Pull Legs",
             restDurationSeconds = 90,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
         val testProgram2 = Program(
-            name = "2Program",
+            name = "5x5 Stronglifts",
             restDurationSeconds = 90,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()

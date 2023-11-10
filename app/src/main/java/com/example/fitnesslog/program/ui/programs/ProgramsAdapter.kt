@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +59,7 @@ class ProgramsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val program = getItem(position)
+        val context = holder.itemView.context
         val workoutString = if (program.workoutCount == 1) "workout" else "workouts"
         holder.apply {
             tvProgramName.text = program.name
@@ -66,6 +68,12 @@ class ProgramsAdapter(
                 program.workoutCount,
                 workoutString
             )
+
+            if (position == 0 && program.isSelected) {
+                val selectedBackground =
+                    ContextCompat.getDrawable(context, R.drawable.bg_program_selected)
+                itemView.background = selectedBackground
+            }
         }
     }
 }
