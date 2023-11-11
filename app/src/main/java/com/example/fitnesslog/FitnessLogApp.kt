@@ -13,6 +13,7 @@ class FitnessLogApp : Application() {
         lateinit var appModule: AppModule
         lateinit var programModule: ProgramModule
         lateinit var workoutModule: WorkoutModule
+        lateinit var sharedModule: SharedModule
     }
 
     override fun onCreate() {
@@ -20,6 +21,7 @@ class FitnessLogApp : Application() {
         appModule = AppModuleImpl(this)
         programModule = ProgramModuleImpl(appModule.db)
         workoutModule = WorkoutModuleImpl(appModule.db)
+        sharedModule = SharedModuleImpl()
 
     }
 }

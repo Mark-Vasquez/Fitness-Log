@@ -12,7 +12,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
+import com.example.fitnesslog.FitnessLogApp.Companion.sharedModule
 import com.example.fitnesslog.R
+import com.example.fitnesslog.SharedEvent
+import com.example.fitnesslog.SharedViewModel
 import com.example.fitnesslog.core.ui.viewModelFactoryHelper
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
@@ -30,15 +33,25 @@ private const val ARG_PARAM2 = "param2"
  */
 class ProgramsFragment : Fragment() {
 
-    private lateinit var viewModel: ProgramsViewModel
+    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var programsViewModel: ProgramsViewModel
     private lateinit var programsAdapter: ProgramsAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val sharedViewModelFactory by lazy {
+            viewModelFactoryHelper { SharedViewModel(sharedModule.sharedUseCases) }
+        }
+        sharedViewModel =
+            ViewModelProvider(
+                requireActivity(),
+                sharedViewModelFactory
+            )[SharedViewModel::class.java]
         val programsViewModelFactory =
             viewModelFactoryHelper { ProgramsViewModel(programModule.programUseCases) }
-        viewModel =
+        programsViewModel =
             ViewModelProvider(this, programsViewModelFactory)[ProgramsViewModel::class.java]
     }
 
@@ -56,7 +69,7 @@ class ProgramsFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.stateFlow.collect { programState ->
+                programsViewModel.stateFlow.collect { programState ->
                     programsAdapter.submitList(programState.programs)
 
                 }
@@ -72,7 +85,7 @@ class ProgramsFragment : Fragment() {
         programsAdapter =
             ProgramsAdapter(object : ProgramsAdapter.ProgramClickListener {
                 override fun onProgramClicked(program: ProgramWithWorkoutCount) {
-                    viewModel.onEvent(ProgramsEvent.Select(program))
+                    sharedViewModel.onEvent(SharedEvent.SelectProgram(program))
                 }
             })
         rvPrograms.adapter = programsAdapter

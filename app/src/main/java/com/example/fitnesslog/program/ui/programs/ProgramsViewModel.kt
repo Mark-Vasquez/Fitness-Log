@@ -28,10 +28,7 @@ class ProgramsViewModel(
             }
 
             is ProgramsEvent.Select -> {
-                val program = event.program
-                viewModelScope.launch {
-                    programUseCases.selectProgram(program.id)
-                }
+
             }
 
             is ProgramsEvent.Edit -> {

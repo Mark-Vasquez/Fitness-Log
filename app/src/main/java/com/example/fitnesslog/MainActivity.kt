@@ -23,22 +23,36 @@ class MainActivity : AppCompatActivity() {
 
         bottomNavigation.setupWithNavController(navController)
 
-        val testProgram = Program(
-            name = "Push Pull Legs",
+        val testProgram1 = Program(
+            name = "ONE",
             restDurationSeconds = 90,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
         val testProgram2 = Program(
-            name = "5x5 Stronglifts",
+            name = "TWO",
+            restDurationSeconds = 90,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
+        )
+        val testProgram3 = Program(
+            name = "THREE",
+            restDurationSeconds = 90,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
+        )
+        val testProgram4 = Program(
+            name = "FOUR",
             restDurationSeconds = 90,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
 
         CoroutineScope(Dispatchers.IO).launch {
-            programModule.programUseCases.createProgram(testProgram)
+            programModule.programUseCases.createProgram(testProgram1)
             programModule.programUseCases.createProgram(testProgram2)
+            programModule.programUseCases.createProgram(testProgram3)
+            programModule.programUseCases.createProgram(testProgram4)
 
         }
     }

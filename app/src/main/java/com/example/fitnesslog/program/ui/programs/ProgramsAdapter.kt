@@ -73,6 +73,10 @@ class ProgramsAdapter(
                 val selectedBackground =
                     ContextCompat.getDrawable(context, R.drawable.bg_program_selected)
                 itemView.background = selectedBackground
+            } else {
+                val defaultBackground =
+                    ContextCompat.getDrawable(context, R.drawable.bg_program_unselected)
+                itemView.background = defaultBackground
             }
         }
     }

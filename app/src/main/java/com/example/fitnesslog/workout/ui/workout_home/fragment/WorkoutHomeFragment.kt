@@ -1,11 +1,20 @@
 package com.example.fitnesslog.workout.ui.workout_home.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.fitnesslog.FitnessLogApp
 import com.example.fitnesslog.R
+import com.example.fitnesslog.SharedViewModel
+import com.example.fitnesslog.core.ui.viewModelFactoryHelper
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,16 +27,18 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class WorkoutHomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        val sharedViewModelFactory by lazy {
+            viewModelFactoryHelper { SharedViewModel(FitnessLogApp.sharedModule.sharedUseCases) }
         }
+        sharedViewModel =
+            ViewModelProvider(
+                requireActivity(),
+                sharedViewModelFactory
+            )[SharedViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -36,6 +47,17 @@ class WorkoutHomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_workout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                sharedViewModel.stateFlow.collect { sharedState ->
+                    Log.d("WorkoutFragment", "${sharedState.selectedProgram}")
+
+                }
+            }
+        }
     }
 
     companion object {
