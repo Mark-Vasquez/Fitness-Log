@@ -12,8 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.fitnesslog.FitnessLogApp
 import com.example.fitnesslog.R
-import com.example.fitnesslog.SharedViewModel
 import com.example.fitnesslog.core.ui.viewModelFactoryHelper
+import com.example.fitnesslog.shared.ui.SharedViewModel
 import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match

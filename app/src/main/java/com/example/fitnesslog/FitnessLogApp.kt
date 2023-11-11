@@ -5,6 +5,8 @@ import com.example.fitnesslog.core.di.AppModule
 import com.example.fitnesslog.core.di.AppModuleImpl
 import com.example.fitnesslog.program.di.ProgramModule
 import com.example.fitnesslog.program.di.ProgramModuleImpl
+import com.example.fitnesslog.shared.di.SharedModule
+import com.example.fitnesslog.shared.di.SharedModuleImpl
 import com.example.fitnesslog.workout.di.WorkoutModule
 import com.example.fitnesslog.workout.di.WorkoutModuleImpl
 

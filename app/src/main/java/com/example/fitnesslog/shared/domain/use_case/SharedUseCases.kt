@@ -1,4 +1,4 @@
-package com.example.fitnesslog
+package com.example.fitnesslog.shared.domain.use_case
 
 import com.example.fitnesslog.program.domain.use_case.SelectProgram
 

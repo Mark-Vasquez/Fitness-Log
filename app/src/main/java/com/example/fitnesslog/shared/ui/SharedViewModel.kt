@@ -1,9 +1,10 @@
-package com.example.fitnesslog
+package com.example.fitnesslog.shared.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
+import com.example.fitnesslog.shared.domain.use_case.SharedUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

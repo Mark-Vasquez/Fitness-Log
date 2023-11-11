@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.FitnessLogApp.Companion.sharedModule
 import com.example.fitnesslog.R
-import com.example.fitnesslog.SharedEvent
-import com.example.fitnesslog.SharedViewModel
 import com.example.fitnesslog.core.ui.viewModelFactoryHelper
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
+import com.example.fitnesslog.shared.ui.SharedEvent
+import com.example.fitnesslog.shared.ui.SharedViewModel
 import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,6 +36,7 @@ class ProgramsFragment : Fragment() {
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var programsViewModel: ProgramsViewModel
     private lateinit var programsAdapter: ProgramsAdapter
+    private lateinit var rvPrograms: RecyclerView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +71,9 @@ class ProgramsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programsViewModel.stateFlow.collect { programState ->
-                    programsAdapter.submitList(programState.programs)
+                    programsAdapter.submitList(programState.programs) {
+                        rvPrograms.scrollToPosition(0)
+                    }
 
                 }
             }
@@ -78,7 +81,7 @@ class ProgramsFragment : Fragment() {
     }
 
     private fun setupRecyclerView(view: View) {
-        val rvPrograms: RecyclerView = view.findViewById(R.id.rvPrograms)
+        rvPrograms = view.findViewById(R.id.rvPrograms)
         rvPrograms.layoutManager = GridLayoutManager(context, 2)
         rvPrograms.addItemDecoration(GridSpacingItemDecoration(25))
 
