@@ -1,5 +1,7 @@
 package com.example.fitnesslog.program.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.example.fitnesslog.core.data.database.FitnessLogDatabase
 import com.example.fitnesslog.program.data.repository.ProgramRepositoryImpl
 import com.example.fitnesslog.program.domain.repository.ProgramRepository
@@ -15,9 +17,12 @@ interface ProgramModule {
     val programUseCases: ProgramUseCases
 }
 
-class ProgramModuleImpl(private val db: FitnessLogDatabase) : ProgramModule {
+class ProgramModuleImpl(
+    private val db: FitnessLogDatabase,
+    private val dataStore: DataStore<Preferences>
+) : ProgramModule {
     override val programRepository: ProgramRepository by lazy {
-        ProgramRepositoryImpl(db.programDao())
+        ProgramRepositoryImpl(db.programDao(), dataStore)
     }
 
     override val programUseCases: ProgramUseCases by lazy {

@@ -42,16 +42,20 @@ class ProgramsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sharedViewModelFactory by lazy {
+        val sharedViewModelFactory =
             viewModelFactoryHelper { SharedViewModel(sharedModule.sharedUseCases) }
-        }
         sharedViewModel =
             ViewModelProvider(
                 requireActivity(),
                 sharedViewModelFactory
             )[SharedViewModel::class.java]
+
         val programsViewModelFactory =
-            viewModelFactoryHelper { ProgramsViewModel(programModule.programUseCases) }
+            viewModelFactoryHelper {
+                ProgramsViewModel(
+                    programModule.programUseCases
+                )
+            }
         programsViewModel =
             ViewModelProvider(this, programsViewModelFactory)[ProgramsViewModel::class.java]
     }

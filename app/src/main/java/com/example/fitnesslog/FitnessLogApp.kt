@@ -21,7 +21,7 @@ class FitnessLogApp : Application() {
     override fun onCreate() {
         super.onCreate()
         appModule = AppModuleImpl(this)
-        programModule = ProgramModuleImpl(appModule.db)
+        programModule = ProgramModuleImpl(appModule.db, appModule.dataStore)
         workoutModule = WorkoutModuleImpl(appModule.db)
         sharedModule = SharedModuleImpl()
 

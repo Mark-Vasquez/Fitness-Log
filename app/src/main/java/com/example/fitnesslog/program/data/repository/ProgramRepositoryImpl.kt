@@ -1,5 +1,7 @@
 package com.example.fitnesslog.program.data.repository
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.core.utils.safeCall
 import com.example.fitnesslog.core.utils.toErrorMessage
@@ -11,7 +13,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
-class ProgramRepositoryImpl(private val dao: ProgramDao) : ProgramRepository {
+class ProgramRepositoryImpl(
+    private val dao: ProgramDao,
+    private val dataStore: DataStore<Preferences>
+) : ProgramRepository {
     override suspend fun insertProgram(program: Program): Resource<Long> {
         return safeCall { dao.insertProgram((program)) }
     }
