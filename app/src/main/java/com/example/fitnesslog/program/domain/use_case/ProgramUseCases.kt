@@ -5,5 +5,6 @@ data class ProgramUseCases(
     val getPrograms: GetPrograms,
     val editProgram: EditProgram,
     val deleteProgram: DeleteProgram,
-    val selectProgram: SelectProgram
+    val selectProgram: SelectProgram,
+    val seedProgram: SeedProgram
 )

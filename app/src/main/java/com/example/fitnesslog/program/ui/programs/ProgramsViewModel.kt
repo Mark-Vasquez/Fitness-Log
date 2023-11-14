@@ -15,6 +15,7 @@ class ProgramsViewModel(
 
 
     init {
+        seedProgram()
         getPrograms()
     }
 
@@ -41,6 +42,17 @@ class ProgramsViewModel(
         }
     }
 
+    private fun seedProgram() {
+        viewModelScope.launch {
+            val resource = programUseCases.seedProgram()
+            if (resource is Resource.Error) {
+                _stateFlow.value = stateFlow.value.copy(
+                    error = resource.errorMessage
+                )
+            }
+        }
+    }
+
     private fun getPrograms() {
         viewModelScope.launch {
             programUseCases.getPrograms().collect() { resource ->
@@ -59,6 +71,10 @@ class ProgramsViewModel(
                 }
             }
         }
+    }
+
+    private fun createProgram() {
+        
     }
 }
 

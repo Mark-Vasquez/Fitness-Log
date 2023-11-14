@@ -18,7 +18,7 @@ interface AppModule {
     val dataStore: DataStore<Preferences>
 }
 
-private const val USER_SETTINGS_NAME = "user_settings_name"
+private const val USER_SETTINGS = "user_settings"
 
 class AppModuleImpl(
     private val appContext: Context
@@ -36,6 +36,6 @@ class AppModuleImpl(
             produceNewData = { emptyPreferences() }
         ),
         scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-        produceFile = { appContext.preferencesDataStoreFile(USER_SETTINGS_NAME) }
+        produceFile = { appContext.preferencesDataStoreFile(USER_SETTINGS) }
     )
 }

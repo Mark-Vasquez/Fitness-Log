@@ -10,6 +10,7 @@ import com.example.fitnesslog.program.domain.use_case.DeleteProgram
 import com.example.fitnesslog.program.domain.use_case.EditProgram
 import com.example.fitnesslog.program.domain.use_case.GetPrograms
 import com.example.fitnesslog.program.domain.use_case.ProgramUseCases
+import com.example.fitnesslog.program.domain.use_case.SeedProgram
 import com.example.fitnesslog.program.domain.use_case.SelectProgram
 
 interface ProgramModule {
@@ -31,7 +32,8 @@ class ProgramModuleImpl(
             getPrograms = GetPrograms(programRepository),
             editProgram = EditProgram(programRepository),
             deleteProgram = DeleteProgram(programRepository),
-            selectProgram = SelectProgram(programRepository)
+            selectProgram = SelectProgram(programRepository),
+            seedProgram = SeedProgram(programRepository)
         )
     }
 }
