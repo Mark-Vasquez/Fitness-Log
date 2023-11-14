@@ -4,13 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.program.domain.use_case.ProgramUseCases
+import com.example.fitnesslog.shared.ui.SharedEvent
+import com.example.fitnesslog.shared.ui.SharedViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ProgramsViewModel(
-    private val programUseCases: ProgramUseCases
+    private val programUseCases: ProgramUseCases,
+    private val sharedViewModel: SharedViewModel
 ) : ViewModel() {
 
 
@@ -55,11 +59,15 @@ class ProgramsViewModel(
 
     private fun getPrograms() {
         viewModelScope.launch {
-            programUseCases.getPrograms().collect() { resource ->
+            programUseCases.getPrograms().collectLatest { resource ->
                 when (resource) {
                     is Resource.Success -> {
+                        var programs = resource.data
+                        if (programs.isNotEmpty() && !programs.first().isSelected) {
+                            sharedViewModel.onEvent(SharedEvent.SelectProgram(programs.first()))
+                        }
                         _stateFlow.value = stateFlow.value.copy(
-                            programs = resource.data
+                            programs = programs
                         )
                     }
 
@@ -74,7 +82,7 @@ class ProgramsViewModel(
     }
 
     private fun createProgram() {
-        
+
     }
 }
 

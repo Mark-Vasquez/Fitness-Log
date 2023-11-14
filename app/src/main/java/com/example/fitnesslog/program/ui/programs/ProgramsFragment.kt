@@ -53,7 +53,7 @@ class ProgramsFragment : Fragment() {
         val programsViewModelFactory =
             viewModelFactoryHelper {
                 ProgramsViewModel(
-                    programModule.programUseCases
+                    programModule.programUseCases, sharedViewModel
                 )
             }
         programsViewModel =
