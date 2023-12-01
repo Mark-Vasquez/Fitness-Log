@@ -32,5 +32,6 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
 
         val bottomSheetBehavior = bottomSheetDialog.behavior
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
     }
 }

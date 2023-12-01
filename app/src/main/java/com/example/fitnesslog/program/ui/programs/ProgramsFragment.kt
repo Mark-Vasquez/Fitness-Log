@@ -70,9 +70,7 @@ class ProgramsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView(view)
-        getPrograms()
-        val modalBottomSheet = ProgramModalBottomSheet()
-        modalBottomSheet.show(parentFragmentManager, ProgramModalBottomSheet.TAG)
+        observeViewModel()
     }
 
     private fun setupRecyclerView(view: View) {
@@ -89,15 +87,37 @@ class ProgramsFragment : Fragment() {
         rvPrograms.adapter = programsAdapter
     }
 
-    private fun getPrograms() {
+    private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programsViewModel.stateFlow.collect { programState ->
-                    programsAdapter.submitList(programState.programs) {
-                        rvPrograms.scrollToPosition(0)
-                    }
+                    populateRecyclerView(programState)
 
                 }
+            }
+        }
+    }
+
+    private fun populateRecyclerView(programState: ProgramsState) {
+        programsAdapter.submitList(programState.programs) {
+            rvPrograms.scrollToPosition(0)
+        }
+    }
+
+    private fun handleModalEvent(modalEvent: ProgramModalEvent) {
+        when (modalEvent) {
+            is ProgramModalEvent.ShowCreateForm -> {
+                val modalBottomSheet = ProgramModalBottomSheet()
+                modalBottomSheet.show(parentFragmentManager, ProgramModalBottomSheet.TAG)
+            }
+
+            is ProgramModalEvent.EditCreateForm -> {
+                val modalBottomSheet = ProgramModalBottomSheet()
+                modalBottomSheet.show(parentFragmentManager, ProgramModalBottomSheet.TAG)
+            }
+
+            null -> {
+
             }
         }
     }

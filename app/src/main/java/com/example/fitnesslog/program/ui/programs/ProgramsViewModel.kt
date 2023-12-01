@@ -28,8 +28,20 @@ class ProgramsViewModel(
 
     fun onEvent(event: ProgramsEvent) {
         when (event) {
-            is ProgramsEvent.Create -> {
+            is ProgramsEvent.ShowCreateForm -> {
                 // Launch the BottomSheetDialogFragment
+                _stateFlow.value =
+                    stateFlow.value.copy(modalEvent = ProgramModalEvent.ShowCreateForm)
+            }
+
+            is ProgramsEvent.ShowEditForm -> {
+                _stateFlow.value = stateFlow.value.copy(
+                    modalEvent = ProgramModalEvent.EditCreateForm(event.program)
+                )
+            }
+
+            is ProgramsEvent.Create -> {
+
             }
 
             is ProgramsEvent.Select -> {
@@ -64,6 +76,7 @@ class ProgramsViewModel(
                     is Resource.Success -> {
                         var programs = resource.data
                         if (programs.isNotEmpty() && !programs.first().isSelected) {
+                            // Ensure the first item in the list is always selected
                             sharedViewModel.onEvent(SharedEvent.SelectProgram(programs.first()))
                         }
                         _stateFlow.value = stateFlow.value.copy(
