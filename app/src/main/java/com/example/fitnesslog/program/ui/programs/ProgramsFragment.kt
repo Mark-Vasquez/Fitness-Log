@@ -19,6 +19,7 @@ import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import com.example.fitnesslog.shared.ui.SharedEvent
 import com.example.fitnesslog.shared.ui.SharedViewModel
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
@@ -37,6 +38,10 @@ class ProgramsFragment : Fragment() {
     private lateinit var programsViewModel: ProgramsViewModel
     private lateinit var programsAdapter: ProgramsAdapter
     private lateinit var rvPrograms: RecyclerView
+
+    companion object {
+        const val TAG = "ProgramsFragment"
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +76,12 @@ class ProgramsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView(view)
         observeViewModel()
+
+        val fabCreateProgram =
+            view.findViewById<ExtendedFloatingActionButton>(R.id.fabCreateProgram)
+        fabCreateProgram.setOnClickListener {
+            programsViewModel.onEvent(ProgramsEvent.ShowCreateForm)
+        }
     }
 
     private fun setupRecyclerView(view: View) {
@@ -92,7 +103,7 @@ class ProgramsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programsViewModel.stateFlow.collect { programState ->
                     populateRecyclerView(programState)
-
+                    handleModalEvent(programState.modalEvent)
                 }
             }
         }
@@ -104,42 +115,26 @@ class ProgramsFragment : Fragment() {
         }
     }
 
-    private fun handleModalEvent(modalEvent: ProgramModalEvent) {
+    private fun handleModalEvent(modalEvent: ProgramModalEvent?) {
         when (modalEvent) {
             is ProgramModalEvent.ShowCreateForm -> {
                 val modalBottomSheet = ProgramModalBottomSheet()
                 modalBottomSheet.show(parentFragmentManager, ProgramModalBottomSheet.TAG)
+                modalBottomSheet.onDismissListener = {
+                    programsViewModel.resetModalEvent()
+                }
             }
 
-            is ProgramModalEvent.EditCreateForm -> {
+            is ProgramModalEvent.ShowEditForm -> {
                 val modalBottomSheet = ProgramModalBottomSheet()
                 modalBottomSheet.show(parentFragmentManager, ProgramModalBottomSheet.TAG)
+                modalBottomSheet.onDismissListener = {
+                    programsViewModel.resetModalEvent()
+                }
             }
 
-            null -> {
-
-            }
+            null -> {}
         }
     }
 
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProgramFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProgramsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

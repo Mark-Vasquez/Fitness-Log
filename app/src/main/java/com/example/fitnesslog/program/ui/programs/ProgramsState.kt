@@ -10,5 +10,5 @@ data class ProgramsState(
 
 sealed class ProgramModalEvent {
     data object ShowCreateForm : ProgramModalEvent()
-    data class EditCreateForm(val program: ProgramWithWorkoutCount) : ProgramModalEvent()
+    data class ShowEditForm(val program: ProgramWithWorkoutCount) : ProgramModalEvent()
 }

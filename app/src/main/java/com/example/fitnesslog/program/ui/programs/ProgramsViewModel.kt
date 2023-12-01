@@ -17,6 +17,10 @@ class ProgramsViewModel(
     private val sharedViewModel: SharedViewModel
 ) : ViewModel() {
 
+    companion object {
+        const val TAG = "ProgramsViewModel"
+    }
+
 
     init {
         seedProgram()
@@ -36,7 +40,7 @@ class ProgramsViewModel(
 
             is ProgramsEvent.ShowEditForm -> {
                 _stateFlow.value = stateFlow.value.copy(
-                    modalEvent = ProgramModalEvent.EditCreateForm(event.program)
+                    modalEvent = ProgramModalEvent.ShowEditForm(event.program)
                 )
             }
 
@@ -56,6 +60,10 @@ class ProgramsViewModel(
 
             }
         }
+    }
+
+    fun resetModalEvent() {
+        _stateFlow.value = stateFlow.value.copy(modalEvent = null)
     }
 
     private fun seedProgram() {
