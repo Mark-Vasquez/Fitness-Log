@@ -13,13 +13,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.FitnessLogApp.Companion.sharedModule
-import com.example.fitnesslog.R
 import com.example.fitnesslog.core.ui.viewModelFactoryHelper
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
+import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import com.example.fitnesslog.shared.ui.SharedEvent
 import com.example.fitnesslog.shared.ui.SharedViewModel
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
@@ -38,6 +37,8 @@ class ProgramsFragment : Fragment() {
     private lateinit var programsViewModel: ProgramsViewModel
     private lateinit var programsAdapter: ProgramsAdapter
     private lateinit var rvPrograms: RecyclerView
+    private var _binding: FragmentProgramBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         const val TAG = "ProgramsFragment"
@@ -69,23 +70,22 @@ class ProgramsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_program, container, false)
+        _binding = FragmentProgramBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView(view)
+        setupRecyclerView()
         observeViewModel()
 
-        val fabCreateProgram =
-            view.findViewById<ExtendedFloatingActionButton>(R.id.fabCreateProgram)
-        fabCreateProgram.setOnClickListener {
+        binding.fabCreateProgram.setOnClickListener {
             programsViewModel.onEvent(ProgramsEvent.ShowCreateForm)
         }
     }
 
-    private fun setupRecyclerView(view: View) {
-        rvPrograms = view.findViewById(R.id.rvPrograms)
+    private fun setupRecyclerView() {
+        rvPrograms = binding.rvPrograms
         rvPrograms.layoutManager = GridLayoutManager(context, 2)
         rvPrograms.addItemDecoration(GridSpacingItemDecoration(25))
 
