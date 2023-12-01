@@ -27,16 +27,27 @@
         app:layout_constraintTop_toBottomOf="@+id/tvProgramsFragmentTitle"
         app:layout_constraintBottom_toTopOf="@id/fabCreateProgram" />
 
-    <!--TODO: Add "Edit ${programName}" button-->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabEditProgram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?attr/colorSecondaryContainer"
+        android:text="@string/edit_program_button"
+        app:layout_constraintBottom_toBottomOf="@+id/fabCreateProgram"
+        app:layout_constraintEnd_toStartOf="@+id/fabCreateProgram"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fabCreateProgram" />
+
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabCreateProgram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="?attr/colorTertiaryContainer"
         android:text="@string/create_program_button"
         app:icon="@drawable/baseline_add_24"
-        android:backgroundTint="?attr/colorTertiaryContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintStart_toEndOf="@+id/fabEditProgram" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
