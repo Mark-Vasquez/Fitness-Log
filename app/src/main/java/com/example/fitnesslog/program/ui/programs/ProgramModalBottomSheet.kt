@@ -1,7 +1,9 @@
 package com.example.fitnesslog.program.ui.programs
 
+import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +17,6 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: ModalBottomSheetProgramBinding? = null
     private val binding get() = _binding!!
-    val fullName: String get() = "hello"
 
     companion object {
         const val TAG = "ProgramModalBottomSheet"
@@ -25,9 +26,13 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = ModalBottomSheetProgramBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,14 +41,24 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         val bottomSheetDialog = dialog as BottomSheetDialog
         val bottomSheetContainer =
             bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
-        val layoutParams = bottomSheetContainer.layoutParams
-        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
 
+        bottomSheetContainer.minimumHeight = (resources.displayMetrics.heightPixels)
         val bottomSheetBehavior = bottomSheetDialog.behavior
+        bottomSheetBehavior.apply {
+            isFitToContents = false
+            isShouldRemoveExpandedCorners = false
+            expandedOffset = 32
+
+        }
+        bottomSheetBehavior.isFitToContents = false
+        bottomSheetBehavior.isShouldRemoveExpandedCorners = false
+        bottomSheetBehavior.expandedOffset = 32
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-        binding.tvProgramModalTitle.text = "Yeerrrrrr"
+        Log.d(TAG, "View:  ${bottomSheetContainer.minimumHeight}")
+        Log.d(TAG, "Binding:  ${binding.root.minHeight}")
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
