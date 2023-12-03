@@ -1,13 +1,12 @@
 package com.example.fitnesslog.program.ui.programs
 
-import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.example.fitnesslog.R
 import com.example.fitnesslog.databinding.ModalBottomSheetProgramBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -31,9 +30,6 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,16 +43,9 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         bottomSheetBehavior.apply {
             isFitToContents = false
             isShouldRemoveExpandedCorners = false
-            expandedOffset = 32
-
+            expandedOffset = resources.getInteger(R.integer.offset_from_top)
+            state = BottomSheetBehavior.STATE_EXPANDED
         }
-        bottomSheetBehavior.isFitToContents = false
-        bottomSheetBehavior.isShouldRemoveExpandedCorners = false
-        bottomSheetBehavior.expandedOffset = 32
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-        Log.d(TAG, "View:  ${bottomSheetContainer.minimumHeight}")
-        Log.d(TAG, "Binding:  ${binding.root.minHeight}")
     }
 
 

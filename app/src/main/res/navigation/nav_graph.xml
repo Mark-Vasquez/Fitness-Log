@@ -9,15 +9,15 @@
         android:id="@+id/historyFragment"
         android:name="com.example.fitnesslog.history.ui.history.fragment.HistoryFragment"
         android:label="@string/label_history"
-        tools:layout="@layout/fragment_history"></fragment>
+        tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/workoutFragment"
         android:name="com.example.fitnesslog.workout.ui.workout_home.fragment.WorkoutHomeFragment"
         android:label="@string/label_workout"
-        tools:layout="@layout/fragment_workout"></fragment>
+        tools:layout="@layout/fragment_workout" />
     <fragment
         android:id="@+id/programFragment"
         android:name="com.example.fitnesslog.program.ui.programs.ProgramsFragment"
         android:label="@string/label_program"
-        tools:layout="@layout/fragment_program"></fragment>
+        tools:layout="@layout/fragment_program" />
 </navigation>

@@ -8,6 +8,14 @@
     tools:context=".program.ui.programs.ProgramModalBottomSheet">
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/CancelButton"
+        app:layout_constraintTop_toTopOf="@+id/tvProgramModalTitle"
+        app:layout_constraintBottom_toBottomOf="@+id/tvProgramModalTitle"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
         android:id="@+id/tvProgramModalTitle"
         style="@style/FragmentTitle"
         android:layout_width="wrap_content"
@@ -17,6 +25,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/SaveButton"
+        app:layout_constraintTop_toTopOf="@+id/tvProgramModalTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvProgramModalTitle"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
