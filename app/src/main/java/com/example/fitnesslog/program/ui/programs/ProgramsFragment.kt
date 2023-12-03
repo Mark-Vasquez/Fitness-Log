@@ -1,6 +1,7 @@
 package com.example.fitnesslog.program.ui.programs
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -104,6 +105,7 @@ class ProgramsFragment : Fragment() {
                 programsViewModel.stateFlow.collect { programState ->
                     populateRecyclerView(programState)
                     handleModalEvent(programState.modalEvent)
+                    Log.d(TAG, programState.modalEvent.toString())
                 }
             }
         }

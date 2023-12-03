@@ -8,6 +8,7 @@
     tools:context=".program.ui.programs.ProgramModalBottomSheet">
 
     <TextView
+        android:id="@+id/tvProgramModalCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/CancelButton"
@@ -27,6 +28,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tvProgramModalSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/SaveButton"

@@ -33,19 +33,12 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        configureBottomSheet()
 
-        val bottomSheetDialog = dialog as BottomSheetDialog
-        val bottomSheetContainer =
-            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
-
-        bottomSheetContainer.minimumHeight = (resources.displayMetrics.heightPixels)
-        val bottomSheetBehavior = bottomSheetDialog.behavior
-        bottomSheetBehavior.apply {
-            isFitToContents = false
-            isShouldRemoveExpandedCorners = false
-            expandedOffset = resources.getInteger(R.integer.offset_from_top)
-            state = BottomSheetBehavior.STATE_EXPANDED
+        binding.tvProgramModalCancel.setOnClickListener {
+            dismiss()
         }
+
     }
 
 
@@ -61,4 +54,18 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
 
     var onDismissListener: (() -> Unit)? = null
 
+    private fun configureBottomSheet() {
+        val bottomSheetDialog = dialog as BottomSheetDialog
+        val bottomSheetContainer =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
+
+        bottomSheetContainer.minimumHeight = (resources.displayMetrics.heightPixels)
+        val bottomSheetBehavior = bottomSheetDialog.behavior
+        bottomSheetBehavior.apply {
+            isFitToContents = false
+            isShouldRemoveExpandedCorners = false
+            expandedOffset = resources.getInteger(R.integer.offset_from_top)
+            state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
 }
