@@ -11,6 +11,7 @@ import com.example.fitnesslog.databinding.ModalBottomSheetProgramBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ProgramModalBottomSheet : BottomSheetDialogFragment() {
 
@@ -36,7 +37,15 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         configureBottomSheet()
 
         binding.tvProgramModalCancel.setOnClickListener {
-            dismiss()
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Unsaved Changes")
+                .setMessage("Are you sure you want to discard changes?")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Discard") { _, _ ->
+                    dismiss()
+
+                }
+                .show()
         }
 
     }
