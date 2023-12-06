@@ -4,7 +4,11 @@ import android.content.Context
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-fun showDiscardDialog(context: Context, dialog: DialogFragment) {
+fun showDiscardDialog(
+    context: Context,
+    dialog: DialogFragment,
+    onDismissAction: (() -> Unit)? = null
+) {
     MaterialAlertDialogBuilder(context)
         .setTitle("Unsaved Changes")
         .setMessage("Are you sure you want to discard changes?")
@@ -13,7 +17,9 @@ fun showDiscardDialog(context: Context, dialog: DialogFragment) {
             if (dialog.isAdded) {
                 dialog.dismiss()
             }
-
+        }
+        .setOnDismissListener {
+            onDismissAction?.invoke()
         }
         .show()
 }
