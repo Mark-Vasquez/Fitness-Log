@@ -20,6 +20,14 @@
         <item name="android:textColor">?attr/colorOnTertiaryContainer</item>
     </style>
 
+    <style name="TextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox.Dense">
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="endIconMode">clear_text</item>
+
+    </style>
+
     <style name="ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
         <!-- Apply attributes here -->
     </style>
