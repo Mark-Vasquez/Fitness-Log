@@ -3,9 +3,6 @@ package com.example.fitnesslog.program.ui.programs
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,48 +26,36 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         const val TAG = "ProgramModalBottomSheet"
     }
 
+    fun turnOffDragging() {
+        val bottomSheetDialog = dialog as BottomSheetDialog
+        val bottomSheetBehavior = bottomSheetDialog.behavior
+        bottomSheetBehavior.isDraggable = false
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-
-
+        
         dialog.setOnShowListener {
             val behavior = dialog.behavior
             val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                        }, 1000)
-                    }
-//                    if (newState == BottomSheetBehavior.STATE_DRAGGING && !discardDialogShown) {
-//                        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-//                        showDiscardDialog(requireContext(), this@ProgramModalBottomSheet) {
-//                            discardDialogShown = false
-//                            behavior.isDraggable = true
-//                        }
-//                        discardDialogShown = true
-//                        behavior.isDraggable = false
-//                    }
-                    Log.d(
-                        TAG,
-                        "onStateChanged ${getStateName(newState)} peekHeight: ${behavior.peekHeight}, maxHeight: ${behavior.maxHeight}"
-                    )
-
                     return
                 }
 
+
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    val maxSheetHeight = bottomSheet.height
-                    val currentHeight = maxSheetHeight * slideOffset
-                    Log.d(
-                        TAG,
-                        "CurrentHeight: $currentHeight, SlidOffset $slideOffset"
-                    )
+                    if (slideOffset < 0.2) {
+                        showDiscardDialog(requireContext(), this@ProgramModalBottomSheet) {
+                            discardDialogShown = false
+                            behavior.isDraggable = true
+                        }
+                        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        behavior.isDraggable = false
+                    }
+
                     return
                 }
             }
-            behavior.setPeekHeight(1175, false)
             behavior.addBottomSheetCallback(bottomSheetCallback)
         }
         return dialog
@@ -121,11 +106,10 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
             isFitToContents = false
             isShouldRemoveExpandedCorners = false
             expandedOffset = dpToPx(resources.getInteger(R.integer.offset_from_top), resources)
-            halfExpandedRatio = 0.01F
+            halfExpandedRatio = 0.001F
             skipCollapsed = true
             state = BottomSheetBehavior.STATE_EXPANDED
         }
-        Log.d(TAG, "starting state: ${getStateName(bottomSheetBehavior.state)}")
     }
 
     private fun getStateName(state: Int): String {
