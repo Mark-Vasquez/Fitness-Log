@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/programNameLayout"
+        android:id="@+id/tilProgramName"
         style="@style/TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +51,16 @@
             android:inputType="text"
             android:maxLength="50" />
 
-
     </com.google.android.material.textfield.TextInputLayout>
-    
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cgSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tilProgramName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+    </com.google.android.material.chip.ChipGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

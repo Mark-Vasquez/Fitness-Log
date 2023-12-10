@@ -7,8 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.example.fitnesslog.R
-import com.example.fitnesslog.core.utils.dpToPx
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.ModalBottomSheetProgramBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -18,7 +16,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class ProgramModalBottomSheet : BottomSheetDialogFragment() {
 
     var onDismissListener: (() -> Unit)? = null
-    var discardDialogShown = false
     private var _binding: ModalBottomSheetProgramBinding? = null
     private val binding get() = _binding!!
 
@@ -26,15 +23,10 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         const val TAG = "ProgramModalBottomSheet"
     }
 
-    fun turnOffDragging() {
-        val bottomSheetDialog = dialog as BottomSheetDialog
-        val bottomSheetBehavior = bottomSheetDialog.behavior
-        bottomSheetBehavior.isDraggable = false
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        
+
         dialog.setOnShowListener {
             val behavior = dialog.behavior
             val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
@@ -46,7 +38,6 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     if (slideOffset < 0.2) {
                         showDiscardDialog(requireContext(), this@ProgramModalBottomSheet) {
-                            discardDialogShown = false
                             behavior.isDraggable = true
                         }
                         behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -78,13 +69,6 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         binding.tvProgramModalCancel.setOnClickListener {
             showDiscardDialog(requireContext(), this)
         }
-
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -93,19 +77,24 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     private fun configureBottomSheetView() {
         val bottomSheetDialog = dialog as BottomSheetDialog
+        bottomSheetDialog.setCanceledOnTouchOutside(false)
+
         val bottomSheetContainer =
             bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
-
         val layoutParams = bottomSheetContainer.layoutParams
         layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
+
         val bottomSheetBehavior = bottomSheetDialog.behavior
         bottomSheetBehavior.apply {
             isFitToContents = false
             isShouldRemoveExpandedCorners = false
-            expandedOffset = dpToPx(resources.getInteger(R.integer.offset_from_top), resources)
             halfExpandedRatio = 0.001F
             skipCollapsed = true
             state = BottomSheetBehavior.STATE_EXPANDED
