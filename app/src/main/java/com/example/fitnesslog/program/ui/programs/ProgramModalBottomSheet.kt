@@ -1,11 +1,18 @@
 package com.example.fitnesslog.program.ui.programs
 
+import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.FrameLayout
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.ModalBottomSheetProgramBinding
@@ -71,6 +78,7 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         onDismissListener?.invoke()
@@ -82,6 +90,7 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         _binding = null
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun configureBottomSheetView() {
         val bottomSheetDialog = dialog as BottomSheetDialog
         bottomSheetDialog.setCanceledOnTouchOutside(false)
@@ -90,6 +99,34 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
             bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
         val layoutParams = bottomSheetContainer.layoutParams
         layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
+
+
+        bottomSheetContainer.setOnTouchListener { view, event ->
+            Log.d(
+                TAG,
+                "Touch Listener CB called. Action down? : ${event.action == MotionEvent.ACTION_DOWN} "
+            )
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                val currentFocusView = view.findFocus()
+                Log.d(
+                    TAG,
+                    "currentFocusView is EditText?: ${currentFocusView is EditText}, its $currentFocusView"
+                )
+                if (currentFocusView is EditText) {
+                    Log.d(TAG, "Edit Text is the current focus")
+                    val outRect = Rect()
+                    currentFocusView.getGlobalVisibleRect(outRect)
+                    if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                        Log.d(TAG, "Clicked out of edit text. clearing now.")
+                        currentFocusView.clearFocus()
+                        val inputMethodManager =
+                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        inputMethodManager.hideSoftInputFromWindow(currentFocusView.windowToken, 0)
+                    }
+                }
+            }
+            false
+        }
 
         val bottomSheetBehavior = bottomSheetDialog.behavior
         bottomSheetBehavior.apply {
