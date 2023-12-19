@@ -3,7 +3,6 @@ package com.example.fitnesslog
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -36,12 +35,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        Log.d(TAG, "touching ${ev!!.action}")
         if (ev != null && ev.action == MotionEvent.ACTION_DOWN) {
             val currentFocusView = currentFocus
-            Log.d(TAG, "currentFocus $currentFocusView")
             if (currentFocusView is EditText) {
-                Log.d(TAG, "Peek a boo, im doing it")
                 val outRect = Rect()
                 currentFocusView.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {

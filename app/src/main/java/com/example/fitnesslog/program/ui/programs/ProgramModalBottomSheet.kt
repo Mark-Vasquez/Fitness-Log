@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -100,24 +99,13 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         val layoutParams = bottomSheetContainer.layoutParams
         layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
 
-
         bottomSheetContainer.setOnTouchListener { view, event ->
-            Log.d(
-                TAG,
-                "Touch Listener CB called. Action down? : ${event.action == MotionEvent.ACTION_DOWN} "
-            )
             if (event.action == MotionEvent.ACTION_DOWN) {
                 val currentFocusView = view.findFocus()
-                Log.d(
-                    TAG,
-                    "currentFocusView is EditText?: ${currentFocusView is EditText}, its $currentFocusView"
-                )
                 if (currentFocusView is EditText) {
-                    Log.d(TAG, "Edit Text is the current focus")
                     val outRect = Rect()
                     currentFocusView.getGlobalVisibleRect(outRect)
                     if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                        Log.d(TAG, "Clicked out of edit text. clearing now.")
                         currentFocusView.clearFocus()
                         val inputMethodManager =
                             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

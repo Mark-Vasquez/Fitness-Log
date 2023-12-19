@@ -52,7 +52,7 @@
             android:maxLength="50" />
 
     </com.google.android.material.textfield.TextInputLayout>
-    
+
     <TextView
         android:id="@+id/tvScheduleLabel"
         android:layout_width="wrap_content"
@@ -75,47 +75,48 @@
         app:layout_constraintStart_toStartOf="@id/tvScheduleLabel"
         app:layout_constraintTop_toBottomOf="@+id/tvScheduleLabel">
 
-        <com.google.android.material.chip.Chip
-            style="@style/ChipFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sunday" />
 
         <com.google.android.material.chip.Chip
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Monday" />
+            android:text="@string/monday" />
 
         <com.google.android.material.chip.Chip
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tuesday" />
+            android:text="@string/tuesday" />
 
         <com.google.android.material.chip.Chip
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Wednesday" />
+            android:text="@string/wednesday" />
 
         <com.google.android.material.chip.Chip
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thursday" />
+            android:text="@string/thursday" />
 
         <com.google.android.material.chip.Chip
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Friday" />
+            android:text="@string/friday" />
 
         <com.google.android.material.chip.Chip
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Saturday" />
+            android:text="@string/saturday" />
+
+        <com.google.android.material.chip.Chip
+            style="@style/ChipFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sunday" />
 
 
     </com.google.android.material.chip.ChipGroup>
