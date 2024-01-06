@@ -5,6 +5,10 @@ import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import kotlinx.coroutines.flow.Flow
 
+/** Allows the UseCases to use the methods of the Repository as long as the RepositoryImpl instance is
+ *following this interface contract. The implementation is loosely coupled and can change how it wants
+ * to serve up and consume data without having to change anything on the useCase side
+ */
 interface ProgramRepository {
 
     suspend fun seedDatabaseIfFirstRun(): Resource<Unit>

@@ -6,13 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.fitnesslog.FitnessLogApp
 import com.example.fitnesslog.R
-import com.example.fitnesslog.core.ui.viewModelFactoryHelper
 import com.example.fitnesslog.shared.ui.SharedViewModel
 import kotlinx.coroutines.launch
 
@@ -27,25 +25,12 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class WorkoutHomeFragment : Fragment() {
-    private lateinit var sharedViewModel: SharedViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val sharedViewModelFactory by lazy {
-            viewModelFactoryHelper { SharedViewModel(FitnessLogApp.sharedModule.sharedUseCases) }
-        }
-        sharedViewModel =
-            ViewModelProvider(
-                requireActivity(),
-                sharedViewModelFactory
-            )[SharedViewModel::class.java]
-    }
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_workout, container, false)
     }
 

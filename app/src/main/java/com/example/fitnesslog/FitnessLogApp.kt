@@ -10,6 +10,8 @@ import com.example.fitnesslog.shared.di.SharedModuleImpl
 import com.example.fitnesslog.workout.di.WorkoutModule
 import com.example.fitnesslog.workout.di.WorkoutModuleImpl
 
+// Manual dependency injection for each feature Module
+// Each module implementation instance also provides dependencies that can be injected throughout app
 class FitnessLogApp : Application() {
     companion object {
         lateinit var appModule: AppModule
@@ -18,6 +20,11 @@ class FitnessLogApp : Application() {
         lateinit var sharedModule: SharedModule
     }
 
+    /**
+     * This pattern allows for easy implementation changes while sticking to the interface contract
+     * For example, the 'appModule' instance can easily be swapped for 'AppModuleTestingImpl',
+     * as long as it conforms to the 'AppModule' interface, allowing easier testing or configuration changes
+     */
     override fun onCreate() {
         super.onCreate()
         appModule = AppModuleImpl(this)

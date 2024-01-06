@@ -40,7 +40,6 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
                     return
                 }
 
-
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     if (slideOffset < 0.2) {
                         showDiscardDialog(requireContext(), this@ProgramModalBottomSheet) {
@@ -49,7 +48,6 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
                         behavior.state = BottomSheetBehavior.STATE_EXPANDED
                         behavior.isDraggable = false
                     }
-
                     return
                 }
             }
@@ -75,6 +73,10 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         binding.tvProgramModalCancel.setOnClickListener {
             showDiscardDialog(requireContext(), this)
         }
+
+        binding.tvProgramModalSave.setOnClickListener {
+
+        }
     }
 
 
@@ -86,6 +88,8 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Releases the ViewBinding instance's references to the ViewObject instance destroyed
+        // Garbage collection reclaims memory from both instances
         _binding = null
     }
 

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+// Scoped to the Activity, so all fragments can share state with cross-fragment communication
 class SharedViewModel(
     private val sharedUseCases: SharedUseCases
 ) : ViewModel() {

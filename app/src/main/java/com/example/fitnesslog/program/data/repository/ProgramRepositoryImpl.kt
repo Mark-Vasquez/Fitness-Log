@@ -16,6 +16,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+/**
+ * Repository's job is to provide data to app's ui components any way it wants.
+ * Abstracts origin of data and can come from a Room database, API, cache, shared preferences, etc.
+ * Can be used to combine local and remote data like from a cache
+ */
 class ProgramRepositoryImpl(
     private val dao: ProgramDao,
     private val dataStore: DataStore<Preferences>

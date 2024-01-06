@@ -32,15 +32,20 @@ class ProgramsAdapter(
         }
     }
 
+    // Allows the onProgramClicked to have custom implementation when passing into ProgramsAdapter instance
     interface ProgramClickListener {
         fun onProgramClicked(program: ProgramWithWorkoutCount)
     }
 
-    class ViewHolder(itemView: View, clickAtPosition: (Int) -> Unit) :
+    class ViewHolder(itemView: View, clickAtPosition: (position: Int) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         val tvProgramName: TextView = itemView.findViewById(R.id.tvProgramName)
         val tvNumberOfWorkouts: TextView = itemView.findViewById(R.id.tvNumberOfWorkouts)
 
+        // Sets a click listener one time when instantiating a ViewHolder,
+        // Rather than on an itemView in onBindViewHolder each time it binds a new item
+        // Pass in a lambda to the listener that will call the clickAtPosition lambda with
+        // the dynamic `adapterPosition` property 
         init {
             itemView.setOnClickListener {
                 clickAtPosition(adapterPosition)
@@ -51,12 +56,14 @@ class ProgramsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_program, parent, false)
+        // Pass in a lambda that takes a position and will call onProgramClicked with the program
         return ViewHolder(itemView) { position ->
             programClickListener.onProgramClicked(getItem(position))
         }
     }
 
 
+    // Do not setClickListener to the itemView here because costly and gets called everytime new item in view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val program = getItem(position)
         val context = holder.itemView.context
@@ -69,6 +76,7 @@ class ProgramsAdapter(
                 workoutString
             )
 
+            // Render a highlighted background if selected
             if (position == 0 && program.isSelected) {
                 val selectedBackground =
                     ContextCompat.getDrawable(context, R.drawable.bg_program_selected)

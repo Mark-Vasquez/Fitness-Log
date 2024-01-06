@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -13,7 +14,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
-import com.example.fitnesslog.FitnessLogApp.Companion.sharedModule
 import com.example.fitnesslog.core.ui.viewModelFactoryHelper
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
 import com.example.fitnesslog.databinding.FragmentProgramBinding
@@ -34,7 +34,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class ProgramsFragment : Fragment() {
 
-    private lateinit var sharedViewModel: SharedViewModel
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var programsViewModel: ProgramsViewModel
     private lateinit var programsAdapter: ProgramsAdapter
     private lateinit var rvPrograms: RecyclerView
@@ -49,20 +49,14 @@ class ProgramsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sharedViewModelFactory =
-            viewModelFactoryHelper { SharedViewModel(sharedModule.sharedUseCases) }
-        sharedViewModel =
-            ViewModelProvider(
-                requireActivity(),
-                sharedViewModelFactory
-            )[SharedViewModel::class.java]
-
+        // Inject dependencies into the ViewModel instance using the globally available module dependencies
         val programsViewModelFactory =
             viewModelFactoryHelper {
                 ProgramsViewModel(
                     programModule.programUseCases, sharedViewModel
                 )
             }
+
         programsViewModel =
             ViewModelProvider(this, programsViewModelFactory)[ProgramsViewModel::class.java]
     }
@@ -70,7 +64,7 @@ class ProgramsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentProgramBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -90,6 +84,7 @@ class ProgramsFragment : Fragment() {
         rvPrograms.layoutManager = GridLayoutManager(context, 2)
         rvPrograms.addItemDecoration(GridSpacingItemDecoration(25))
 
+        // Pass in an instance of the object and implement what should happen when onProgramClicked is called
         programsAdapter =
             ProgramsAdapter(object : ProgramsAdapter.ProgramClickListener {
                 override fun onProgramClicked(program: ProgramWithWorkoutCount) {
