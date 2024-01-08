@@ -56,7 +56,6 @@ class ProgramsFragment : Fragment() {
                     programModule.programUseCases, sharedViewModel
                 )
             }
-
         programsViewModel =
             ViewModelProvider(this, programsViewModelFactory)[ProgramsViewModel::class.java]
     }
@@ -79,12 +78,19 @@ class ProgramsFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Releases the ViewBinding instance's references to the ViewObject instance destroyed
+        // Garbage collection reclaims memory from both instances
+        _binding = null
+    }
+
     private fun setupRecyclerView() {
         rvPrograms = binding.rvPrograms
         rvPrograms.layoutManager = GridLayoutManager(context, 2)
         rvPrograms.addItemDecoration(GridSpacingItemDecoration(25))
 
-        // Pass in an instance of the object and implement what should happen when onProgramClicked is called
+        // Pass in an instance of the listener object and implement what should happen when onProgramClicked is called
         programsAdapter =
             ProgramsAdapter(object : ProgramsAdapter.ProgramClickListener {
                 override fun onProgramClicked(program: ProgramWithWorkoutCount) {
@@ -94,11 +100,19 @@ class ProgramsFragment : Fragment() {
         rvPrograms.adapter = programsAdapter
     }
 
+
+    /**
+     * Sets up a lifecycle aware coroutine block that collects state changes from programsViewModel
+     * The collection is active as long as the fragment's view is in a 'STARTED' state or beyond.
+     * The collection block is executed when the fragment starts and is automatically
+     * paused and resumed based on the fragment's lifecycle
+     * Collect listens for any changes to the _stateflow
+     */
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programsViewModel.stateFlow.collect { programState ->
-                    populateRecyclerView(programState)
+                    populateRecyclerView(programState.programs)
                     handleModalEvent(programState.modalEvent)
                     Log.d(TAG, programState.modalEvent.toString())
                 }
@@ -106,12 +120,16 @@ class ProgramsFragment : Fragment() {
         }
     }
 
-    private fun populateRecyclerView(programState: ProgramsState) {
-        programsAdapter.submitList(programState.programs) {
+    // When submitList() is used to populate or update the recyclerView list,
+    // the ListAdapter calculates the diffs internally without having to manually update and notifyDataSetChanged()
+    private fun populateRecyclerView(programs: List<ProgramWithWorkoutCount>) {
+        programsAdapter.submitList(programs) {
             rvPrograms.scrollToPosition(0)
         }
     }
 
+    // Called everytime ProgramState changes to Listen for the ProgramModalEvent state
+    // Callback is passed in to set ModalEvent to null to do nothing after dismissal and no modalEvents
     private fun handleModalEvent(modalEvent: ProgramModalEvent?) {
         when (modalEvent) {
             is ProgramModalEvent.ShowCreateForm -> {

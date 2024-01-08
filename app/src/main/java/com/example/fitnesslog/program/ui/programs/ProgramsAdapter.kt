@@ -11,12 +11,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.R
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 
+/**
+ * ListAdapter wraps around the traditional RecyclerView.Adapter to efficiently make updates to the rendered list
+ * It combines DiffUtil and AsyncListDiffer. DiffUtil under the hood calculates the diffs for minimal
+ * UI updates. AsyncListDiffer sends these calculations to a background thread, which makes it more performant
+ * with smoother UI animations.
+ * This approach also avoids having to manually keep track of every item's movement with notifyItemMoved()
+ * or worse, notifyDataSetChanged() which rebinds and re-renders the whole list for any small changes
+ */
 class ProgramsAdapter(
     private val programClickListener: ProgramClickListener
 ) :
-    ListAdapter<ProgramWithWorkoutCount, ProgramsAdapter.ViewHolder>(ProgramsDiff) {
+    ListAdapter<ProgramWithWorkoutCount, ProgramsAdapter.ViewHolder>(ProgramsDiffUtil) {
 
-    object ProgramsDiff : DiffUtil.ItemCallback<ProgramWithWorkoutCount>() {
+    object ProgramsDiffUtil : DiffUtil.ItemCallback<ProgramWithWorkoutCount>() {
         override fun areItemsTheSame(
             oldItem: ProgramWithWorkoutCount,
             newItem: ProgramWithWorkoutCount
@@ -45,7 +53,7 @@ class ProgramsAdapter(
         // Sets a click listener one time when instantiating a ViewHolder,
         // Rather than on an itemView in onBindViewHolder each time it binds a new item
         // Pass in a lambda to the listener that will call the clickAtPosition lambda with
-        // the dynamic `adapterPosition` property 
+        // the dynamic `adapterPosition` property
         init {
             itemView.setOnClickListener {
                 clickAtPosition(adapterPosition)

@@ -27,7 +27,12 @@ class ProgramsViewModel(
         getPrograms()
     }
 
+    // _stateflow is mutable flow of ProgramsState, modified only internally
     private val _stateFlow = MutableStateFlow(ProgramsState())
+
+    // stateflow is the immutable public API exposing the _stateflow as a read only flow
+    // External observers can used this stateflow to subscribe to state changes
+    // When _stateFlow's value changes, stateFlow will emit these changes to its collectors.
     val stateFlow: StateFlow<ProgramsState> = _stateFlow.asStateFlow()
 
     fun onEvent(event: ProgramsEvent) {
@@ -36,6 +41,8 @@ class ProgramsViewModel(
                 // Launch the BottomSheetDialogFragment
                 _stateFlow.value =
                     stateFlow.value.copy(modalEvent = ProgramModalEvent.ShowCreateForm)
+                // Update _stateFlow's value using a copy of modified stateFlow, triggering an update in the actual stateFlow
+                // Copy() retains the unmodified properties of stateFlow only changing the value of modalEvent.
             }
 
             is ProgramsEvent.ShowEditForm -> {
