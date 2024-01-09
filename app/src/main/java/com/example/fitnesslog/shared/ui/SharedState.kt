@@ -1,8 +1,8 @@
 package com.example.fitnesslog.shared.ui
 
-import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
+import com.example.fitnesslog.program.data.entity.Program
 
 data class SharedState(
-    val selectedProgram: ProgramWithWorkoutCount? = null,
+    val selectedProgram: Program? = null,
     val error: String? = null
 )

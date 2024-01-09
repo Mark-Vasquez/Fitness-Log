@@ -33,6 +33,9 @@ interface ProgramDao {
     )
     fun getAllProgramsOrderedBySelected(): Flow<List<ProgramWithWorkoutCount>>
 
+    @Query("SELECT * FROM program WHERE is_selected = 1")
+    fun getSelectedProgram(): Flow<Program>
+
     @Update
     suspend fun updateProgram(program: Program): Int
 

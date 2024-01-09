@@ -81,6 +81,7 @@
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/monday" />
 
         <com.google.android.material.chip.Chip
@@ -88,6 +89,7 @@
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/tuesday" />
 
         <com.google.android.material.chip.Chip
@@ -95,6 +97,7 @@
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/wednesday" />
 
         <com.google.android.material.chip.Chip
@@ -102,6 +105,7 @@
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/thursday" />
 
         <com.google.android.material.chip.Chip
@@ -109,6 +113,7 @@
             style="@style/ChipFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/friday" />
 
         <com.google.android.material.chip.Chip

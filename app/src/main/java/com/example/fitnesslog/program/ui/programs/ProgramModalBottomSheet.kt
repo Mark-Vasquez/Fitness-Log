@@ -13,20 +13,50 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
+import androidx.fragment.app.viewModels
+import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.ModalBottomSheetProgramBinding
+import com.example.fitnesslog.program.data.entity.Program
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class ProgramModalBottomSheet : BottomSheetDialogFragment() {
 
+    // Lazily delegates the value provision to the viewModels() function, which retrieves the
+    // ProgramsViewModel instance created by the parent fragment (ProgramsFragment), sharing the same view model
+    private val programsViewModel: ProgramsViewModel by viewModels(
+        ownerProducer = { requireParentFragment() },
+        factoryProducer = { ProgramsViewModel.Factory })
     var onDismissListener: (() -> Unit)? = null
     private var _binding: ModalBottomSheetProgramBinding? = null
     private val binding get() = _binding!!
 
     companion object {
         const val TAG = "ProgramModalBottomSheet"
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = ModalBottomSheetProgramBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        configureBottomSheetView()
+
+        binding.tvProgramModalCancel.setOnClickListener {
+            showDiscardDialog(requireContext(), this)
+        }
+
+        binding.tvProgramModalSave.setOnClickListener {
+            saveProgramData()
+        }
     }
 
 
@@ -56,29 +86,6 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         return dialog
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = ModalBottomSheetProgramBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        configureBottomSheetView()
-
-        binding.tvProgramModalCancel.setOnClickListener {
-            showDiscardDialog(requireContext(), this)
-        }
-
-        binding.tvProgramModalSave.setOnClickListener {
-
-        }
-    }
-
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
@@ -91,6 +98,35 @@ class ProgramModalBottomSheet : BottomSheetDialogFragment() {
         // Releases the ViewBinding instance's references to the ViewObject instance destroyed
         // Garbage collection reclaims memory from both instances
         _binding = null
+    }
+
+
+    private fun saveProgramData() {
+        // TODO: check whether save on edit or create
+        val name = binding.etProgramName.toString()
+        val program = Program(
+            name = name,
+            scheduledDays = getSelectedDays(),
+            restDurationSeconds = 90,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
+        )
+        programsViewModel.onEvent(ProgramsEvent.Create(program))
+    }
+
+    private fun getSelectedDays(): Set<Day> {
+        val selectedDays = mutableSetOf<Day>()
+
+        binding.run {
+            if (chipMonday.isChecked) selectedDays.add(Day.MONDAY)
+            if (chipTuesday.isChecked) selectedDays.add(Day.TUESDAY)
+            if (chipWednesday.isChecked) selectedDays.add(Day.WEDNESDAY)
+            if (chipThursday.isChecked) selectedDays.add(Day.THURSDAY)
+            if (chipFriday.isChecked) selectedDays.add(Day.FRIDAY)
+            if (chipSaturday.isChecked) selectedDays.add(Day.SATURDAY)
+            if (chipSunday.isChecked) selectedDays.add(Day.SUNDAY)
+        }
+        return selectedDays
     }
 
     @SuppressLint("ClickableViewAccessibility")

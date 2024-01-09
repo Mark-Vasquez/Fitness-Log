@@ -7,17 +7,12 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.example.fitnesslog.FitnessLogApp.Companion.sharedModule
-import com.example.fitnesslog.core.ui.viewModelFactoryHelper
-import com.example.fitnesslog.shared.ui.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var sharedViewModel: SharedViewModel
 
     companion object {
         const val TAG = "MainActivity"
@@ -33,11 +28,6 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setupWithNavController(navController)
 
-        // ViewModel scoped to the activity that can share state across fragments
-        val sharedViewModelFactory =
-            viewModelFactoryHelper { SharedViewModel(sharedModule.sharedUseCases) }
-        sharedViewModel =
-            ViewModelProvider(this, sharedViewModelFactory)[SharedViewModel::class.java]
     }
 
 

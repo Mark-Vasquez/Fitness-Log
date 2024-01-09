@@ -60,6 +60,12 @@ class ProgramRepositoryImpl(
             .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
+    override fun getSelectedProgram(): Flow<Resource<Program>> {
+        return dao.getSelectedProgram()
+            .map { Resource.Success(it) as Resource<Program> }
+            .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
+    }
+
     override suspend fun updateProgram(program: Program): Resource<Int> {
         return safeCall { dao.updateProgram(program) }
     }
