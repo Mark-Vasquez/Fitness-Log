@@ -22,7 +22,11 @@
         tools:layout="@layout/fragment_programs">
         <action
             android:id="@+id/action_programFragment_to_programCreateFragment"
-            app:destination="@id/programCreateFragment" />
+            app:destination="@id/programCreateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/programCreateFragment"
