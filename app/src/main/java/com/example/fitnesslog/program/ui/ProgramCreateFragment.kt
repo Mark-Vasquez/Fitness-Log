@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui.programs
+package com.example.fitnesslog.program.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -78,7 +78,7 @@ class ProgramCreateFragment : Fragment() {
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
-        programsViewModel.onEvent(ProgramsEvent.Create(program))
+        programsViewModel.onEvent(ProgramsEvent.SaveCreate(program))
     }
 
     private fun getSelectedDays(): Set<Day> {

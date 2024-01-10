@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui.programs
+package com.example.fitnesslog.program.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -60,8 +60,12 @@ class ProgramsViewModel(
 
             }
 
-            is ProgramsEvent.Create -> {
-                createProgram(event.program)
+            is ProgramsEvent.SaveCreate -> {
+                saveCreate(event.program)
+            }
+
+            is ProgramsEvent.CancelCreate -> {
+                cancelCreate(event.program)
             }
 
             is ProgramsEvent.Select -> {
@@ -85,7 +89,7 @@ class ProgramsViewModel(
             val resource = programUseCases.seedProgram()
             if (resource is Resource.Error) {
                 _stateFlow.value = stateFlow.value.copy(
-                    error = resource.errorMessage
+                    error = resource.errorMessage ?: "Error Seeding Program on Launch"
                 )
             }
         }
@@ -111,6 +115,7 @@ class ProgramsViewModel(
                     is Resource.Error -> {
                         _stateFlow.value = stateFlow.value.copy(
                             error = resource.errorMessage
+                                ?: "Error Retrieving Programs in `collectLatestPrograms`"
                         )
                     }
                 }
@@ -120,9 +125,9 @@ class ProgramsViewModel(
 
     private fun showCreateForm() {
         viewModelScope.launch {
-            when (val resource = programUseCases.createProgramWithDefaultValues()) {
+            when (val resource = programUseCases.initializeProgram()) {
                 is Resource.Success -> {
-                    _stateFlow.value = stateFlow.value.copy(newDefaultProgramId = resource.data)
+                    _stateFlow.value = stateFlow.value.copy(initializedProgramId = resource.data)
                 }
 
                 is Resource.Error -> {
@@ -136,9 +141,40 @@ class ProgramsViewModel(
         }
     }
 
-    private fun createProgram(program: Program) {
+    private fun saveCreate(program: Program) {
         viewModelScope.launch {
+            when (val resource = programUseCases.editProgram(program)) {
+                is Resource.Success -> {
+                    _stateFlow.value = stateFlow.value.copy(
+                        initializedProgramId = null
+                    )
+                }
 
+                is Resource.Error -> {
+                    _stateFlow.value = stateFlow.value.copy(
+                        error = resource.errorMessage ?: "Error Creating Program in `saveCreate`"
+                    )
+                }
+            }
+
+        }
+    }
+
+    private fun cancelCreate(program: Program) {
+        viewModelScope.launch {
+            when (val resource = programUseCases.deleteProgram(program)) {
+                is Resource.Success -> {
+                    _stateFlow.value = stateFlow.value.copy(
+                        initializedProgramId = null
+                    )
+                }
+
+                is Resource.Error -> {
+                    _stateFlow.value = stateFlow.value.copy(
+                        error = resource.errorMessage ?: "Error Discard Program in `cancelCreate`"
+                    )
+                }
+            }
         }
     }
 
@@ -148,7 +184,7 @@ class ProgramsViewModel(
             val resource = programUseCases.selectProgram(program.id)
             if (resource is Resource.Error) {
                 _stateFlow.value = stateFlow.value.copy(
-                    error = resource.errorMessage ?: "Error Selecting Program"
+                    error = resource.errorMessage ?: "Error Selecting Program in `selectProgram`"
                 )
             }
 

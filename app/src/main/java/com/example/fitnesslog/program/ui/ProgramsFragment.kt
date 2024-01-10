@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui.programs
+package com.example.fitnesslog.program.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,10 +9,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
-import com.example.fitnesslog.databinding.FragmentProgramBinding
+import com.example.fitnesslog.databinding.FragmentProgramsBinding
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import kotlinx.coroutines.launch
 
@@ -24,7 +25,7 @@ class ProgramsFragment : Fragment() {
     private lateinit var rvPrograms: RecyclerView
 
     // ViewBinding reference to the ViewObject instance from onCreateView to access FragmentProgram's layout views
-    private var _binding: FragmentProgramBinding? = null
+    private var _binding: FragmentProgramsBinding? = null
 
     // Used to safely access an immutable version of binding, guaranteed that _binding will have a value when accessed
     private val binding get() = _binding!!
@@ -38,7 +39,7 @@ class ProgramsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentProgramBinding.inflate(inflater, container, false)
+        _binding = FragmentProgramsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -49,6 +50,9 @@ class ProgramsFragment : Fragment() {
 
         binding.fabCreateProgram.setOnClickListener {
             programsViewModel.onEvent(ProgramsEvent.ShowCreateForm)
+            // TODO: Navigate to ProgramCreateFragment with ref. to initializedProgramId
+            val action = ProgramsFragmentDirections.actionProgramFragmentToProgramCreateFragment()
+            findNavController().navigate(action)
         }
     }
 

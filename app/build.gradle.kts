@@ -12,7 +12,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    id("kotlin-parcelize")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -60,7 +60,7 @@ ksp {
 }
 
 dependencies {
-    val navVersion = "2.7.1"
+    val navVersion = "2.7.6"
     val fragmentVersion = "1.6.1"
     val roomVersion = "2.5.2"
     val coroutinesVersion = "1.7.3"

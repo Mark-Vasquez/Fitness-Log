@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/workoutFragment">
+    app:startDestination="@id/workoutsFragment">
 
     <fragment
         android:id="@+id/historyFragment"
@@ -11,13 +11,22 @@
         android:label="@string/label_history"
         tools:layout="@layout/fragment_history" />
     <fragment
-        android:id="@+id/workoutFragment"
-        android:name="com.example.fitnesslog.workout.ui.workout_home.fragment.WorkoutHomeFragment"
+        android:id="@+id/workoutsFragment"
+        android:name="com.example.fitnesslog.workout.ui.WorkoutHomeFragment"
         android:label="@string/label_workout"
-        tools:layout="@layout/fragment_workout" />
+        tools:layout="@layout/fragment_workouts" />
     <fragment
-        android:id="@+id/programFragment"
-        android:name="com.example.fitnesslog.program.ui.programs.ProgramsFragment"
+        android:id="@+id/programsFragment"
+        android:name="com.example.fitnesslog.program.ui.ProgramsFragment"
         android:label="@string/label_program"
-        tools:layout="@layout/fragment_program" />
+        tools:layout="@layout/fragment_programs">
+        <action
+            android:id="@+id/action_programFragment_to_programCreateFragment"
+            app:destination="@id/programCreateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/programCreateFragment"
+        android:name="com.example.fitnesslog.program.ui.ProgramCreateFragment"
+        android:label="@string/label_create_program"
+        tools:layout="@layout/fragment_program_create" />
 </navigation>

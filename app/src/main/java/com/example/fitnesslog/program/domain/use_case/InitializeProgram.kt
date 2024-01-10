@@ -5,7 +5,7 @@ import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.program.domain.repository.ProgramRepository
 
 // Creating a pre-populated program when clicking "Create", so we have ID to set workouts to
-class CreateProgramWithDefaultValues(
+class InitializeProgram(
     private val programRepository: ProgramRepository
 ) {
     suspend operator fun invoke(): Resource<Long> {

@@ -1,4 +1,4 @@
-package com.example.fitnesslog.workout.ui.workout_home.fragment
+package com.example.fitnesslog.workout.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -26,7 +26,7 @@ class WorkoutHomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_workout, container, false)
+        return inflater.inflate(R.layout.fragment_workouts, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
