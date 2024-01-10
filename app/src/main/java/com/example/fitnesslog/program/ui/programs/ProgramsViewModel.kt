@@ -1,6 +1,5 @@
 package com.example.fitnesslog.program.ui.programs
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -52,17 +51,13 @@ class ProgramsViewModel(
     fun onEvent(event: ProgramsEvent) {
         when (event) {
             is ProgramsEvent.ShowCreateForm -> {
-                // Launch the BottomSheetDialogFragment
-                _stateFlow.value =
-                    stateFlow.value.copy(modalEvent = ProgramModalEvent.ShowCreateForm)
-                // Update _stateFlow's value using a copy of modified stateFlow, triggering an update in the actual stateFlow
-                // Copy() retains the unmodified properties of stateFlow only changing the value of modalEvent.
+                viewModelScope.launch {
+                    showCreateForm()
+                }
             }
 
             is ProgramsEvent.ShowEditForm -> {
-                _stateFlow.value = stateFlow.value.copy(
-                    modalEvent = ProgramModalEvent.ShowEditForm(event.program)
-                )
+
             }
 
             is ProgramsEvent.Create -> {
@@ -84,9 +79,6 @@ class ProgramsViewModel(
         }
     }
 
-    fun resetModalEvent() {
-        _stateFlow.value = stateFlow.value.copy(modalEvent = null)
-    }
 
     private fun seedProgram() {
         viewModelScope.launch {
@@ -126,12 +118,27 @@ class ProgramsViewModel(
         }
     }
 
+    private fun showCreateForm() {
+        viewModelScope.launch {
+            when (val resource = programUseCases.createProgramWithDefaultValues()) {
+                is Resource.Success -> {
+                    _stateFlow.value = stateFlow.value.copy(newDefaultProgramId = resource.data)
+                }
+
+                is Resource.Error -> {
+                    _stateFlow.value = stateFlow.value.copy(
+                        error = resource.errorMessage
+                            ?: "Error Creating Default Program in `showCreateForm`"
+                    )
+                }
+            }
+
+        }
+    }
+
     private fun createProgram(program: Program) {
         viewModelScope.launch {
-            val resource = programUseCases.createProgram(program)
-            if (resource is Resource.Error) {
-                resource.errorMessage?.let { Log.e(TAG, it) }
-            }
+
         }
     }
 
@@ -147,5 +154,7 @@ class ProgramsViewModel(
 
         }
     }
+
 }
+
 

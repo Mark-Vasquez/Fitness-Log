@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import com.example.fitnesslog.core.data.database.FitnessLogDatabase
 import com.example.fitnesslog.program.data.repository.ProgramRepositoryImpl
 import com.example.fitnesslog.program.domain.repository.ProgramRepository
-import com.example.fitnesslog.program.domain.use_case.CreateProgram
+import com.example.fitnesslog.program.domain.use_case.CreateProgramWithDefaultValues
 import com.example.fitnesslog.program.domain.use_case.DeleteProgram
 import com.example.fitnesslog.program.domain.use_case.EditProgram
 import com.example.fitnesslog.program.domain.use_case.GetPrograms
@@ -28,7 +28,7 @@ class ProgramModuleImpl(
 
     override val programUseCases: ProgramUseCases by lazy {
         ProgramUseCases(
-            createProgram = CreateProgram(programRepository),
+            createProgramWithDefaultValues = CreateProgramWithDefaultValues(programRepository),
             getPrograms = GetPrograms(programRepository),
             editProgram = EditProgram(programRepository),
             deleteProgram = DeleteProgram(programRepository),

@@ -1,13 +1,11 @@
 package com.example.fitnesslog.program.ui.programs
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -16,36 +14,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
-import com.example.fitnesslog.shared.ui.SharedViewModel
 import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ProgramsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProgramsFragment : Fragment() {
 
-    private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
-    private val programsViewModel: ProgramsViewModel by viewModels { ProgramsViewModel.Factory }
+    private val programsViewModel: ProgramsViewModel by activityViewModels { ProgramsViewModel.Factory }
     private lateinit var programsAdapter: ProgramsAdapter
     private lateinit var rvPrograms: RecyclerView
+
+    // ViewBinding reference to the ViewObject instance from onCreateView to access FragmentProgram's layout views
     private var _binding: FragmentProgramBinding? = null
+
+    // Used to safely access an immutable version of binding, guaranteed that _binding will have a value when accessed
     private val binding get() = _binding!!
 
     companion object {
         const val TAG = "ProgramsFragment"
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -100,8 +87,6 @@ class ProgramsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programsViewModel.stateFlow.collect { programState ->
                     updateRecyclerView(programState.programs)
-                    handleModalEvent(programState.modalEvent)
-                    Log.d(TAG, programState.modalEvent.toString())
                 }
             }
         }
@@ -115,28 +100,5 @@ class ProgramsFragment : Fragment() {
         }
     }
 
-    // Called everytime ProgramState changes to Listen for the ProgramModalEvent state
-    // Callback is passed in to set ModalEvent to null to do nothing after dismissal and no modalEvents
-    private fun handleModalEvent(modalEvent: ProgramModalEvent?) {
-        when (modalEvent) {
-            is ProgramModalEvent.ShowCreateForm -> {
-                val modalBottomSheet = ProgramModalBottomSheet()
-                modalBottomSheet.show(parentFragmentManager, ProgramModalBottomSheet.TAG)
-                modalBottomSheet.onDismissListener = {
-                    programsViewModel.resetModalEvent()
-                }
-            }
-
-            is ProgramModalEvent.ShowEditForm -> {
-                val modalBottomSheet = ProgramModalBottomSheet()
-                modalBottomSheet.show(parentFragmentManager, ProgramModalBottomSheet.TAG)
-                modalBottomSheet.onDismissListener = {
-                    programsViewModel.resetModalEvent()
-                }
-            }
-
-            null -> {}
-        }
-    }
 
 }
