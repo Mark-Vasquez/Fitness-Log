@@ -8,6 +8,7 @@
 
     <style name="CancelButton">
         <item name="android:layout_marginStart">16dp</item>
+        <item name="android:paddingVertical">25dp</item>
         <item name="android:text">Cancel</item>
         <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
         <item name="android:textColor">?attr/colorOnTertiaryContainer</item>
@@ -15,6 +16,7 @@
 
     <style name="SaveButton">
         <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:paddingVertical">25dp</item>
         <item name="android:text">Save</item>
         <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
         <item name="android:textColor">?attr/colorOnTertiaryContainer</item>
@@ -39,8 +41,5 @@
         <!-- Apply attributes here -->
     </style>
 
-    <style name="ModalBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/ModalBottomSheet</item>
-    </style>
 
 </resources>

@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.fitnesslog.R
+import androidx.navigation.fragment.findNavController
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramCreateBinding
@@ -24,6 +25,30 @@ class ProgramCreateFragment : Fragment() {
     private var _binding: FragmentProgramCreateBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            val initializedProgramId =
+                programsViewModel.stateFlow.value.initializedProgramId
+            if (initializedProgramId != null) {
+                showDiscardDialog(
+                    requireContext()
+                ) {
+                    programsViewModel.onEvent(
+                        ProgramsEvent.CancelCreate(
+                            initializedProgramId
+                        )
+                    )
+                    findNavController().popBackStack()
+                }
+            }
+
+        }
+
+
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,21 +56,32 @@ class ProgramCreateFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentProgramCreateBinding.inflate(inflater, container, false)
-        return inflater.inflate(R.layout.fragment_program_create, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
 
-        binding.tvProgramModalCancel.setOnClickListener {
-            showDiscardDialog(requireContext(), {})
+        binding.btnProgramCreateCancel.setOnClickListener {
+            val initializedProgramId = programsViewModel.stateFlow.value.initializedProgramId
+            if (initializedProgramId != null) {
+                showDiscardDialog(
+                    requireContext()
+                ) {
+                    programsViewModel.onEvent(ProgramsEvent.CancelCreate(initializedProgramId))
+                    findNavController().popBackStack()
+                }
+            }
         }
 
-        binding.tvProgramModalSave.setOnClickListener {
+        binding.btnProgramCreateSave.setOnClickListener {
             saveProgramData()
         }
+
+
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

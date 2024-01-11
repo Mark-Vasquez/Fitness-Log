@@ -24,7 +24,9 @@
             android:id="@+id/action_programFragment_to_programCreateFragment"
             app:destination="@id/programCreateFragment"
             app:enterAnim="@anim/slide_in_bottom"
-            app:popEnterAnim="@anim/slide_in_top" />
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
         android:id="@+id/programCreateFragment"

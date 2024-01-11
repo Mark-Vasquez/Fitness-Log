@@ -65,7 +65,7 @@ class ProgramsViewModel(
             }
 
             is ProgramsEvent.CancelCreate -> {
-                cancelCreate(event.program)
+                cancelCreate(event.programId)
             }
 
             is ProgramsEvent.Select -> {
@@ -148,6 +148,7 @@ class ProgramsViewModel(
                     _stateFlow.value = stateFlow.value.copy(
                         initializedProgramId = null
                     )
+                    programUseCases.editProgram(program)
                 }
 
                 is Resource.Error -> {
@@ -160,9 +161,9 @@ class ProgramsViewModel(
         }
     }
 
-    private fun cancelCreate(program: Program) {
+    private fun cancelCreate(programId: Long) {
         viewModelScope.launch {
-            when (val resource = programUseCases.deleteProgram(program)) {
+            when (val resource = programUseCases.deleteProgram(programId)) {
                 is Resource.Success -> {
                     _stateFlow.value = stateFlow.value.copy(
                         initializedProgramId = null

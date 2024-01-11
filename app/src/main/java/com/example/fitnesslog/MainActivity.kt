@@ -13,11 +13,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.fitnesslog.databinding.ActivityMainBinding
 import com.example.fitnesslog.program.ui.ProgramCreateFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     companion object {
         const val TAG = "MainActivity"
@@ -25,43 +28,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        // Creates ViewObject instance based on the ViewBinding xml class
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.findNavController()
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigation.setupWithNavController(navController)
+        setupNavigation()
 
-//        navController.addOnDestinationChangedListener { _, destination, _ ->
-//            when (destination.id) {
-//                R.id.programCreateFragment -> {
-//                    bottomNavigation.visibility = View.GONE
-//                }
-//
-//                else -> bottomNavigation.visibility = View.VISIBLE
-//            }
-//        }
-        supportFragmentManager.registerFragmentLifecycleCallbacks(object :
-            FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentViewCreated(
-                fm: FragmentManager,
-                f: Fragment,
-                v: View,
-                savedInstanceState: Bundle?
-            ) {
-
-                when (f) {
-                    is ProgramCreateFragment -> {
-                        bottomNavigation.visibility = View.GONE
-                    }
-
-                    else -> {
-                        bottomNavigation.visibility = View.VISIBLE
-                    }
-                }
-            }
-        }, true)
 
     }
 
@@ -82,5 +54,42 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    
+    private fun setupNavigation() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.findNavController()
+        val bottomNavigation: BottomNavigationView = binding.bottomNavigation
+        bottomNavigation.setupWithNavController(navController)
+
+
+        /**
+         * Replaces recommended addOnDestinationChangedListener from docs because the callback to hide
+         * bottomNav sometimes fires, too early, before creating and switching to the destination fragment
+         * view. This prevents the bottomNav flickering out before the new fragment can conceal the flicker.
+         * This calls the callback only when the 2nd destination View is created and on screen
+         */
+        supportFragmentManager.registerFragmentLifecycleCallbacks(object :
+            FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentViewCreated(
+                fm: FragmentManager,
+                fragment: Fragment,
+                v: View,
+                savedInstanceState: Bundle?
+            ) {
+
+                when (fragment) {
+                    is ProgramCreateFragment -> {
+                        bottomNavigation.visibility = View.GONE
+                    }
+
+                    else -> {
+                        bottomNavigation.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }, true)
     }
 }

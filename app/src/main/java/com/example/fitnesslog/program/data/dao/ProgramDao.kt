@@ -1,7 +1,6 @@
 package com.example.fitnesslog.program.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -39,8 +38,8 @@ interface ProgramDao {
     @Update
     suspend fun updateProgram(program: Program): Int
 
-    @Delete
-    suspend fun deleteProgram(program: Program): Int
+    @Query("DELETE FROM program WHERE id = :programId")
+    suspend fun deleteProgram(programId: Long)
 
 
     @Transaction
