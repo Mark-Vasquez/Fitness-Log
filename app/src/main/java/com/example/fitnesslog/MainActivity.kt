@@ -8,9 +8,12 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.fitnesslog.program.ui.ProgramCreateFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -30,11 +33,35 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setupWithNavController(navController)
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.programCreateFragment -> bottomNavigation.visibility = View.GONE
+//        navController.addOnDestinationChangedListener { _, destination, _ ->
+//            when (destination.id) {
+//                R.id.programCreateFragment -> {
+//                    bottomNavigation.visibility = View.GONE
+//                }
+//
+//                else -> bottomNavigation.visibility = View.VISIBLE
+//            }
+//        }
+        supportFragmentManager.registerFragmentLifecycleCallbacks(object :
+            FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentViewCreated(
+                fm: FragmentManager,
+                f: Fragment,
+                v: View,
+                savedInstanceState: Bundle?
+            ) {
+
+                when (f) {
+                    is ProgramCreateFragment -> {
+                        bottomNavigation.visibility = View.GONE
+                    }
+
+                    else -> {
+                        bottomNavigation.visibility = View.VISIBLE
+                    }
+                }
             }
-        }
+        }, true)
 
     }
 
