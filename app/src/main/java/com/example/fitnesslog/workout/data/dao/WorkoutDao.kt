@@ -34,16 +34,17 @@ interface WorkoutDao {
         // First assign invalid positions to the UI ordered list to avoid unique pair constraints
         var invalidPosition: Int = -1
         workoutTemplates.forEach { workoutTemplate ->
-            // Ensure all templates belong to programId
-            if (workoutTemplate.programId == programId) {
-                workoutTemplate.id?.let { updateWorkoutTemplatePosition(it, invalidPosition) }
-            }
+            val workoutTemplateId =
+                workoutTemplate.id ?: throw IllegalArgumentException("WorkoutTemplate ID is null!")
+            updateWorkoutTemplatePosition(workoutTemplateId, invalidPosition)
             invalidPosition--
         }
 
         // Then assign UI ordered positions by index
         workoutTemplates.forEachIndexed { index, workoutTemplate ->
-            workoutTemplate.id?.let { updateWorkoutTemplatePosition(it, index) }
+            val workoutTemplateId =
+                workoutTemplate.id ?: throw IllegalArgumentException("WorkoutTemplate ID is null!")
+            updateWorkoutTemplatePosition(workoutTemplateId, index)
         }
     }
 

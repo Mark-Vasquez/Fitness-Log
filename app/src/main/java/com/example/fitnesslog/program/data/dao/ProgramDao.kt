@@ -1,12 +1,12 @@
 package com.example.fitnesslog.program.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.fitnesslog.program.data.entity.Program
+import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,14 +14,32 @@ interface ProgramDao {
     @Insert
     suspend fun insertProgram(program: Program): Long
 
-    @Query("SELECT * FROM program ORDER BY is_selected DESC")
-    fun getAllProgramsOrderedBySelected(): Flow<List<Program>>
+    @Query(
+        """
+        SELECT 
+            program.id as id,
+            program.name as name,
+            program.scheduled_days as scheduledDays,
+            program.is_selected as isSelected,
+            program.rest_duration_seconds as restDurationSeconds,
+            COUNT(workout_template.program_id) as workoutCount
+        FROM program 
+        LEFT JOIN workout_template
+        ON program.id = workout_template.program_id
+        GROUP BY program.id
+        ORDER BY is_selected DESC
+        """
+    )
+    fun getAllProgramsOrderedBySelected(): Flow<List<ProgramWithWorkoutCount>>
+
+    @Query("SELECT * FROM program WHERE is_selected = 1")
+    fun getSelectedProgram(): Flow<Program>
 
     @Update
     suspend fun updateProgram(program: Program): Int
 
-    @Delete
-    suspend fun deleteProgram(program: Program): Int
+    @Query("DELETE FROM program WHERE id = :programId")
+    suspend fun deleteProgram(programId: Long)
 
 
     @Transaction
