@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/workoutsFragment"
-        android:name="com.example.fitnesslog.workout.ui.WorkoutHomeFragment"
+        android:name="com.example.fitnesslog.workout.ui.WorkoutsFragment"
         android:label="@string/label_workout"
         tools:layout="@layout/fragment_workouts" />
     <fragment

@@ -30,7 +30,7 @@ class FitnessLogApp : Application() {
         appModule = AppModuleImpl(this)
         programModule = ProgramModuleImpl(appModule.db, appModule.dataStore)
         workoutModule = WorkoutModuleImpl(appModule.db)
-        sharedModule = SharedModuleImpl()
+        sharedModule = SharedModuleImpl(appModule.db)
 
     }
 }

@@ -15,12 +15,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
 import com.example.fitnesslog.databinding.FragmentProgramsBinding
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
+import com.example.fitnesslog.shared.ui.SharedViewModel
 import kotlinx.coroutines.launch
 
 
 class ProgramsFragment : Fragment() {
 
+    // When you create an instance or find existing instance, its scoped to LifeCycleOwner of the parent activity
     private val programsViewModel: ProgramsViewModel by activityViewModels { ProgramsViewModel.Factory }
+    private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
     private lateinit var programsAdapter: ProgramsAdapter
     private lateinit var rvPrograms: RecyclerView
 
@@ -50,9 +53,13 @@ class ProgramsFragment : Fragment() {
 
         binding.fabCreateProgram.setOnClickListener {
             programsViewModel.onEvent(ProgramsEvent.ShowCreateForm)
-            // TODO: Navigate to ProgramCreateFragment with ref. to initializedProgramId
             val action = ProgramsFragmentDirections.actionProgramFragmentToProgramCreateFragment()
             findNavController().navigate(action)
+        }
+
+        binding.fabEditProgram.setOnClickListener {
+            val selectedProgram = sharedViewModel.stateFlow.value.selectedProgram
+            programsViewModel.onEvent(ProgramsEvent.ShowEditForm(selectedProgram!!))
         }
     }
 

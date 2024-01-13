@@ -1,5 +1,6 @@
 package com.example.fitnesslog.program.data.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -67,6 +68,7 @@ class ProgramRepositoryImpl(
     }
 
     override suspend fun updateProgram(program: Program): Resource<Int> {
+        Log.d("ProgramRepoImpl", program.name)
         return safeCall { dao.updateProgram(program) }
     }
 

@@ -10,15 +10,18 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesslog.databinding.ActivityMainBinding
 import com.example.fitnesslog.program.ui.ProgramCreateFragment
+import com.example.fitnesslog.shared.ui.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
+
 
     private lateinit var binding: ActivityMainBinding
 
@@ -31,7 +34,10 @@ class MainActivity : AppCompatActivity() {
         // Creates ViewObject instance based on the ViewBinding xml class
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val sharedViewModel =
+            ViewModelProvider(this, SharedViewModel.Factory)[SharedViewModel::class.java]
 
+//        sharedViewModel
         setupNavigation()
 
 
@@ -56,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    
+
     private fun setupNavigation() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment

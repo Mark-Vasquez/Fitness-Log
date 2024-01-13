@@ -1,6 +1,7 @@
 package com.example.fitnesslog.program.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,26 +26,14 @@ class ProgramCreateFragment : Fragment() {
     private var _binding: FragmentProgramCreateBinding? = null
     private val binding get() = _binding!!
 
+    companion object {
+        const val TAG = "ProgramCreateFragment"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            val initializedProgramId =
-                programsViewModel.stateFlow.value.initializedProgramId
-            if (initializedProgramId != null) {
-                showDiscardDialog(
-                    requireContext()
-                ) {
-                    programsViewModel.onEvent(
-                        ProgramsEvent.CancelCreate(
-                            initializedProgramId
-                        )
-                    )
-                    findNavController().popBackStack()
-                }
-            }
-
-        }
+        setBackButtonListener()
 
 
     }
@@ -77,6 +66,7 @@ class ProgramCreateFragment : Fragment() {
 
         binding.btnProgramCreateSave.setOnClickListener {
             saveProgramData()
+            findNavController().popBackStack()
         }
 
 
@@ -107,7 +97,9 @@ class ProgramCreateFragment : Fragment() {
     private fun saveProgramData() {
         // TODO: check whether save on edit or create
         val name = binding.etProgramName.text.toString()
+        Log.d(TAG, name)
         val program = Program(
+//            id = programsViewModel.stateFlow.value.initializedProgramId!!.toInt(),
             name = name,
             scheduledDays = getSelectedDays(),
             restDurationSeconds = 90,
@@ -130,5 +122,25 @@ class ProgramCreateFragment : Fragment() {
             if (chipSunday.isChecked) selectedDays.add(Day.SUNDAY)
         }
         return selectedDays
+    }
+
+    private fun setBackButtonListener() {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            val initializedProgramId =
+                programsViewModel.stateFlow.value.initializedProgramId
+            if (initializedProgramId != null) {
+                showDiscardDialog(
+                    requireContext()
+                ) {
+                    programsViewModel.onEvent(
+                        ProgramsEvent.CancelCreate(
+                            initializedProgramId
+                        )
+                    )
+                    findNavController().popBackStack()
+                }
+            }
+
+        }
     }
 }

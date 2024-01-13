@@ -1,5 +1,6 @@
 package com.example.fitnesslog.program.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -43,7 +44,6 @@ class ProgramsViewModel(
 
 
     init {
-        seedProgram()
         collectLatestPrograms()
     }
 
@@ -51,13 +51,12 @@ class ProgramsViewModel(
     fun onEvent(event: ProgramsEvent) {
         when (event) {
             is ProgramsEvent.ShowCreateForm -> {
-                viewModelScope.launch {
-                    showCreateForm()
-                }
+                showCreateForm()
+
             }
 
             is ProgramsEvent.ShowEditForm -> {
-
+                Log.d(TAG, event.program.name)
             }
 
             is ProgramsEvent.SaveCreate -> {
@@ -83,17 +82,6 @@ class ProgramsViewModel(
         }
     }
 
-
-    private fun seedProgram() {
-        viewModelScope.launch {
-            val resource = programUseCases.seedProgram()
-            if (resource is Resource.Error) {
-                _stateFlow.value = stateFlow.value.copy(
-                    error = resource.errorMessage ?: "Error Seeding Program on Launch"
-                )
-            }
-        }
-    }
 
     private fun collectLatestPrograms() {
         // Use collectLatest because only want to render latest version of list and disregard intermediate changes
@@ -142,13 +130,14 @@ class ProgramsViewModel(
     }
 
     private fun saveCreate(program: Program) {
+        Log.d(TAG, program.name)
         viewModelScope.launch {
             when (val resource = programUseCases.editProgram(program)) {
                 is Resource.Success -> {
                     _stateFlow.value = stateFlow.value.copy(
                         initializedProgramId = null
                     )
-                    programUseCases.editProgram(program)
+
                 }
 
                 is Resource.Error -> {

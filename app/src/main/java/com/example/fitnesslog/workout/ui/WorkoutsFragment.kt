@@ -1,7 +1,6 @@
 package com.example.fitnesslog.workout.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +9,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.fitnesslog.R
+import com.example.fitnesslog.databinding.FragmentWorkoutsBinding
 import com.example.fitnesslog.shared.ui.SharedViewModel
 import kotlinx.coroutines.launch
 
 
-class WorkoutHomeFragment : Fragment() {
+class WorkoutsFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
+    private var _binding: FragmentWorkoutsBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         const val TAG = "WorkoutHomeFragment"
@@ -26,14 +27,16 @@ class WorkoutHomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_workouts, container, false)
+        _binding = FragmentWorkoutsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 sharedViewModel.stateFlow.collect { sharedState ->
-                    Log.d(TAG, sharedState.selectedProgram?.name.toString())
+                    binding.tvWorkoutFragmentText.text =
+                        sharedState.selectedProgram?.name ?: sharedState.toString()
 
                 }
             }
