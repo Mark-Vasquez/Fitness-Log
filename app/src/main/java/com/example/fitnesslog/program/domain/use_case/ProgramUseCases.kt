@@ -13,5 +13,4 @@ data class ProgramUseCases(
     val editProgram: EditProgram,
     val deleteProgram: DeleteProgram,
     val selectProgram: SelectProgram,
-    val seedProgram: SeedProgram
 )

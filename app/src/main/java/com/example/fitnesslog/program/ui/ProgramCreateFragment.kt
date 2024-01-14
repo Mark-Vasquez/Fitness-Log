@@ -1,7 +1,6 @@
 package com.example.fitnesslog.program.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,18 +94,19 @@ class ProgramCreateFragment : Fragment() {
     }
 
     private fun saveProgramData() {
-        // TODO: check whether save on edit or create
-        val name = binding.etProgramName.text.toString()
-        Log.d(TAG, name)
-        val program = Program(
-//            id = programsViewModel.stateFlow.value.initializedProgramId!!.toInt(),
-            name = name,
-            scheduledDays = getSelectedDays(),
-            restDurationSeconds = 90,
-            createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis()
-        )
-        programsViewModel.onEvent(ProgramsEvent.SaveCreate(program))
+        val initializedProgramId = programsViewModel.stateFlow.value.initializedProgramId
+        if (initializedProgramId != null) {
+            val name = binding.etProgramName.text.toString()
+            val program = Program(
+                id = initializedProgramId.toInt(),
+                name = name,
+                scheduledDays = getSelectedDays(),
+                restDurationSeconds = 90,
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis()
+            )
+            programsViewModel.onEvent(ProgramsEvent.SaveCreate(program))
+        }
     }
 
     private fun getSelectedDays(): Set<Day> {

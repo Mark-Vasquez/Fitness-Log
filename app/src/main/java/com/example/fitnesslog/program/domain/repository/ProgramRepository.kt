@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ProgramRepository {
 
-    suspend fun seedDatabaseIfFirstRun(): Resource<Unit>
 
     suspend fun insertProgram(program: Program): Resource<Long>
 
