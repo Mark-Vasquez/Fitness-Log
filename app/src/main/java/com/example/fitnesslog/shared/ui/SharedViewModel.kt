@@ -44,6 +44,14 @@ class SharedViewModel(
         }
     }
 
+    fun onEvent(event: SharedEvent) {
+        when (event) {
+            is SharedEvent.ClearErrorState -> {
+                clearErrorState()
+            }
+        }
+    }
+
     private suspend fun seedInitialApplication() {
         val resource = sharedUseCases.seedInitialApplication()
         if (resource is Resource.Error) {
@@ -72,7 +80,7 @@ class SharedViewModel(
         }
     }
 
-    private fun clearError() {
+    private fun clearErrorState() {
         if (_stateFlow.value.error != null) {
             _stateFlow.value = stateFlow.value.copy(error = null)
         }

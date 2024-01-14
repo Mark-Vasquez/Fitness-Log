@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui
+package com.example.fitnesslog.program.ui.program_create
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -15,13 +16,15 @@ import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramCreateBinding
 import com.example.fitnesslog.program.data.entity.Program
+import com.example.fitnesslog.shared.ui.SharedViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 
 class ProgramCreateFragment : Fragment() {
 
-    private val programsViewModel: ProgramsViewModel by activityViewModels { ProgramsViewModel.Factory }
+    private val programCreateViewModel: ProgramCreateViewModel by viewModels { ProgramCreateViewModel.Factory }
+    private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
     private var _binding: FragmentProgramCreateBinding? = null
     private val binding get() = _binding!!
 
@@ -31,9 +34,7 @@ class ProgramCreateFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setBackButtonListener()
-
 
     }
 
@@ -52,12 +53,12 @@ class ProgramCreateFragment : Fragment() {
         observeViewModel()
 
         binding.btnProgramCreateCancel.setOnClickListener {
-            val initializedProgramId = programsViewModel.stateFlow.value.initializedProgramId
+            val initializedProgramId = programCreateViewModel.stateFlow.value.initializedProgramId
             if (initializedProgramId != null) {
                 showDiscardDialog(
                     requireContext()
                 ) {
-                    programsViewModel.onEvent(ProgramsEvent.CancelCreate(initializedProgramId))
+                    programCreateViewModel.onEvent(ProgramCreateEvent.Cancel(initializedProgramId))
                     findNavController().popBackStack()
                 }
             }
@@ -80,8 +81,8 @@ class ProgramCreateFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programsViewModel.stateFlow.collect { programState ->
-                    programState.error?.let {
+                programCreateViewModel.stateFlow.collect { programCreateState ->
+                    programCreateState.error?.let {
                         Snackbar.make(
                             requireView(),
                             it,
@@ -94,7 +95,7 @@ class ProgramCreateFragment : Fragment() {
     }
 
     private fun saveProgramData() {
-        val initializedProgramId = programsViewModel.stateFlow.value.initializedProgramId
+        val initializedProgramId = programCreateViewModel.stateFlow.value.initializedProgramId
         if (initializedProgramId != null) {
             val name = binding.etProgramName.text.toString()
             val program = Program(
@@ -105,7 +106,7 @@ class ProgramCreateFragment : Fragment() {
                 createdAt = System.currentTimeMillis(),
                 updatedAt = System.currentTimeMillis()
             )
-            programsViewModel.onEvent(ProgramsEvent.SaveCreate(program))
+            programCreateViewModel.onEvent(ProgramCreateEvent.Save(program))
         }
     }
 
@@ -124,16 +125,17 @@ class ProgramCreateFragment : Fragment() {
         return selectedDays
     }
 
+
     private fun setBackButtonListener() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             val initializedProgramId =
-                programsViewModel.stateFlow.value.initializedProgramId
+                programCreateViewModel.stateFlow.value.initializedProgramId
             if (initializedProgramId != null) {
                 showDiscardDialog(
                     requireContext()
                 ) {
-                    programsViewModel.onEvent(
-                        ProgramsEvent.CancelCreate(
+                    programCreateViewModel.onEvent(
+                        ProgramCreateEvent.Cancel(
                             initializedProgramId
                         )
                     )

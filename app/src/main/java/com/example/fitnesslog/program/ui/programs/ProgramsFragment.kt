@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui
+package com.example.fitnesslog.program.ui.programs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -21,8 +22,10 @@ import kotlinx.coroutines.launch
 
 class ProgramsFragment : Fragment() {
 
-    // When you create an instance or find existing instance, its scoped to LifeCycleOwner of the parent activity
-    private val programsViewModel: ProgramsViewModel by activityViewModels { ProgramsViewModel.Factory }
+    // Scoped to this specific fragment instance
+    private val programsViewModel: ProgramsViewModel by viewModels { ProgramsViewModel.Factory }
+
+    // Scoped to parent activity
     private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
     private lateinit var programsAdapter: ProgramsAdapter
     private lateinit var rvPrograms: RecyclerView
@@ -52,7 +55,6 @@ class ProgramsFragment : Fragment() {
         observeViewModel()
 
         binding.fabCreateProgram.setOnClickListener {
-            programsViewModel.onEvent(ProgramsEvent.ShowCreateForm)
             val action = ProgramsFragmentDirections.actionProgramFragmentToProgramCreateFragment()
             findNavController().navigate(action)
         }

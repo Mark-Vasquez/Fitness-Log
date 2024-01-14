@@ -7,22 +7,30 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesslog.databinding.ActivityMainBinding
-import com.example.fitnesslog.program.ui.ProgramCreateFragment
+import com.example.fitnesslog.program.ui.program_create.ProgramCreateFragment
+import com.example.fitnesslog.shared.ui.SharedEvent
 import com.example.fitnesslog.shared.ui.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
 
-
+    private val sharedViewModel: SharedViewModel by viewModels { SharedViewModel.Factory }
     private lateinit var binding: ActivityMainBinding
 
     companion object {
@@ -37,8 +45,8 @@ class MainActivity : AppCompatActivity() {
         val sharedViewModel =
             ViewModelProvider(this, SharedViewModel.Factory)[SharedViewModel::class.java]
 
-//        sharedViewModel
         setupNavigation()
+        observeSharedViewModel()
 
 
     }
@@ -97,5 +105,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }, true)
+    }
+
+    // Snackbar any errors here
+    private fun observeSharedViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                sharedViewModel.stateFlow.collect { sharedState ->
+                    sharedState.error?.let {
+                        Snackbar.make(
+                            binding.root,
+                            it,
+                            Snackbar.LENGTH_LONG
+                        ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                super.onDismissed(transientBottomBar, event)
+                                sharedViewModel.onEvent(SharedEvent.ClearErrorState)
+                            }
+                        }).show()
+                    }
+                }
+            }
+        }
     }
 }

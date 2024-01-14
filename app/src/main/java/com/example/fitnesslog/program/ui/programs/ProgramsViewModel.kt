@@ -1,12 +1,10 @@
-package com.example.fitnesslog.program.ui
+package com.example.fitnesslog.program.ui.programs
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.core.utils.Resource
-import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import com.example.fitnesslog.program.domain.use_case.ProgramUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,24 +54,14 @@ class ProgramsViewModel(
             }
 
             is ProgramsEvent.ShowEditForm -> {
-                Log.d(TAG, event.program.name)
+
             }
 
-            is ProgramsEvent.SaveCreate -> {
-                saveCreate(event.program)
-            }
-
-            is ProgramsEvent.CancelCreate -> {
-                cancelCreate(event.programId)
-            }
 
             is ProgramsEvent.Select -> {
                 selectProgram(event.program)
             }
-
-            is ProgramsEvent.Edit -> {
-
-            }
+            
 
             is ProgramsEvent.Delete -> {
 
@@ -126,45 +114,6 @@ class ProgramsViewModel(
                 }
             }
 
-        }
-    }
-
-    private fun saveCreate(program: Program) {
-        Log.d(TAG, program.name)
-        viewModelScope.launch {
-            when (val resource = programUseCases.editProgram(program)) {
-                is Resource.Success -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        initializedProgramId = null
-                    )
-
-                }
-
-                is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage ?: "Error Creating Program in `saveCreate`"
-                    )
-                }
-            }
-
-        }
-    }
-
-    private fun cancelCreate(programId: Long) {
-        viewModelScope.launch {
-            when (val resource = programUseCases.deleteProgram(programId)) {
-                is Resource.Success -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        initializedProgramId = null
-                    )
-                }
-
-                is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage ?: "Error Discard Program in `cancelCreate`"
-                    )
-                }
-            }
         }
     }
 

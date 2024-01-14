@@ -12,9 +12,8 @@ import com.example.fitnesslog.workout.domain.use_case.ReorderWorkoutTemplate
 import com.example.fitnesslog.workout.domain.use_case.WorkoutUseCases
 
 interface WorkoutModule {
-    val workoutDao: WorkoutDao
-    val workoutRepository: WorkoutRepository
     val workoutUseCases: WorkoutUseCases
+    val workoutDao: WorkoutDao
 }
 
 class WorkoutModuleImpl(private val db: FitnessLogDatabase) : WorkoutModule {
@@ -22,7 +21,7 @@ class WorkoutModuleImpl(private val db: FitnessLogDatabase) : WorkoutModule {
         db.workoutDao()
     }
 
-    override val workoutRepository: WorkoutRepository by lazy {
+    private val workoutRepository: WorkoutRepository by lazy {
         WorkoutRepositoryImpl(workoutDao)
     }
     override val workoutUseCases: WorkoutUseCases by lazy {
