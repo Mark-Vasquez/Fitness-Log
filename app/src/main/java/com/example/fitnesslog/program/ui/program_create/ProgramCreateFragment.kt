@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,8 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramCreateBinding
-import com.example.fitnesslog.program.data.entity.Program
-import com.example.fitnesslog.shared.ui.SharedViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -24,7 +21,6 @@ import kotlinx.coroutines.launch
 class ProgramCreateFragment : Fragment() {
 
     private val programCreateViewModel: ProgramCreateViewModel by viewModels { ProgramCreateViewModel.Factory }
-    private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
     private var _binding: FragmentProgramCreateBinding? = null
     private val binding get() = _binding!!
 
@@ -35,7 +31,6 @@ class ProgramCreateFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBackButtonListener()
-
     }
 
 
@@ -53,19 +48,20 @@ class ProgramCreateFragment : Fragment() {
         observeViewModel()
 
         binding.btnProgramCreateCancel.setOnClickListener {
-            val initializedProgramId = programCreateViewModel.stateFlow.value.initializedProgramId
-            if (initializedProgramId != null) {
-                showDiscardDialog(
-                    requireContext()
-                ) {
-                    programCreateViewModel.onEvent(ProgramCreateEvent.Cancel(initializedProgramId))
-                    findNavController().popBackStack()
-                }
+            showDiscardDialog(
+                requireContext()
+            ) {
+                programCreateViewModel.onEvent(ProgramCreateEvent.Cancel)
+                findNavController().popBackStack()
             }
         }
 
         binding.btnProgramCreateSave.setOnClickListener {
-            saveProgramData()
+            val name = binding.etProgramName.text.toString()
+            val scheduledDays = getSelectedDays()
+//            val restDurationSeconds = binding.
+            programCreateViewModel.updateProgramData(name, scheduledDays)
+            programCreateViewModel.onEvent(ProgramCreateEvent.Save)
             findNavController().popBackStack()
         }
 
@@ -94,21 +90,6 @@ class ProgramCreateFragment : Fragment() {
         }
     }
 
-    private fun saveProgramData() {
-        val initializedProgramId = programCreateViewModel.stateFlow.value.initializedProgramId
-        if (initializedProgramId != null) {
-            val name = binding.etProgramName.text.toString()
-            val program = Program(
-                id = initializedProgramId.toInt(),
-                name = name,
-                scheduledDays = getSelectedDays(),
-                restDurationSeconds = 90,
-                createdAt = System.currentTimeMillis(),
-                updatedAt = System.currentTimeMillis()
-            )
-            programCreateViewModel.onEvent(ProgramCreateEvent.Save(program))
-        }
-    }
 
     private fun getSelectedDays(): Set<Day> {
         val selectedDays = mutableSetOf<Day>()
@@ -128,20 +109,15 @@ class ProgramCreateFragment : Fragment() {
 
     private fun setBackButtonListener() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            val initializedProgramId =
-                programCreateViewModel.stateFlow.value.initializedProgramId
-            if (initializedProgramId != null) {
-                showDiscardDialog(
-                    requireContext()
-                ) {
-                    programCreateViewModel.onEvent(
-                        ProgramCreateEvent.Cancel(
-                            initializedProgramId
-                        )
-                    )
-                    findNavController().popBackStack()
-                }
+            showDiscardDialog(
+                requireContext()
+            ) {
+                programCreateViewModel.onEvent(
+                    ProgramCreateEvent.Cancel
+                )
+                findNavController().popBackStack()
             }
+
 
         }
     }

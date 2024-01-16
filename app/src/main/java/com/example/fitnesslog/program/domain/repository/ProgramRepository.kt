@@ -20,7 +20,7 @@ interface ProgramRepository {
 
     suspend fun updateProgram(program: Program): Resource<Int>
 
-    suspend fun deleteProgram(programId: Long): Resource<Unit>
+    suspend fun deleteProgram(programId: Int): Resource<Unit>
 
     suspend fun setProgramAsSelected(programId: Int): Resource<Unit>
 }

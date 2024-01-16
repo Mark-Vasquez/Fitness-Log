@@ -43,7 +43,7 @@ class ProgramRepositoryImpl(
         return safeCall { dao.updateProgram(program) }
     }
 
-    override suspend fun deleteProgram(programId: Long): Resource<Unit> {
+    override suspend fun deleteProgram(programId: Int): Resource<Unit> {
         return safeCall { dao.deleteProgram(programId) }
     }
 

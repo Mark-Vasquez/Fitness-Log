@@ -39,7 +39,7 @@ interface ProgramDao {
     suspend fun updateProgram(program: Program): Int
 
     @Query("DELETE FROM program WHERE id = :programId")
-    suspend fun deleteProgram(programId: Long)
+    suspend fun deleteProgram(programId: Int)
 
 
     @Transaction
