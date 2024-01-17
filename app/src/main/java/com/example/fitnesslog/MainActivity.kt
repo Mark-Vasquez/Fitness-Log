@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesslog.databinding.ActivityMainBinding
 import com.example.fitnesslog.program.ui.program_create.ProgramCreateFragment
+import com.example.fitnesslog.program.ui.program_create.ScheduleSelectModal
 import com.example.fitnesslog.shared.ui.SharedEvent
 import com.example.fitnesslog.shared.ui.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -96,6 +97,10 @@ class MainActivity : AppCompatActivity() {
 
                 when (fragment) {
                     is ProgramCreateFragment -> {
+                        bottomNavigation.visibility = View.GONE
+                    }
+
+                    is ScheduleSelectModal -> {
                         bottomNavigation.visibility = View.GONE
                     }
 

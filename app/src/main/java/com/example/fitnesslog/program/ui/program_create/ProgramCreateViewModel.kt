@@ -50,9 +50,14 @@ class ProgramCreateViewModel(
         }
     }
 
-    fun updateProgramData(name: String, scheduledDays: Set<Day> /*restDurationSeconds: Int*/) {
+    fun updateProgramName(name: String) {
         _stateFlow.value = stateFlow.value.copy(
             name = name,
+        )
+    }
+
+    fun updateProgramScheduledDays(scheduledDays: Set<Day>) {
+        _stateFlow.value = stateFlow.value.copy(
             scheduledDays = scheduledDays
         )
     }

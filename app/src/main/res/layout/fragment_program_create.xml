@@ -20,7 +20,7 @@
         style="@style/FragmentTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Program"
+        android:text="@string/create_program"
         tools:text="Create Program"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +40,7 @@
         style="@style/TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Program Name"
+        android:hint="@string/program_name"
         app:layout_constraintTop_toBottomOf="@id/tvProgramCreateTitle">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -52,83 +52,42 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <LinearLayout
+        android:id="@+id/btnScheduleSelect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        android:divider="@drawable/outline_fitness_center_24"
+        app:layout_constraintStart_toStartOf="@id/tilProgramName"
+        app:layout_constraintTop_toBottomOf="@+id/tilProgramName"
+        app:layout_constraintEnd_toEndOf="@id/tilProgramName">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:layout_weight="1"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:text="@string/schedule" />
+
+        <TextView
+            android:id="@+id/scheduledDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:layout_weight="1"
+            android:text="Mo/Tu/We/Th/Fr/Sa/Su" />
+    </LinearLayout>
+
+
     <TextView
-        android:id="@+id/tvScheduleLabel"
+        android:id="@+id/tvTimerLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Select Schedule"
+        android:text="@string/timer"
         android:textAppearance="?attr/textAppearanceLabelLarge"
-        app:layout_constraintStart_toStartOf="@id/tilProgramName"
-        app:layout_constraintTop_toBottomOf="@+id/tilProgramName" />
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/cgSchedule"
-        style="@style/Widget.Material3.Chip.Filter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:chipSpacingVertical="0dp"
-        app:layout_constraintEnd_toEndOf="@id/tilProgramName"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/tvScheduleLabel"
-        app:layout_constraintTop_toBottomOf="@+id/tvScheduleLabel">
-
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipMonday"
-            style="@style/ChipFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/monday" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipTuesday"
-            style="@style/ChipFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/tuesday" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipWednesday"
-            style="@style/ChipFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/wednesday" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipThursday"
-            style="@style/ChipFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/thursday" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipFriday"
-            style="@style/ChipFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/friday" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipSaturday"
-            style="@style/ChipFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/saturday" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipSunday"
-            style="@style/ChipFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sunday" />
-
-
-    </com.google.android.material.chip.ChipGroup>
+        app:layout_constraintStart_toStartOf="@id/btnScheduleSelect"
+        app:layout_constraintTop_toBottomOf="@+id/btnScheduleSelect" />
 </androidx.constraintlayout.widget.ConstraintLayout>

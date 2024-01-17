@@ -32,5 +32,15 @@
         android:id="@+id/programCreateFragment"
         android:name="com.example.fitnesslog.program.ui.program_create.ProgramCreateFragment"
         android:label="@string/label_create_program"
-        tools:layout="@layout/fragment_program_create" />
+        tools:layout="@layout/fragment_program_create">
+        <action
+            android:id="@+id/action_programCreateFragment_to_scheduleSelectModal"
+            app:destination="@id/scheduleSelectModal"
+            app:popUpTo="@id/scheduleSelectModal" />
+    </fragment>
+    <dialog
+        android:id="@+id/scheduleSelectModal"
+        android:name="com.example.fitnesslog.program.ui.program_create.ScheduleSelectModal"
+        android:label="ScheduleSelectModal"
+        tools:layout="@layout/modal_bottom_sheet_schedule_select" />
 </navigation>

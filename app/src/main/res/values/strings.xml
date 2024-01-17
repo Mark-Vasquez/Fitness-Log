@@ -24,4 +24,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="label_create_program">Create Program</string>
+    <string name="timer">Timer</string>
+    <string name="select_schedule">Select Schedule</string>
+    <string name="program_name">Program Name</string>
+    <string name="create_program">Create Program</string>
+    <string name="schedule">Schedule</string>
 </resources>
