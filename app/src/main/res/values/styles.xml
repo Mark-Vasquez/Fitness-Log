@@ -6,6 +6,10 @@
         <item name="android:textAppearance">?attr/textAppearanceTitleLarge</item>
     </style>
 
+    <style name="ModalTitle">
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+    </style>
+
     <style name="CancelButton">
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:paddingVertical">25dp</item>
@@ -42,9 +46,11 @@
         <item name="elevation">1dp</item>
     </style>
 
+    <style name="ModalBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheet</item>
+    </style>
+
     <style name="ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
         <!-- Apply attributes here -->
     </style>
-
-
 </resources>
