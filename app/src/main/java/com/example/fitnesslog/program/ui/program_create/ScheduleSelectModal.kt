@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
 import com.example.fitnesslog.databinding.ModalBottomSheetScheduleSelectBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class ScheduleSelectModal : BottomSheetDialogFragment() {
@@ -21,6 +22,12 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
 
     companion object {
         const val TAG = "ScheduleSelectModal"
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val behavior = BottomSheetBehavior.from(requireView().parent as View)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
