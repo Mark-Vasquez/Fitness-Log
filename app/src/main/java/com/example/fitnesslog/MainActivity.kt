@@ -96,13 +96,11 @@ class MainActivity : AppCompatActivity() {
             ) {
 
                 when (fragment) {
-                    is ProgramCreateFragment -> {
-                        bottomNavigation.visibility = View.GONE
-                    }
-
+                    is ProgramCreateFragment,
                     is ScheduleSelectModal -> {
                         bottomNavigation.visibility = View.GONE
                     }
+
 
                     else -> {
                         bottomNavigation.visibility = View.VISIBLE

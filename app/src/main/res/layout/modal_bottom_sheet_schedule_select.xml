@@ -26,6 +26,7 @@
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/cgScheduleSelect"
         android:layout_width="0dp"
+        app:selectionRequired="true"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="40dp"
@@ -40,31 +41,26 @@
         <com.google.android.material.chip.Chip
             android:id="@+id/chipMondayScheduleSelect"
             style="@style/ChipFilter"
-            android:checked="true"
             android:text="@string/monday" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipTuesdayScheduleSelect"
             style="@style/ChipFilter"
-            android:checked="true"
             android:text="@string/tuesday" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipWednesdayScheduleSelect"
             style="@style/ChipFilter"
-            android:checked="true"
             android:text="@string/wednesday" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipThursdayScheduleSelect"
             style="@style/ChipFilter"
-            android:checked="true"
             android:text="@string/thursday" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipFridayScheduleSelect"
             style="@style/ChipFilter"
-            android:checked="true"
             android:text="@string/friday" />
 
         <com.google.android.material.chip.Chip

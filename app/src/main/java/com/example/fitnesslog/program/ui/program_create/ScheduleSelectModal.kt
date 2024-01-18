@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
 import com.example.fitnesslog.databinding.ModalBottomSheetScheduleSelectBinding
@@ -15,9 +16,16 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
 
     private var _binding: ModalBottomSheetScheduleSelectBinding? = null
     private val binding: ModalBottomSheetScheduleSelectBinding get() = _binding!!
+    private val args: ScheduleSelectModalArgs by navArgs()
+    private lateinit var formerScheduledDays: Set<Day>
 
     companion object {
         const val TAG = "ScheduleSelectModal"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        formerScheduledDays = args.scheduledDays as Set<Day>
     }
 
     override fun onCreateView(
@@ -31,7 +39,7 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        checkmarkFormerDays()
     }
 
     override fun onDestroyView() {
@@ -41,10 +49,23 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        // Pass a Set<Day> back to the parent fragment via savedStateHandle using a key
         findNavController().previousBackStackEntry?.savedStateHandle?.set(
             SCHEDULED_DAYS,
             getSelectedDays()
         )
+    }
+
+    private fun checkmarkFormerDays() {
+        binding.run {
+            chipMondayScheduleSelect.isChecked = Day.MONDAY in formerScheduledDays
+            chipTuesdayScheduleSelect.isChecked = Day.TUESDAY in formerScheduledDays
+            chipWednesdayScheduleSelect.isChecked = Day.WEDNESDAY in formerScheduledDays
+            chipThursdayScheduleSelect.isChecked = Day.THURSDAY in formerScheduledDays
+            chipFridayScheduleSelect.isChecked = Day.FRIDAY in formerScheduledDays
+            chipSaturdayScheduleSelect.isChecked = Day.SATURDAY in formerScheduledDays
+            chipSundayScheduleSelect.isChecked = Day.SUNDAY in formerScheduledDays
+        }
     }
 
     private fun getSelectedDays(): Set<Day> {

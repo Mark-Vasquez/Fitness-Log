@@ -21,6 +21,7 @@ import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramCreateBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 
 class ProgramCreateFragment : Fragment() {
@@ -71,13 +72,15 @@ class ProgramCreateFragment : Fragment() {
             handleModalResult<Set<Day>>(
                 R.id.programCreateFragment,
                 SCHEDULED_DAYS
-            ) { scheduleDays ->
-                binding.tvScheduledDaysProgramCreate.text = scheduleDays.toString()
+            ) { scheduledDays ->
+                programCreateViewModel.updateProgramScheduledDays(scheduledDays!!)
             }
 
 
             val action =
-                ProgramCreateFragmentDirections.actionProgramCreateFragmentToScheduleSelectModal()
+                ProgramCreateFragmentDirections.actionProgramCreateFragmentToScheduleSelectModal(
+                    programCreateViewModel.stateFlow.value.scheduledDays as Serializable
+                )
             findNavController().navigate(action)
         }
 
@@ -110,9 +113,28 @@ class ProgramCreateFragment : Fragment() {
                             Snackbar.LENGTH_LONG
                         )
                     }
+
+                    updateScheduledDays(programCreateState.scheduledDays)
                 }
             }
         }
+    }
+
+    private fun updateScheduledDays(scheduledDays: Set<Day>) {
+        if (scheduledDays.size == 1) {
+            binding.tvScheduledDaysProgramCreate.text = scheduledDays.first().value
+            return
+        }
+
+        val selectedScheduleString = mutableListOf<String>()
+        if (Day.MONDAY in scheduledDays) selectedScheduleString.add("Mo")
+        if (Day.TUESDAY in scheduledDays) selectedScheduleString.add("Tu")
+        if (Day.WEDNESDAY in scheduledDays) selectedScheduleString.add("We")
+        if (Day.THURSDAY in scheduledDays) selectedScheduleString.add("Th")
+        if (Day.FRIDAY in scheduledDays) selectedScheduleString.add("Fr")
+        if (Day.SATURDAY in scheduledDays) selectedScheduleString.add("Sa")
+        if (Day.SUNDAY in scheduledDays) selectedScheduleString.add("Su")
+        binding.tvScheduledDaysProgramCreate.text = selectedScheduleString.joinToString("/")
     }
 
     private fun <T> handleModalResult(
