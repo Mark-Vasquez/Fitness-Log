@@ -53,7 +53,7 @@ class ProgramCreateFragment : Fragment() {
         observeViewModel()
 
 
-        binding.btnProgramCreateCancel.setOnClickListener {
+        binding.btnCancelProgramCreate.setOnClickListener {
             showDiscardDialog(
                 requireContext()
             ) {
@@ -62,17 +62,17 @@ class ProgramCreateFragment : Fragment() {
             }
         }
 
-        binding.btnProgramCreateSave.setOnClickListener {
+        binding.btnSaveProgramCreate.setOnClickListener {
             programCreateViewModel.onEvent(ProgramCreateEvent.Save)
             findNavController().popBackStack()
         }
 
-        binding.btnScheduleSelect.setOnClickListener {
+        binding.btnScheduleProgramCreate.setOnClickListener {
             handleModalResult<Set<Day>>(
                 R.id.programCreateFragment,
                 SCHEDULED_DAYS
             ) { scheduleDays ->
-                binding.scheduledDays.text = scheduleDays.toString()
+                binding.tvScheduledDaysProgramCreate.text = scheduleDays.toString()
             }
 
 
@@ -81,11 +81,11 @@ class ProgramCreateFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        binding.etProgramName.addTextChangedListener(object : TextWatcher {
+        binding.etNameProgramCreate.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                val name = binding.etProgramName.text.toString()
+                val name = binding.etNameProgramCreate.text.toString()
                 programCreateViewModel.updateProgramName(name)
             }
         })

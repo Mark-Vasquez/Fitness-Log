@@ -41,9 +41,29 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="ActionInfoButton" parent="@style/Widget.Material3.Button.ElevatedButton">
-        <item name="shapeAppearance">?attr/shapeAppearanceCornerSmall</item>
-        <item name="elevation">1dp</item>
+    <style name="ActionInfoButton">
+        <item name="android:clickable">true</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingVertical">10dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:background">@drawable/action_info_button</item>
+    </style>
+
+    <style name="ActionInfoTitle">
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+        <item name="android:textColor">?attr/colorOnSecondaryContainer</item>
+        <item name="android:layout_gravity">center_vertical|start</item>
+        <item name="android:gravity">center_vertical|start</item>
+    </style>
+
+    <style name="ActionInfoContent">
+        <item name="android:textAppearance">?attr/textAppearanceTitleSmall</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:layout_gravity">center_vertical|end</item>
+        <item name="android:gravity">center_vertical|end</item>
     </style>
 
     <style name="ModalBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">

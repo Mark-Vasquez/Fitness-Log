@@ -35,7 +35,7 @@ class WorkoutsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 sharedViewModel.stateFlow.collect { sharedState ->
-                    binding.tvWorkoutFragmentText.text =
+                    binding.tvWorkout.text =
                         sharedState.selectedProgram?.name ?: sharedState.toString()
 
                 }

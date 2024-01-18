@@ -7,72 +7,73 @@
     tools:context=".program.ui.program_create.ScheduleSelectModal">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-        android:id="@+id/dragHandleSchedule"
+        android:id="@+id/dragHandleScheduleSelect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvScheduleTitle"
+        android:id="@+id/tvTitleScheduleSelect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/ModalTitle"
         android:text="@string/schedule"
-        app:layout_constraintTop_toBottomOf="@id/dragHandleSchedule"
-        app:layout_constraintBottom_toTopOf="@id/cgSchedule"
+        app:layout_constraintTop_toBottomOf="@id/dragHandleScheduleSelect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
 
     <com.google.android.material.chip.ChipGroup
-        android:id="@+id/cgSchedule"
+        android:id="@+id/cgScheduleSelect"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginHorizontal="40dp"
         app:chipSpacingVertical="0dp"
-        app:layout_constraintTop_toBottomOf="@id/tvScheduleTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvTitleScheduleSelect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chipMonday"
+            android:id="@+id/chipMondayScheduleSelect"
             style="@style/ChipFilter"
             android:checked="true"
             android:text="@string/monday" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chipTuesday"
+            android:id="@+id/chipTuesdayScheduleSelect"
             style="@style/ChipFilter"
             android:checked="true"
             android:text="@string/tuesday" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chipWednesday"
+            android:id="@+id/chipWednesdayScheduleSelect"
             style="@style/ChipFilter"
             android:checked="true"
             android:text="@string/wednesday" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chipThursday"
+            android:id="@+id/chipThursdayScheduleSelect"
             style="@style/ChipFilter"
             android:checked="true"
             android:text="@string/thursday" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chipFriday"
+            android:id="@+id/chipFridayScheduleSelect"
             style="@style/ChipFilter"
             android:checked="true"
             android:text="@string/friday" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chipSaturday"
+            android:id="@+id/chipSaturdayScheduleSelect"
             style="@style/ChipFilter"
             android:text="@string/saturday" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chipSunday"
+            android:id="@+id/chipSundayScheduleSelect"
             style="@style/ChipFilter"
             android:text="@string/sunday" />
 

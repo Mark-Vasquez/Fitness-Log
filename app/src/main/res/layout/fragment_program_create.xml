@@ -7,16 +7,16 @@
     tools:context=".program.ui.program_create.ProgramCreateFragment">
 
     <TextView
-        android:id="@+id/btnProgramCreateCancel"
+        android:id="@+id/btnCancelProgramCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/CancelButton"
-        app:layout_constraintTop_toTopOf="@+id/tvProgramCreateTitle"
-        app:layout_constraintBottom_toBottomOf="@+id/tvProgramCreateTitle"
+        app:layout_constraintTop_toTopOf="@+id/tvTitleProgramCreate"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitleProgramCreate"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/tvProgramCreateTitle"
+        android:id="@+id/tvTitleProgramCreate"
         style="@style/FragmentTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,24 +27,24 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/btnProgramCreateSave"
+        android:id="@+id/btnSaveProgramCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/SaveButton"
-        app:layout_constraintTop_toTopOf="@+id/tvProgramCreateTitle"
-        app:layout_constraintBottom_toBottomOf="@id/tvProgramCreateTitle"
+        app:layout_constraintTop_toTopOf="@+id/tvTitleProgramCreate"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitleProgramCreate"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilProgramName"
+        android:id="@+id/tilNameProgramCreate"
         style="@style/TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/program_name"
-        app:layout_constraintTop_toBottomOf="@id/tvProgramCreateTitle">
+        app:layout_constraintTop_toBottomOf="@id/tvTitleProgramCreate">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etProgramName"
+            android:id="@+id/etNameProgramCreate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textNoSuggestions"
@@ -53,41 +53,51 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
-        android:id="@+id/btnScheduleSelect"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/btnScheduleProgramCreate"
+        style="@style/ActionInfoButton"
         android:layout_marginTop="24dp"
-        android:orientation="horizontal"
-        android:divider="@drawable/outline_fitness_center_24"
-        app:layout_constraintStart_toStartOf="@id/tilProgramName"
-        app:layout_constraintTop_toBottomOf="@+id/tilProgramName"
-        app:layout_constraintEnd_toEndOf="@id/tilProgramName">
+        app:layout_constraintStart_toStartOf="@id/tilNameProgramCreate"
+        app:layout_constraintTop_toBottomOf="@+id/tilNameProgramCreate"
+        app:layout_constraintEnd_toEndOf="@id/tilNameProgramCreate">
 
         <TextView
+            style="@style/ActionInfoTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="start"
             android:layout_weight="1"
-            android:textAppearance="?attr/textAppearanceLabelLarge"
             android:text="@string/schedule" />
 
         <TextView
-            android:id="@+id/scheduledDays"
+            android:id="@+id/tvScheduledDaysProgramCreate"
+            style="@style/ActionInfoContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end"
             android:layout_weight="1"
             android:text="Mo/Tu/We/Th/Fr/Sa/Su" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/btnRestTimeProgramCreate"
+        style="@style/ActionInfoButton"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@id/btnScheduleProgramCreate"
+        app:layout_constraintTop_toBottomOf="@+id/btnScheduleProgramCreate"
+        app:layout_constraintEnd_toEndOf="@+id/btnScheduleProgramCreate">
 
-    <TextView
-        android:id="@+id/tvTimerLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/timer"
-        android:textAppearance="?attr/textAppearanceLabelLarge"
-        app:layout_constraintStart_toStartOf="@id/btnScheduleSelect"
-        app:layout_constraintTop_toBottomOf="@+id/btnScheduleSelect" />
+        <TextView
+            style="@style/ActionInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rest Time" />
+
+        <TextView
+            android:id="@+id/tvRestTimeProgramCreate"
+            style="@style/ActionInfoContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1m30s" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

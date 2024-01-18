@@ -51,13 +51,13 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
         val selectedDays = mutableSetOf<Day>()
 
         binding.run {
-            if (chipMonday.isChecked) selectedDays.add(Day.MONDAY)
-            if (chipTuesday.isChecked) selectedDays.add(Day.TUESDAY)
-            if (chipWednesday.isChecked) selectedDays.add(Day.WEDNESDAY)
-            if (chipThursday.isChecked) selectedDays.add(Day.THURSDAY)
-            if (chipFriday.isChecked) selectedDays.add(Day.FRIDAY)
-            if (chipSaturday.isChecked) selectedDays.add(Day.SATURDAY)
-            if (chipSunday.isChecked) selectedDays.add(Day.SUNDAY)
+            if (chipMondayScheduleSelect.isChecked) selectedDays.add(Day.MONDAY)
+            if (chipTuesdayScheduleSelect.isChecked) selectedDays.add(Day.TUESDAY)
+            if (chipWednesdayScheduleSelect.isChecked) selectedDays.add(Day.WEDNESDAY)
+            if (chipThursdayScheduleSelect.isChecked) selectedDays.add(Day.THURSDAY)
+            if (chipFridayScheduleSelect.isChecked) selectedDays.add(Day.FRIDAY)
+            if (chipSaturdayScheduleSelect.isChecked) selectedDays.add(Day.SATURDAY)
+            if (chipSundayScheduleSelect.isChecked) selectedDays.add(Day.SUNDAY)
         }
         return selectedDays
     }
