@@ -47,18 +47,36 @@ class ProgramCreateViewModel(
             is ProgramCreateEvent.Cancel -> {
                 cancelCreate()
             }
+
+            is ProgramCreateEvent.UpdateName -> {
+                updateName(event.name)
+            }
+
+            is ProgramCreateEvent.UpdateScheduledDays -> {
+                updateScheduledDays(event.scheduledDays)
+            }
+
+            is ProgramCreateEvent.UpdateRestDurationSeconds -> {
+                updateRestDurationSeconds(event.restDurationSeconds)
+            }
         }
     }
 
-    fun updateProgramName(name: String) {
+    private fun updateName(name: String) {
         _stateFlow.value = stateFlow.value.copy(
             name = name,
         )
     }
 
-    fun updateProgramScheduledDays(scheduledDays: Set<Day>) {
+    private fun updateScheduledDays(scheduledDays: Set<Day>) {
         _stateFlow.value = stateFlow.value.copy(
             scheduledDays = scheduledDays
+        )
+    }
+
+    private fun updateRestDurationSeconds(restDurationSeconds: Int) {
+        _stateFlow.value = stateFlow.value.copy(
+            restDurationSeconds = restDurationSeconds
         )
     }
 

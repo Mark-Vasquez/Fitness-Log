@@ -53,5 +53,9 @@
         android:id="@+id/restTimeSelectDialog"
         android:name="com.example.fitnesslog.program.ui.program_create.RestTimeSelectDialog"
         android:label="RestTimeSelectDialog"
-        tools:layout="@layout/dialog_rest_time_select" />
+        tools:layout="@layout/dialog_rest_time_select">
+        <argument
+            android:name="restDurationSeconds"
+            app:argType="integer" />
+    </dialog>
 </navigation>

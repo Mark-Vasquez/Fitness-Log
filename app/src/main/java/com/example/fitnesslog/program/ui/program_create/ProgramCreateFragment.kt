@@ -16,7 +16,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
+import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
 import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
+import com.example.fitnesslog.core.utils.secondsToMinutesAndSeconds
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramCreateBinding
 import com.google.android.material.snackbar.Snackbar
@@ -63,6 +65,7 @@ class ProgramCreateFragment : Fragment() {
             }
         }
 
+
         binding.btnSaveProgramCreate.setOnClickListener {
             programCreateViewModel.onEvent(ProgramCreateEvent.Save)
             findNavController().popBackStack()
@@ -74,29 +77,45 @@ class ProgramCreateFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val name = binding.etNameProgramCreate.text.toString()
-                programCreateViewModel.updateProgramName(name)
+                programCreateViewModel.onEvent(ProgramCreateEvent.UpdateName(name))
             }
         })
 
+
         binding.btnScheduleProgramCreate.setOnClickListener {
+            // To retrieve data back from modal child to this parent fragment via navigation
             handleModalResult<Set<Day>>(
                 R.id.programCreateFragment,
                 SCHEDULED_DAYS
             ) { scheduledDays ->
-                programCreateViewModel.updateProgramScheduledDays(scheduledDays!!)
+                programCreateViewModel.onEvent(ProgramCreateEvent.UpdateScheduledDays(scheduledDays!!))
             }
 
-
+            // To pass data to the modal child via navigation
             val action =
                 ProgramCreateFragmentDirections.actionProgramCreateFragmentToScheduleSelectModal(
-                    programCreateViewModel.stateFlow.value.scheduledDays as Serializable
+                    scheduledDays = programCreateViewModel.stateFlow.value.scheduledDays as Serializable
                 )
             findNavController().navigate(action)
         }
 
+
         binding.btnRestTimeProgramCreate.setOnClickListener {
+            handleModalResult<Int>(
+                R.id.programCreateFragment,
+                REST_DURATION_SECONDS
+            ) { restDurationSeconds ->
+                programCreateViewModel.onEvent(
+                    ProgramCreateEvent.UpdateRestDurationSeconds(
+                        restDurationSeconds!!
+                    )
+                )
+            }
+
             val action =
-                ProgramCreateFragmentDirections.actionProgramCreateFragmentToRestTimeSelectDialog()
+                ProgramCreateFragmentDirections.actionProgramCreateFragmentToRestTimeSelectDialog(
+                    restDurationSeconds = programCreateViewModel.stateFlow.value.restDurationSeconds
+                )
             findNavController().navigate(action)
         }
 
@@ -112,8 +131,8 @@ class ProgramCreateFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programCreateViewModel.stateFlow.collect { programCreateState ->
-                    programCreateState.error?.let {
+                programCreateViewModel.stateFlow.collect { state ->
+                    state.error?.let {
                         Snackbar.make(
                             requireView(),
                             it,
@@ -121,18 +140,18 @@ class ProgramCreateFragment : Fragment() {
                         )
                     }
 
-                    updateScheduledDays(programCreateState.scheduledDays)
+                    updateScheduledDaysView(state.scheduledDays)
+                    updateRestDurationView(state.restDurationSeconds)
                 }
             }
         }
     }
 
-    private fun updateScheduledDays(scheduledDays: Set<Day>) {
+    private fun updateScheduledDaysView(scheduledDays: Set<Day>) {
         if (scheduledDays.size == 1) {
             binding.tvScheduledDaysProgramCreate.text = scheduledDays.first().value
             return
         }
-
         val selectedScheduleString = mutableListOf<String>()
         if (Day.MONDAY in scheduledDays) selectedScheduleString.add("Mo")
         if (Day.TUESDAY in scheduledDays) selectedScheduleString.add("Tu")
@@ -142,6 +161,15 @@ class ProgramCreateFragment : Fragment() {
         if (Day.SATURDAY in scheduledDays) selectedScheduleString.add("Sa")
         if (Day.SUNDAY in scheduledDays) selectedScheduleString.add("Su")
         binding.tvScheduledDaysProgramCreate.text = selectedScheduleString.joinToString("/")
+    }
+
+    private fun updateRestDurationView(seconds: Int) {
+        val (minutes, seconds) = secondsToMinutesAndSeconds(seconds)
+        val durationString =
+            if (minutes == 0) "${seconds}s"
+            else if (seconds == 0) "${minutes}m"
+            else "${minutes}m${seconds}s"
+        binding.tvRestTimeProgramCreate.text = durationString
     }
 
     private fun <T> handleModalResult(
@@ -162,7 +190,7 @@ class ProgramCreateFragment : Fragment() {
                 && navBackStackEntry.savedStateHandle.contains(savedStateHandleKey)
             ) {
                 val result = navBackStackEntry.savedStateHandle.get<T>(savedStateHandleKey);
-                // Do something with the result
+                // Do something with the result via the passed in lambda
                 handleResult(result)
             }
         }
