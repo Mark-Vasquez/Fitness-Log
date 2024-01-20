@@ -35,8 +35,10 @@
         tools:layout="@layout/fragment_program_create">
         <action
             android:id="@+id/action_programCreateFragment_to_scheduleSelectModal"
-            app:destination="@id/scheduleSelectModal"
-            app:popUpTo="@id/scheduleSelectModal" />
+            app:destination="@id/scheduleSelectModal" />
+        <action
+            android:id="@+id/action_programCreateFragment_to_restTimeSelectDialog"
+            app:destination="@id/restTimeSelectDialog" />
     </fragment>
     <dialog
         android:id="@+id/scheduleSelectModal"
@@ -47,4 +49,9 @@
             android:name="scheduledDays"
             app:argType="java.io.Serializable" />
     </dialog>
+    <dialog
+        android:id="@+id/restTimeSelectDialog"
+        android:name="com.example.fitnesslog.program.ui.program_create.RestTimeSelectDialog"
+        android:label="RestTimeSelectDialog"
+        tools:layout="@layout/dialog_rest_time_select" />
 </navigation>

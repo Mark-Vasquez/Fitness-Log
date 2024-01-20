@@ -11,7 +11,9 @@ import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
 import com.example.fitnesslog.databinding.ModalBottomSheetScheduleSelectBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
 
 class ScheduleSelectModal : BottomSheetDialogFragment() {
 
@@ -24,11 +26,6 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
         const val TAG = "ScheduleSelectModal"
     }
 
-    override fun onStart() {
-        super.onStart()
-        val behavior = BottomSheetBehavior.from(requireView().parent as View)
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +43,10 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val behavior = (dialog as BottomSheetDialog).behavior
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
         checkmarkFormerDays()
+
     }
 
     override fun onDestroyView() {

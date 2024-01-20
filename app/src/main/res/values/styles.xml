@@ -10,6 +10,16 @@
         <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
     </style>
 
+    <style name="DialogTitle">
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+        <item name="android:layout_marginTop">24dp</item>
+    </style>
+
+    <style name="TimerComponentText">
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+    </style>
+
+
     <style name="CancelButton">
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:paddingVertical">25dp</item>

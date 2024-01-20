@@ -68,6 +68,16 @@ class ProgramCreateFragment : Fragment() {
             findNavController().popBackStack()
         }
 
+
+        binding.etNameProgramCreate.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val name = binding.etNameProgramCreate.text.toString()
+                programCreateViewModel.updateProgramName(name)
+            }
+        })
+
         binding.btnScheduleProgramCreate.setOnClickListener {
             handleModalResult<Set<Day>>(
                 R.id.programCreateFragment,
@@ -84,14 +94,11 @@ class ProgramCreateFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        binding.etNameProgramCreate.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                val name = binding.etNameProgramCreate.text.toString()
-                programCreateViewModel.updateProgramName(name)
-            }
-        })
+        binding.btnRestTimeProgramCreate.setOnClickListener {
+            val action =
+                ProgramCreateFragmentDirections.actionProgramCreateFragmentToRestTimeSelectDialog()
+            findNavController().navigate(action)
+        }
 
 
     }
