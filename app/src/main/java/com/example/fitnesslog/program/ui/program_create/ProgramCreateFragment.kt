@@ -19,6 +19,7 @@ import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
 import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
 import com.example.fitnesslog.core.utils.secondsToMinutesAndSeconds
+import com.example.fitnesslog.core.utils.setDebouncedOnClickListener
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramCreateBinding
 import com.google.android.material.snackbar.Snackbar
@@ -82,7 +83,7 @@ class ProgramCreateFragment : Fragment() {
         })
 
 
-        binding.btnScheduleProgramCreate.setOnClickListener {
+        binding.btnScheduleProgramCreate.setDebouncedOnClickListener {
             // To retrieve data back from modal child to this parent fragment via navigation
             handleModalResult<Set<Day>>(
                 R.id.programCreateFragment,
@@ -100,7 +101,7 @@ class ProgramCreateFragment : Fragment() {
         }
 
 
-        binding.btnRestTimeProgramCreate.setOnClickListener {
+        binding.btnRestTimeProgramCreate.setDebouncedOnClickListener {
             handleModalResult<Int>(
                 R.id.programCreateFragment,
                 REST_DURATION_SECONDS

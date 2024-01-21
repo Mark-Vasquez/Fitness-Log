@@ -98,6 +98,7 @@ class ProgramCreateViewModel(
         }
     }
 
+    // Calls an edit to the already initialized Program with the user inputs
     private fun saveCreate() {
         val initializedProgramId = stateFlow.value.initializedProgramId
         if (initializedProgramId == null) {
@@ -131,6 +132,7 @@ class ProgramCreateViewModel(
         }
     }
 
+    // Deletes the already initialized program instance along with associated workouts
     private fun cancelCreate() {
         val initializedProgramId = stateFlow.value.initializedProgramId
         if (initializedProgramId == null) {
