@@ -21,28 +21,31 @@
         android:label="@string/label_program"
         tools:layout="@layout/fragment_programs">
         <action
-            android:id="@+id/action_programFragment_to_programCreateFragment"
-            app:destination="@id/programCreateFragment"
+            android:id="@+id/action_programsFragment_to_programFragment"
+            app:destination="@id/programFragment"
             app:enterAnim="@anim/slide_in_bottom"
             app:exitAnim="@anim/slide_out_top"
             app:popEnterAnim="@anim/slide_in_top"
             app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
-        android:id="@+id/programCreateFragment"
-        android:name="com.example.fitnesslog.program.ui.program_create.ProgramCreateFragment"
+        android:id="@+id/programFragment"
+        android:name="com.example.fitnesslog.program.ui.program.ProgramFragment"
         android:label="@string/label_create_program"
-        tools:layout="@layout/fragment_program_create">
+        tools:layout="@layout/fragment_program">
+        <argument
+            android:name="programMode"
+            app:argType="com.example.fitnesslog.program.ui.ProgramMode" />
         <action
-            android:id="@+id/action_programCreateFragment_to_scheduleSelectModal"
+            android:id="@+id/action_programFragment_to_scheduleSelectModal"
             app:destination="@id/scheduleSelectModal" />
         <action
-            android:id="@+id/action_programCreateFragment_to_restTimeSelectDialog"
+            android:id="@+id/action_programFragment_to_restTimeSelectDialog"
             app:destination="@id/restTimeSelectDialog" />
     </fragment>
     <dialog
         android:id="@+id/scheduleSelectModal"
-        android:name="com.example.fitnesslog.program.ui.program_create.ScheduleSelectModal"
+        android:name="com.example.fitnesslog.program.ui.program.ScheduleSelectModal"
         android:label="ScheduleSelectModal"
         tools:layout="@layout/modal_bottom_sheet_schedule_select">
         <argument
@@ -51,7 +54,7 @@
     </dialog>
     <dialog
         android:id="@+id/restTimeSelectDialog"
-        android:name="com.example.fitnesslog.program.ui.program_create.RestTimeSelectDialog"
+        android:name="com.example.fitnesslog.program.ui.program.RestTimeSelectDialog"
         android:label="RestTimeSelectDialog"
         tools:layout="@layout/dialog_rest_time_select">
         <argument

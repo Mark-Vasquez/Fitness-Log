@@ -1,8 +1,8 @@
-package com.example.fitnesslog.program.ui.program_create
+package com.example.fitnesslog.program.ui.program
 
 import com.example.fitnesslog.core.enums.Day
 
-data class ProgramCreateState(
+data class ProgramState(
     val initializedProgramId: Int? = null,
     val name: String = "",
     val scheduledDays: Set<Day> = setOf(

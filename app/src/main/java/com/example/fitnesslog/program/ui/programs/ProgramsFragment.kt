@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
 import com.example.fitnesslog.databinding.FragmentProgramsBinding
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
+import com.example.fitnesslog.program.ui.ProgramMode
 import com.example.fitnesslog.shared.ui.SharedViewModel
 import kotlinx.coroutines.launch
 
@@ -55,7 +56,8 @@ class ProgramsFragment : Fragment() {
         observeViewModel()
 
         binding.fabCreateProgram.setOnClickListener {
-            val action = ProgramsFragmentDirections.actionProgramFragmentToProgramCreateFragment()
+            val action =
+                ProgramsFragmentDirections.actionProgramsFragmentToProgramFragment(ProgramMode.CREATE)
             findNavController().navigate(action)
         }
 

@@ -29,4 +29,5 @@
     <string name="program_name">Program Name</string>
     <string name="create_program">Create Program</string>
     <string name="schedule">Schedule</string>
+    <string name="rest_time">Rest Time</string>
 </resources>

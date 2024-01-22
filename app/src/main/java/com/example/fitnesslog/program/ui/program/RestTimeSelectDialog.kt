@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui.program_create
+package com.example.fitnesslog.program.ui.program
 
 import android.app.AlertDialog
 import android.app.Dialog

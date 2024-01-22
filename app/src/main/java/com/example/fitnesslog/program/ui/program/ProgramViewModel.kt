@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui.program_create
+package com.example.fitnesslog.program.ui.program
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -12,21 +12,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ProgramCreateViewModel(
+class ProgramViewModel(
     private val programUseCases: ProgramUseCases
 ) : ViewModel() {
 
-    private val _stateFlow = MutableStateFlow(ProgramCreateState())
+    private val _stateFlow = MutableStateFlow(ProgramState())
     val stateFlow = _stateFlow.asStateFlow()
 
     companion object {
-        const val TAG = "ProgramCreateViewModel"
+        const val TAG = "ProgramViewModel"
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(ProgramCreateViewModel::class.java)) {
+                if (modelClass.isAssignableFrom(ProgramViewModel::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return ProgramCreateViewModel(programModule.programUseCases) as T
+                    return ProgramViewModel(programModule.programUseCases) as T
                 }
                 throw IllegalArgumentException("ViewModel type passed in the Provider does not match ViewModel configured in the Factory")
             }
@@ -38,25 +38,25 @@ class ProgramCreateViewModel(
         initializeProgram()
     }
 
-    fun onEvent(event: ProgramCreateEvent) {
+    fun onEvent(event: ProgramEvent) {
         when (event) {
-            is ProgramCreateEvent.Save -> {
+            is ProgramEvent.Save -> {
                 saveCreate()
             }
 
-            is ProgramCreateEvent.Cancel -> {
+            is ProgramEvent.Cancel -> {
                 cancelCreate()
             }
 
-            is ProgramCreateEvent.UpdateName -> {
+            is ProgramEvent.UpdateName -> {
                 updateName(event.name)
             }
 
-            is ProgramCreateEvent.UpdateScheduledDays -> {
+            is ProgramEvent.UpdateScheduledDays -> {
                 updateScheduledDays(event.scheduledDays)
             }
 
-            is ProgramCreateEvent.UpdateRestDurationSeconds -> {
+            is ProgramEvent.UpdateRestDurationSeconds -> {
                 updateRestDurationSeconds(event.restDurationSeconds)
             }
         }

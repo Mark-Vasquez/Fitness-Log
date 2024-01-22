@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui.program_create
+package com.example.fitnesslog.program.ui.program
 
 import android.os.Bundle
 import android.text.Editable
@@ -21,20 +21,20 @@ import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
 import com.example.fitnesslog.core.utils.secondsToMinutesAndSeconds
 import com.example.fitnesslog.core.utils.setDebouncedOnClickListener
 import com.example.fitnesslog.core.utils.showDiscardDialog
-import com.example.fitnesslog.databinding.FragmentProgramCreateBinding
+import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
 
-class ProgramCreateFragment : Fragment() {
+class ProgramFragment : Fragment() {
 
-    private val programCreateViewModel: ProgramCreateViewModel by viewModels { ProgramCreateViewModel.Factory }
-    private var _binding: FragmentProgramCreateBinding? = null
+    private val programViewModel: ProgramViewModel by viewModels { ProgramViewModel.Factory }
+    private var _binding: FragmentProgramBinding? = null
     private val binding get() = _binding!!
 
     companion object {
-        const val TAG = "ProgramCreateFragment"
+        const val TAG = "ProgramFragment"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +48,7 @@ class ProgramCreateFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentProgramCreateBinding.inflate(inflater, container, false)
+        _binding = FragmentProgramBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -57,65 +57,65 @@ class ProgramCreateFragment : Fragment() {
         observeViewModel()
 
 
-        binding.btnCancelProgramCreate.setOnClickListener {
+        binding.btnCancelProgram.setOnClickListener {
             showDiscardDialog(
                 requireContext()
             ) {
-                programCreateViewModel.onEvent(ProgramCreateEvent.Cancel)
+                programViewModel.onEvent(ProgramEvent.Cancel)
                 findNavController().popBackStack()
             }
         }
 
 
-        binding.btnSaveProgramCreate.setOnClickListener {
-            programCreateViewModel.onEvent(ProgramCreateEvent.Save)
+        binding.btnSaveProgram.setOnClickListener {
+            programViewModel.onEvent(ProgramEvent.Save)
             findNavController().popBackStack()
         }
 
 
-        binding.etNameProgramCreate.addTextChangedListener(object : TextWatcher {
+        binding.etNameProgram.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                val name = binding.etNameProgramCreate.text.toString()
-                programCreateViewModel.onEvent(ProgramCreateEvent.UpdateName(name))
+                val name = binding.etNameProgram.text.toString()
+                programViewModel.onEvent(ProgramEvent.UpdateName(name))
             }
         })
 
 
-        binding.btnScheduleProgramCreate.setDebouncedOnClickListener {
+        binding.btnScheduleProgram.setDebouncedOnClickListener {
             // To retrieve data back from modal child to this parent fragment via navigation
             handleModalResult<Set<Day>>(
-                R.id.programCreateFragment,
+                R.id.programFragment,
                 SCHEDULED_DAYS
             ) { scheduledDays ->
-                programCreateViewModel.onEvent(ProgramCreateEvent.UpdateScheduledDays(scheduledDays!!))
+                programViewModel.onEvent(ProgramEvent.UpdateScheduledDays(scheduledDays!!))
             }
 
             // To pass data to the modal child via navigation
             val action =
-                ProgramCreateFragmentDirections.actionProgramCreateFragmentToScheduleSelectModal(
-                    scheduledDays = programCreateViewModel.stateFlow.value.scheduledDays as Serializable
+                ProgramFragmentDirections.actionProgramFragmentToScheduleSelectModal(
+                    scheduledDays = programViewModel.stateFlow.value.scheduledDays as Serializable
                 )
             findNavController().navigate(action)
         }
 
 
-        binding.btnRestTimeProgramCreate.setDebouncedOnClickListener {
+        binding.btnRestTimeProgram.setDebouncedOnClickListener {
             handleModalResult<Int>(
-                R.id.programCreateFragment,
+                R.id.programFragment,
                 REST_DURATION_SECONDS
             ) { restDurationSeconds ->
-                programCreateViewModel.onEvent(
-                    ProgramCreateEvent.UpdateRestDurationSeconds(
+                programViewModel.onEvent(
+                    ProgramEvent.UpdateRestDurationSeconds(
                         restDurationSeconds!!
                     )
                 )
             }
 
             val action =
-                ProgramCreateFragmentDirections.actionProgramCreateFragmentToRestTimeSelectDialog(
-                    restDurationSeconds = programCreateViewModel.stateFlow.value.restDurationSeconds
+                ProgramFragmentDirections.actionProgramFragmentToRestTimeSelectDialog(
+                    restDurationSeconds = programViewModel.stateFlow.value.restDurationSeconds
                 )
             findNavController().navigate(action)
         }
@@ -132,7 +132,7 @@ class ProgramCreateFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programCreateViewModel.stateFlow.collect { state ->
+                programViewModel.stateFlow.collect { state ->
                     state.error?.let {
                         Snackbar.make(
                             requireView(),
@@ -150,7 +150,7 @@ class ProgramCreateFragment : Fragment() {
 
     private fun updateScheduledDaysView(scheduledDays: Set<Day>) {
         if (scheduledDays.size == 1) {
-            binding.tvScheduledDaysProgramCreate.text = scheduledDays.first().value
+            binding.tvScheduledDaysProgram.text = scheduledDays.first().value
             return
         }
         val selectedScheduleString = mutableListOf<String>()
@@ -161,7 +161,7 @@ class ProgramCreateFragment : Fragment() {
         if (Day.FRIDAY in scheduledDays) selectedScheduleString.add("Fr")
         if (Day.SATURDAY in scheduledDays) selectedScheduleString.add("Sa")
         if (Day.SUNDAY in scheduledDays) selectedScheduleString.add("Su")
-        binding.tvScheduledDaysProgramCreate.text = selectedScheduleString.joinToString("/")
+        binding.tvScheduledDaysProgram.text = selectedScheduleString.joinToString("/")
     }
 
     private fun updateRestDurationView(seconds: Int) {
@@ -170,7 +170,7 @@ class ProgramCreateFragment : Fragment() {
             if (minutes == 0) "${seconds}s"
             else if (seconds == 0) "${minutes}m"
             else "${minutes}m${seconds}s"
-        binding.tvRestTimeProgramCreate.text = durationString
+        binding.tvRestTimeProgram.text = durationString
     }
 
     private fun <T> handleModalResult(
@@ -211,8 +211,8 @@ class ProgramCreateFragment : Fragment() {
             showDiscardDialog(
                 requireContext()
             ) {
-                programCreateViewModel.onEvent(
-                    ProgramCreateEvent.Cancel
+                programViewModel.onEvent(
+                    ProgramEvent.Cancel
                 )
                 findNavController().popBackStack()
             }

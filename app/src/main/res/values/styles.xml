@@ -26,6 +26,7 @@
         <item name="android:text">Cancel</item>
         <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
         <item name="android:textColor">?attr/colorOnTertiaryContainer</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
     <style name="SaveButton">
@@ -34,6 +35,7 @@
         <item name="android:text">Save</item>
         <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
         <item name="android:textColor">?attr/colorOnTertiaryContainer</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
     <style name="TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
