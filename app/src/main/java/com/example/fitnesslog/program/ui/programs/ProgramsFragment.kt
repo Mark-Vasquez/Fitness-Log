@@ -57,13 +57,18 @@ class ProgramsFragment : Fragment() {
 
         binding.fabCreateProgram.setOnClickListener {
             val action =
-                ProgramsFragmentDirections.actionProgramsFragmentToProgramFragment(ProgramMode.CREATE)
+                ProgramsFragmentDirections.actionProgramsFragmentToProgramFragment(programMode = ProgramMode.CREATE)
             findNavController().navigate(action)
         }
 
         binding.fabEditProgram.setOnClickListener {
-            val selectedProgram = sharedViewModel.stateFlow.value.selectedProgram
-            programsViewModel.onEvent(ProgramsEvent.ShowEditForm(selectedProgram!!))
+            val selectedProgramId = sharedViewModel.stateFlow.value.selectedProgram?.id
+            val action =
+                ProgramsFragmentDirections.actionProgramsFragmentToProgramFragment(
+                    programMode = ProgramMode.EDIT,
+                    programId = selectedProgramId!!
+                )
+            findNavController().navigate(action)
         }
     }
 

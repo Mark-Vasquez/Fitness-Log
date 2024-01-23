@@ -1,6 +1,6 @@
 package com.example.fitnesslog.program.ui
 
-enum class ProgramMode {
-    CREATE,
-    EDIT
+enum class ProgramMode(val value: String) {
+    CREATE("Create"),
+    EDIT("Edit")
 }

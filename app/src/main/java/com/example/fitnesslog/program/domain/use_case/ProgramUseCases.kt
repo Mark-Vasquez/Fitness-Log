@@ -10,6 +10,7 @@ package com.example.fitnesslog.program.domain.use_case
 data class ProgramUseCases(
     val initializeProgram: InitializeProgram,
     val getPrograms: GetPrograms,
+    val getProgram: GetProgram,
     val editProgram: EditProgram,
     val deleteProgram: DeleteProgram,
     val selectProgram: SelectProgram,

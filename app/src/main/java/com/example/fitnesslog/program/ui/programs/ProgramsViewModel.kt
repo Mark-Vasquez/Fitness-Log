@@ -48,20 +48,12 @@ class ProgramsViewModel(
 
     fun onEvent(event: ProgramsEvent) {
         when (event) {
-            is ProgramsEvent.ShowCreateForm -> {
-                showCreateForm()
-
-            }
-
-            is ProgramsEvent.ShowEditForm -> {
-
-            }
 
 
             is ProgramsEvent.Select -> {
                 selectProgram(event.program)
             }
-            
+
 
             is ProgramsEvent.Delete -> {
 
@@ -96,24 +88,6 @@ class ProgramsViewModel(
                     }
                 }
             }
-        }
-    }
-
-    private fun showCreateForm() {
-        viewModelScope.launch {
-            when (val resource = programUseCases.initializeProgram()) {
-                is Resource.Success -> {
-                    _stateFlow.value = stateFlow.value.copy(initializedProgramId = resource.data)
-                }
-
-                is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage
-                            ?: "Error Creating Default Program in `showCreateForm`"
-                    )
-                }
-            }
-
         }
     }
 

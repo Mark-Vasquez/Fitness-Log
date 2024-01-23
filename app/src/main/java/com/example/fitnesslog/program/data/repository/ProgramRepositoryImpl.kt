@@ -32,6 +32,12 @@ class ProgramRepositoryImpl(
             .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
+    override fun getProgramById(programId: Int): Flow<Resource<Program>> {
+        return dao.getProgramById(programId)
+            .map { Resource.Success(it) as Resource<Program> }
+            .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
+    }
+
     override fun getSelectedProgram(): Flow<Resource<Program>> {
         return dao.getSelectedProgram()
             .map { Resource.Success(it) as Resource<Program> }

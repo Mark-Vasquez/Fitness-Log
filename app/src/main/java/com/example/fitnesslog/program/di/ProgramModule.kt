@@ -6,6 +6,7 @@ import com.example.fitnesslog.program.data.repository.ProgramRepositoryImpl
 import com.example.fitnesslog.program.domain.repository.ProgramRepository
 import com.example.fitnesslog.program.domain.use_case.DeleteProgram
 import com.example.fitnesslog.program.domain.use_case.EditProgram
+import com.example.fitnesslog.program.domain.use_case.GetProgram
 import com.example.fitnesslog.program.domain.use_case.GetPrograms
 import com.example.fitnesslog.program.domain.use_case.InitializeProgram
 import com.example.fitnesslog.program.domain.use_case.ProgramUseCases
@@ -34,6 +35,7 @@ class ProgramModuleImpl(
         ProgramUseCases(
             initializeProgram = InitializeProgram(programRepository),
             getPrograms = GetPrograms(programRepository),
+            getProgram = GetProgram(programRepository),
             editProgram = EditProgram(programRepository),
             deleteProgram = DeleteProgram(programRepository),
             selectProgram = SelectProgram(programRepository),

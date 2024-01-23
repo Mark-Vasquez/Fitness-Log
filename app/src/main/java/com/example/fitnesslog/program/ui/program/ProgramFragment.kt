@@ -14,6 +14,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
@@ -22,23 +23,36 @@ import com.example.fitnesslog.core.utils.secondsToMinutesAndSeconds
 import com.example.fitnesslog.core.utils.setDebouncedOnClickListener
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
-import com.google.android.material.snackbar.Snackbar
+import com.example.fitnesslog.program.ui.ProgramMode
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
 
 class ProgramFragment : Fragment() {
-
     private val programViewModel: ProgramViewModel by viewModels { ProgramViewModel.Factory }
     private var _binding: FragmentProgramBinding? = null
     private val binding get() = _binding!!
+    private val args: ProgramFragmentArgs by navArgs()
 
     companion object {
         const val TAG = "ProgramFragment"
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Only initialize the viewModel when Fragment is created for the first time
+        if (savedInstanceState == null) {
+            when (args.programMode) {
+                ProgramMode.CREATE -> programViewModel.onEvent(ProgramEvent.CreateMode(args.programMode))
+                ProgramMode.EDIT -> programViewModel.onEvent(
+                    ProgramEvent.EditMode(
+                        args.programMode,
+                        args.programId
+                    )
+                )
+            }
+        }
         setBackButtonListener()
     }
 
@@ -52,10 +66,11 @@ class ProgramFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeViewModel()
-
+        setupTitle()
+        observeViewModelState()
 
         binding.btnCancelProgram.setOnClickListener {
             showDiscardDialog(
@@ -66,23 +81,22 @@ class ProgramFragment : Fragment() {
             }
         }
 
-
         binding.btnSaveProgram.setOnClickListener {
             programViewModel.onEvent(ProgramEvent.Save)
             findNavController().popBackStack()
         }
 
-
         binding.etNameProgram.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val name = binding.etNameProgram.text.toString()
                 programViewModel.onEvent(ProgramEvent.UpdateName(name))
             }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-
+        // Debounce to eliminate trying to navigate to same location twice
         binding.btnScheduleProgram.setDebouncedOnClickListener {
             // To retrieve data back from modal child to this parent fragment via navigation
             handleModalResult<Set<Day>>(
@@ -91,7 +105,6 @@ class ProgramFragment : Fragment() {
             ) { scheduledDays ->
                 programViewModel.onEvent(ProgramEvent.UpdateScheduledDays(scheduledDays!!))
             }
-
             // To pass data to the modal child via navigation
             val action =
                 ProgramFragmentDirections.actionProgramFragmentToScheduleSelectModal(
@@ -99,7 +112,6 @@ class ProgramFragment : Fragment() {
                 )
             findNavController().navigate(action)
         }
-
 
         binding.btnRestTimeProgram.setDebouncedOnClickListener {
             handleModalResult<Int>(
@@ -112,15 +124,12 @@ class ProgramFragment : Fragment() {
                     )
                 )
             }
-
             val action =
                 ProgramFragmentDirections.actionProgramFragmentToRestTimeSelectDialog(
                     restDurationSeconds = programViewModel.stateFlow.value.restDurationSeconds
                 )
             findNavController().navigate(action)
         }
-
-
     }
 
 
@@ -129,24 +138,37 @@ class ProgramFragment : Fragment() {
         _binding = null
     }
 
-    private fun observeViewModel() {
+    private fun setupTitle() = when (args.programMode) {
+        ProgramMode.CREATE -> {
+            binding.tvTitleProgram.text = getString(R.string.create_program)
+        }
+
+        ProgramMode.EDIT -> {
+            binding.tvTitleProgram.text = getString(R.string.edit_program)
+        }
+    }
+    
+    private fun observeViewModelState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programViewModel.stateFlow.collect { state ->
-                    state.error?.let {
-                        Snackbar.make(
-                            requireView(),
-                            it,
-                            Snackbar.LENGTH_LONG
-                        )
+                    if (binding.etNameProgram.text.toString() != state.name) {
+                        // When repopulating the "" to the existing name string going into Edit Mode
+                        updateNameInputView(state.name)
                     }
-
                     updateScheduledDaysView(state.scheduledDays)
                     updateRestDurationView(state.restDurationSeconds)
+
                 }
             }
         }
     }
+
+    private fun updateNameInputView(name: String) {
+        binding.etNameProgram.setText(name)
+        binding.etNameProgram.setSelection(binding.etNameProgram.length())
+    }
+
 
     private fun updateScheduledDaysView(scheduledDays: Set<Day>) {
         if (scheduledDays.size == 1) {
@@ -216,8 +238,6 @@ class ProgramFragment : Fragment() {
                 )
                 findNavController().popBackStack()
             }
-
-
         }
     }
 }

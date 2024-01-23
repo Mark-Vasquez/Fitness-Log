@@ -8,17 +8,17 @@
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.example.fitnesslog.history.ui.history.fragment.HistoryFragment"
-        android:label="@string/label_history"
+        android:label="@string/history"
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/workoutsFragment"
         android:name="com.example.fitnesslog.workout.ui.WorkoutsFragment"
-        android:label="@string/label_workout"
+        android:label="@string/workout"
         tools:layout="@layout/fragment_workouts" />
     <fragment
         android:id="@+id/programsFragment"
         android:name="com.example.fitnesslog.program.ui.programs.ProgramsFragment"
-        android:label="@string/label_program"
+        android:label="@string/program"
         tools:layout="@layout/fragment_programs">
         <action
             android:id="@+id/action_programsFragment_to_programFragment"
@@ -31,11 +31,15 @@
     <fragment
         android:id="@+id/programFragment"
         android:name="com.example.fitnesslog.program.ui.program.ProgramFragment"
-        android:label="@string/label_create_program"
+        android:label="@string/create_program"
         tools:layout="@layout/fragment_program">
         <argument
             android:name="programMode"
             app:argType="com.example.fitnesslog.program.ui.ProgramMode" />
+        <argument
+            android:name="programId"
+            app:argType="integer"
+            android:defaultValue="-1" />
         <action
             android:id="@+id/action_programFragment_to_scheduleSelectModal"
             app:destination="@id/scheduleSelectModal" />

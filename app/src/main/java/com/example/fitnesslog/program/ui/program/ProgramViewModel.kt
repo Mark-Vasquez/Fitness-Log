@@ -6,10 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.Resource
-import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.program.domain.use_case.ProgramUseCases
+import com.example.fitnesslog.program.ui.ProgramMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ProgramViewModel(
@@ -34,18 +35,29 @@ class ProgramViewModel(
         }
     }
 
-    init {
-        initializeProgram()
-    }
 
     fun onEvent(event: ProgramEvent) {
         when (event) {
+            is ProgramEvent.CreateMode -> {
+                initializeProgram()
+                _stateFlow.value = stateFlow.value.copy(programMode = event.mode)
+            }
+
+            is ProgramEvent.EditMode -> {
+                getProgram(event.programId)
+                _stateFlow.value = stateFlow.value.copy(programMode = event.mode)
+            }
+
             is ProgramEvent.Save -> {
                 saveCreate()
             }
 
             is ProgramEvent.Cancel -> {
-                cancelCreate()
+                when (stateFlow.value.programMode) {
+                    ProgramMode.CREATE -> cancelCreate()
+                    ProgramMode.EDIT -> return
+                }
+
             }
 
             is ProgramEvent.UpdateName -> {
@@ -58,6 +70,28 @@ class ProgramViewModel(
 
             is ProgramEvent.UpdateRestDurationSeconds -> {
                 updateRestDurationSeconds(event.restDurationSeconds)
+            }
+        }
+    }
+
+    private fun initializeProgram() {
+        if (stateFlow.value.program != null) {
+            // Program has already been initialized, in first fragment onCreate
+            return
+        }
+        viewModelScope.launch {
+            when (val resource = programUseCases.initializeProgram()) {
+                is Resource.Success -> {
+                    val programId = resource.data.toInt()
+                    getProgram(programId)
+                }
+
+                is Resource.Error -> {
+                    _stateFlow.value = stateFlow.value.copy(
+                        error = resource.errorMessage
+                            ?: "Error Initializing Program in `$TAG`"
+                    )
+                }
             }
         }
     }
@@ -80,51 +114,55 @@ class ProgramViewModel(
         )
     }
 
-    private fun initializeProgram() {
+
+    private fun getProgram(programId: Int) {
         viewModelScope.launch {
-            when (val resource = programUseCases.initializeProgram()) {
+            when (val resource = programUseCases.getProgram(programId).first()) {
                 is Resource.Success -> {
-                    _stateFlow.value =
-                        stateFlow.value.copy(initializedProgramId = resource.data.toInt())
+                    val program = resource.data
+                    _stateFlow.value = stateFlow.value.copy(
+                        program = program,
+                        name = program.name,
+                        scheduledDays = program.scheduledDays,
+                        restDurationSeconds = program.restDurationSeconds
+                    )
                 }
 
                 is Resource.Error -> {
                     _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage
-                            ?: "Error Initializing Program in `$TAG`"
+                        error = resource.errorMessage ?: "Error Retrieving Program"
                     )
                 }
             }
+
         }
     }
 
     // Calls an edit to the already initialized Program with the user inputs
     private fun saveCreate() {
-        val initializedProgramId = stateFlow.value.initializedProgramId
-        if (initializedProgramId == null) {
+        val oldProgram = stateFlow.value.program
+        if (oldProgram == null) {
             _stateFlow.value =
-                stateFlow.value.copy(error = "Error Retrieving `initializedProgramId`")
+                stateFlow.value.copy(error = "Error Saving null Program in `save`")
             return
         }
-        val program = Program(
-            id = stateFlow.value.initializedProgramId,
+        val program = oldProgram.copy(
             name = stateFlow.value.name,
             scheduledDays = stateFlow.value.scheduledDays,
+            restDurationSeconds = stateFlow.value.restDurationSeconds,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
         viewModelScope.launch {
             when (val resource = programUseCases.editProgram(program)) {
                 is Resource.Success -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        initializedProgramId = null
-                    )
+
 
                 }
 
                 is Resource.Error -> {
                     _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage ?: "Error Creating Program in `save`"
+                        error = resource.errorMessage ?: ""
                     )
                 }
             }
@@ -134,26 +172,26 @@ class ProgramViewModel(
 
     // Deletes the already initialized program instance along with associated workouts
     private fun cancelCreate() {
-        val initializedProgramId = stateFlow.value.initializedProgramId
-        if (initializedProgramId == null) {
+        val programId = stateFlow.value.program?.id
+        if (programId == null) {
             _stateFlow.value =
-                stateFlow.value.copy(error = "Error Retrieving `initializedProgramId`")
+                stateFlow.value.copy(error = "Program is null in `cancelCreate`")
             return
         }
         viewModelScope.launch {
-            when (val resource = programUseCases.deleteProgram(initializedProgramId)) {
+            when (val resource = programUseCases.deleteProgram(programId)) {
                 is Resource.Success -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        initializedProgramId = null
-                    )
                 }
 
                 is Resource.Error -> {
                     _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage ?: "Error Discarding Program in `cancel`"
+                        error = resource.errorMessage
+                            ?: "Error Discarding Program in `cancelCreate`"
                     )
                 }
             }
         }
     }
+
+
 }
