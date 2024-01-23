@@ -97,4 +97,18 @@
             android:layout_weight="1" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btnDeleteProgram"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Program"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="?attr/colorErrorContainer"
+        android:textColor="?attr/colorOnErrorContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

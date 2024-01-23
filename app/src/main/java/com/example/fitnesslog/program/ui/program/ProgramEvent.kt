@@ -11,4 +11,5 @@ sealed class ProgramEvent {
     data class UpdateName(val name: String) : ProgramEvent()
     data class UpdateScheduledDays(val scheduledDays: Set<Day>) : ProgramEvent()
     data class UpdateRestDurationSeconds(val restDurationSeconds: Int) : ProgramEvent()
+    data object Delete : ProgramEvent()
 }

@@ -69,7 +69,7 @@ class ProgramFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupTitle()
+        setupUIViews()
         observeViewModelState()
 
         binding.btnCancelProgram.setOnClickListener {
@@ -130,6 +130,13 @@ class ProgramFragment : Fragment() {
                 )
             findNavController().navigate(action)
         }
+
+        binding.btnDeleteProgram.setDebouncedOnClickListener {
+            if (args.programMode != ProgramMode.EDIT) {
+                return@setDebouncedOnClickListener
+            }
+
+        }
     }
 
 
@@ -138,16 +145,17 @@ class ProgramFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupTitle() = when (args.programMode) {
+    private fun setupUIViews() = when (args.programMode) {
         ProgramMode.CREATE -> {
             binding.tvTitleProgram.text = getString(R.string.create_program)
         }
 
         ProgramMode.EDIT -> {
             binding.tvTitleProgram.text = getString(R.string.edit_program)
+            binding.btnDeleteProgram.visibility = View.VISIBLE
         }
     }
-    
+
     private fun observeViewModelState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

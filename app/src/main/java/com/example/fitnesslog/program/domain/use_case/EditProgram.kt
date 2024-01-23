@@ -8,7 +8,7 @@ class EditProgram(
     private val programRepository: ProgramRepository
 ) {
 
-    suspend operator fun invoke(program: Program): Resource<Int> {
-        return programRepository.updateProgram(program)
+    suspend operator fun invoke(program: Program): Resource<Unit> {
+        return programRepository.updateAndSelectProgram(program)
     }
 }

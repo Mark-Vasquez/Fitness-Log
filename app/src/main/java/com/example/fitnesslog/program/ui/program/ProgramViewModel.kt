@@ -1,5 +1,6 @@
 package com.example.fitnesslog.program.ui.program
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -10,7 +11,6 @@ import com.example.fitnesslog.program.domain.use_case.ProgramUseCases
 import com.example.fitnesslog.program.ui.ProgramMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ProgramViewModel(
@@ -57,7 +57,6 @@ class ProgramViewModel(
                     ProgramMode.CREATE -> cancelCreate()
                     ProgramMode.EDIT -> return
                 }
-
             }
 
             is ProgramEvent.UpdateName -> {
@@ -70,6 +69,10 @@ class ProgramViewModel(
 
             is ProgramEvent.UpdateRestDurationSeconds -> {
                 updateRestDurationSeconds(event.restDurationSeconds)
+            }
+
+            is ProgramEvent.Delete -> {
+
             }
         }
     }
@@ -117,8 +120,9 @@ class ProgramViewModel(
 
     private fun getProgram(programId: Int) {
         viewModelScope.launch {
-            when (val resource = programUseCases.getProgram(programId).first()) {
+            when (val resource = programUseCases.getProgram(programId)) {
                 is Resource.Success -> {
+                    Log.d(TAG, "Success! ${resource.data}")
                     val program = resource.data
                     _stateFlow.value = stateFlow.value.copy(
                         program = program,
@@ -129,6 +133,8 @@ class ProgramViewModel(
                 }
 
                 is Resource.Error -> {
+                    Log.d(TAG, "Fail! ${resource.errorMessage}")
+
                     _stateFlow.value = stateFlow.value.copy(
                         error = resource.errorMessage ?: "Error Retrieving Program"
                     )
@@ -154,17 +160,12 @@ class ProgramViewModel(
             updatedAt = System.currentTimeMillis()
         )
         viewModelScope.launch {
-            when (val resource = programUseCases.editProgram(program)) {
-                is Resource.Success -> {
+            val resource = programUseCases.editProgram(program)
+            if (resource is Resource.Error) {
+                _stateFlow.value = stateFlow.value.copy(
+                    error = resource.errorMessage ?: ""
+                )
 
-
-                }
-
-                is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage ?: ""
-                    )
-                }
             }
 
         }

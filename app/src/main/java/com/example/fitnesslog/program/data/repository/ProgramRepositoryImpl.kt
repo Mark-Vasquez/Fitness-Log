@@ -1,6 +1,5 @@
 package com.example.fitnesslog.program.data.repository
 
-import android.util.Log
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.core.utils.safeCall
 import com.example.fitnesslog.core.utils.toErrorMessage
@@ -32,10 +31,8 @@ class ProgramRepositoryImpl(
             .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
-    override fun getProgramById(programId: Int): Flow<Resource<Program>> {
-        return dao.getProgramById(programId)
-            .map { Resource.Success(it) as Resource<Program> }
-            .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
+    override suspend fun getProgramById(programId: Int): Resource<Program> {
+        return safeCall { dao.getProgramById(programId) }
     }
 
     override fun getSelectedProgram(): Flow<Resource<Program>> {
@@ -44,9 +41,10 @@ class ProgramRepositoryImpl(
             .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
-    override suspend fun updateProgram(program: Program): Resource<Int> {
-        Log.d("ProgramRepoImpl", program.name)
-        return safeCall { dao.updateProgram(program) }
+    override suspend fun updateAndSelectProgram(program: Program): Resource<Unit> {
+        return safeCall {
+            dao.updateAndSelectProgram(program)
+        }
     }
 
     override suspend fun deleteProgram(programId: Int): Resource<Unit> {
