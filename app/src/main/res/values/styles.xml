@@ -78,6 +78,10 @@
         <item name="android:gravity">center_vertical|end</item>
     </style>
 
+    <style name="DeleteDialogButtons" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">?attr/colorError</item>
+    </style>
+
     <style name="ModalBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/ModalBottomSheet</item>
     </style>

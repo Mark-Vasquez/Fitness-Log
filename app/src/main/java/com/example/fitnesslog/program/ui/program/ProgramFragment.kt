@@ -3,6 +3,7 @@ package com.example.fitnesslog.program.ui.program
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,9 +22,11 @@ import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
 import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
 import com.example.fitnesslog.core.utils.secondsToMinutesAndSeconds
 import com.example.fitnesslog.core.utils.setDebouncedOnClickListener
+import com.example.fitnesslog.core.utils.showDeleteDialog
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.ui.ProgramMode
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
@@ -73,9 +76,7 @@ class ProgramFragment : Fragment() {
         observeViewModelState()
 
         binding.btnCancelProgram.setOnClickListener {
-            showDiscardDialog(
-                requireContext()
-            ) {
+            showDiscardDialog(requireContext()) {
                 programViewModel.onEvent(ProgramEvent.Cancel)
                 findNavController().popBackStack()
             }
@@ -99,10 +100,7 @@ class ProgramFragment : Fragment() {
         // Debounce to eliminate trying to navigate to same location twice
         binding.btnScheduleProgram.setDebouncedOnClickListener {
             // To retrieve data back from modal child to this parent fragment via navigation
-            handleModalResult<Set<Day>>(
-                R.id.programFragment,
-                SCHEDULED_DAYS
-            ) { scheduledDays ->
+            handleModalResult<Set<Day>>(R.id.programFragment, SCHEDULED_DAYS) { scheduledDays ->
                 programViewModel.onEvent(ProgramEvent.UpdateScheduledDays(scheduledDays!!))
             }
             // To pass data to the modal child via navigation
@@ -131,14 +129,32 @@ class ProgramFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        binding.btnDeleteProgram.setDebouncedOnClickListener {
+        binding.btnDeleteProgram.setOnClickListener {
             if (args.programMode != ProgramMode.EDIT) {
-                return@setDebouncedOnClickListener
+                return@setOnClickListener
             }
 
+            val isDeletable = programViewModel.stateFlow.value.isDeletable
+            if (isDeletable) {
+                val programName = programViewModel.stateFlow.value.program?.name
+                val message = if (programName.isNullOrEmpty()) {
+                    "Are you sure you want to delete this program?"
+                } else {
+                    "Are you sure you want to delete \"${programName}\" program?"
+                }
+                showDeleteDialog(requireContext(), message) {
+                    programViewModel.onEvent(ProgramEvent.Delete)
+                    findNavController().popBackStack()
+                }
+            } else {
+                // show cannot delete dialog
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Cannot Delete")
+                    .setMessage("Must have at least one Program selected.")
+                    .show()
+            }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -160,21 +176,22 @@ class ProgramFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programViewModel.stateFlow.collect { state ->
-                    if (binding.etNameProgram.text.toString() != state.name) {
-                        // When repopulating the "" to the existing name string going into Edit Mode
-                        updateNameInputView(state.name)
-                    }
+                    updateNameInputView(state.name)
                     updateScheduledDaysView(state.scheduledDays)
                     updateRestDurationView(state.restDurationSeconds)
-
+                    Log.d(TAG, "${state}")
                 }
             }
         }
     }
 
+
     private fun updateNameInputView(name: String) {
-        binding.etNameProgram.setText(name)
-        binding.etNameProgram.setSelection(binding.etNameProgram.length())
+        // This allow the text input to only populate on initial Edit or on configuration changes
+        if (binding.etNameProgram.text.toString() != name) {
+            binding.etNameProgram.setText(name)
+            binding.etNameProgram.setSelection(binding.etNameProgram.length())
+        }
     }
 
 

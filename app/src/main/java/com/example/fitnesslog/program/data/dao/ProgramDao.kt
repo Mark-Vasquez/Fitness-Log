@@ -51,6 +51,8 @@ interface ProgramDao {
     @Query("DELETE FROM program WHERE id = :programId")
     suspend fun deleteProgram(programId: Int)
 
+    @Query("SELECT COUNT(*) FROM program")
+    suspend fun getProgramsCount(): Int
 
     @Transaction
     suspend fun setProgramAsSelected(programId: Int) {

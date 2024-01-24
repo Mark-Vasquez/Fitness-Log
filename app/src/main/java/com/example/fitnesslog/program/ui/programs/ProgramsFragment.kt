@@ -18,6 +18,7 @@ import com.example.fitnesslog.databinding.FragmentProgramsBinding
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import com.example.fitnesslog.program.ui.ProgramMode
 import com.example.fitnesslog.shared.ui.SharedViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 
@@ -63,10 +64,18 @@ class ProgramsFragment : Fragment() {
 
         binding.fabEditProgram.setOnClickListener {
             val selectedProgramId = sharedViewModel.stateFlow.value.selectedProgram?.id
+            if (selectedProgramId == null) {
+                Snackbar.make(
+                    view,
+                    "Error selecting `null` selectedProgramId",
+                    Snackbar.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
             val action =
                 ProgramsFragmentDirections.actionProgramsFragmentToProgramFragment(
                     programMode = ProgramMode.EDIT,
-                    programId = selectedProgramId!!
+                    programId = selectedProgramId
                 )
             findNavController().navigate(action)
         }

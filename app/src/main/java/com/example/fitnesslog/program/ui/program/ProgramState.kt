@@ -17,6 +17,5 @@ data class ProgramState(
     ),
     val restDurationSeconds: Int = 90,
     val error: String? = null,
-    val snackbarMessage: String? = null
-
+    val isDeletable: Boolean = false
 )

@@ -24,5 +24,7 @@ interface ProgramRepository {
 
     suspend fun deleteProgram(programId: Int): Resource<Unit>
 
+    suspend fun getProgramsCount(): Resource<Int>
+
     suspend fun setProgramAsSelected(programId: Int): Resource<Unit>
 }

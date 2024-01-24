@@ -45,11 +45,12 @@ class ProgramViewModel(
 
             is ProgramEvent.EditMode -> {
                 getProgram(event.programId)
+                checkIfDeletable()
                 _stateFlow.value = stateFlow.value.copy(programMode = event.mode)
             }
 
             is ProgramEvent.Save -> {
-                saveCreate()
+                saveProgram()
             }
 
             is ProgramEvent.Cancel -> {
@@ -71,8 +72,9 @@ class ProgramViewModel(
                 updateRestDurationSeconds(event.restDurationSeconds)
             }
 
-            is ProgramEvent.Delete -> {
 
+            is ProgramEvent.Delete -> {
+                deleteProgram()
             }
         }
     }
@@ -144,15 +146,39 @@ class ProgramViewModel(
         }
     }
 
+    private fun checkIfDeletable() {
+        viewModelScope.launch {
+            when (val resource = programUseCases.checkIfDeletable()) {
+                is Resource.Success -> {
+                    _stateFlow.value =
+                        stateFlow.value.copy(isDeletable = resource.data)
+                }
+
+                is Resource.Error -> {
+                    _stateFlow.value = stateFlow.value.copy(
+                        error = resource.errorMessage ?: "Error checking if deletable"
+                    )
+                }
+            }
+        }
+    }
+
+    private fun deleteProgram() {
+        val programId = stateFlow.value.program?.id ?: return
+        viewModelScope.launch {
+            programUseCases.deleteProgram(programId)
+        }
+    }
+
     // Calls an edit to the already initialized Program with the user inputs
-    private fun saveCreate() {
+    private fun saveProgram() {
         val oldProgram = stateFlow.value.program
         if (oldProgram == null) {
             _stateFlow.value =
-                stateFlow.value.copy(error = "Error Saving null Program in `save`")
+                stateFlow.value.copy(error = "Error Saving `null` Program in `save`")
             return
         }
-        val program = oldProgram.copy(
+        val newProgram = oldProgram.copy(
             name = stateFlow.value.name,
             scheduledDays = stateFlow.value.scheduledDays,
             restDurationSeconds = stateFlow.value.restDurationSeconds,
@@ -160,10 +186,10 @@ class ProgramViewModel(
             updatedAt = System.currentTimeMillis()
         )
         viewModelScope.launch {
-            val resource = programUseCases.editProgram(program)
+            val resource = programUseCases.editProgram(newProgram)
             if (resource is Resource.Error) {
                 _stateFlow.value = stateFlow.value.copy(
-                    error = resource.errorMessage ?: ""
+                    error = resource.errorMessage ?: "Saving changes failed"
                 )
 
             }

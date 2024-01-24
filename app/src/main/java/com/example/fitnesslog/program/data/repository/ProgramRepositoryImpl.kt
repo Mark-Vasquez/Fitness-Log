@@ -51,6 +51,10 @@ class ProgramRepositoryImpl(
         return safeCall { dao.deleteProgram(programId) }
     }
 
+    override suspend fun getProgramsCount(): Resource<Int> {
+        return safeCall { dao.getProgramsCount() }
+    }
+
     override suspend fun setProgramAsSelected(programId: Int): Resource<Unit> {
         return safeCall { dao.setProgramAsSelected(programId) }
     }
