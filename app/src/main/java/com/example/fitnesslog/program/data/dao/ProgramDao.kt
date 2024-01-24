@@ -32,15 +32,27 @@ interface ProgramDao {
     )
     fun getAllProgramsOrderedBySelected(): Flow<List<ProgramWithWorkoutCount>>
 
+    @Query("SELECT * FROM program WHERE id = :programId")
+    suspend fun getProgramById(programId: Int): Program
+
     @Query("SELECT * FROM program WHERE is_selected = 1")
     fun getSelectedProgram(): Flow<Program>
+
+
+    @Transaction
+    suspend fun updateAndSelectProgram(program: Program) {
+        updateProgram(program)
+        program.id?.let { setProgramAsSelected(it) }
+    }
 
     @Update
     suspend fun updateProgram(program: Program): Int
 
     @Query("DELETE FROM program WHERE id = :programId")
-    suspend fun deleteProgram(programId: Long)
+    suspend fun deleteProgram(programId: Int)
 
+    @Query("SELECT COUNT(*) FROM program")
+    suspend fun getProgramsCount(): Int
 
     @Transaction
     suspend fun setProgramAsSelected(programId: Int) {
@@ -53,5 +65,6 @@ interface ProgramDao {
 
     @Query("UPDATE program SET is_selected = 1 WHERE program.id = :programId")
     suspend fun selectProgram(programId: Int)
+
 
 }

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".program.ui.program.ProgramFragment">
+
+    <TextView
+        android:id="@+id/btnCancelProgram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/CancelButton"
+        app:layout_constraintTop_toTopOf="@+id/tvTitleProgram"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitleProgram"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitleProgram"
+        style="@style/FragmentTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Create Program"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/btnSaveProgram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/SaveButton"
+        app:layout_constraintTop_toTopOf="@+id/tvTitleProgram"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitleProgram"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilNameProgram"
+        style="@style/TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/program_name"
+        app:layout_constraintTop_toBottomOf="@id/tvTitleProgram">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNameProgram"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textNoSuggestions"
+            android:maxLength="50" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/btnScheduleProgram"
+        style="@style/ActionInfoButton"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="@id/tilNameProgram"
+        app:layout_constraintTop_toBottomOf="@+id/tilNameProgram"
+        app:layout_constraintEnd_toEndOf="@id/tilNameProgram">
+
+        <TextView
+            style="@style/ActionInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/schedule" />
+
+        <TextView
+            android:id="@+id/tvScheduledDaysProgram"
+            style="@style/ActionInfoContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnRestTimeProgram"
+        style="@style/ActionInfoButton"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@id/btnScheduleProgram"
+        app:layout_constraintTop_toBottomOf="@+id/btnScheduleProgram"
+        app:layout_constraintEnd_toEndOf="@+id/btnScheduleProgram">
+
+        <TextView
+            style="@style/ActionInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/rest_time" />
+
+        <TextView
+            android:id="@+id/tvRestTimeProgram"
+            style="@style/ActionInfoContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnDeleteProgram"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Program"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="?attr/colorErrorContainer"
+        android:textColor="?attr/colorOnErrorContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui
+package com.example.fitnesslog.program.ui.programs
 
 import android.view.LayoutInflater
 import android.view.View
@@ -47,8 +47,8 @@ class ProgramsAdapter(
 
     class ViewHolder(itemView: View, clickAtPosition: (position: Int) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
-        val tvProgramName: TextView = itemView.findViewById(R.id.tvProgramName)
-        val tvNumberOfWorkouts: TextView = itemView.findViewById(R.id.tvNumberOfWorkouts)
+        val tvProgramName: TextView = itemView.findViewById(R.id.tvNameItemProgram)
+        val tvNumberOfWorkouts: TextView = itemView.findViewById(R.id.tvNumberWorkoutsItemProgram)
 
         // Sets a click listener one time when instantiating a ViewHolder,
         // Rather than on an itemView in onBindViewHolder each time it binds a new item

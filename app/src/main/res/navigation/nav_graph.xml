@@ -8,29 +8,61 @@
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.example.fitnesslog.history.ui.history.fragment.HistoryFragment"
-        android:label="@string/label_history"
+        android:label="@string/history"
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/workoutsFragment"
-        android:name="com.example.fitnesslog.workout.ui.WorkoutHomeFragment"
-        android:label="@string/label_workout"
+        android:name="com.example.fitnesslog.workout.ui.WorkoutsFragment"
+        android:label="@string/workout"
         tools:layout="@layout/fragment_workouts" />
     <fragment
         android:id="@+id/programsFragment"
-        android:name="com.example.fitnesslog.program.ui.ProgramsFragment"
-        android:label="@string/label_program"
+        android:name="com.example.fitnesslog.program.ui.programs.ProgramsFragment"
+        android:label="@string/program"
         tools:layout="@layout/fragment_programs">
         <action
-            android:id="@+id/action_programFragment_to_programCreateFragment"
-            app:destination="@id/programCreateFragment"
+            android:id="@+id/action_programsFragment_to_programFragment"
+            app:destination="@id/programFragment"
             app:enterAnim="@anim/slide_in_bottom"
             app:exitAnim="@anim/slide_out_top"
             app:popEnterAnim="@anim/slide_in_top"
             app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
-        android:id="@+id/programCreateFragment"
-        android:name="com.example.fitnesslog.program.ui.ProgramCreateFragment"
-        android:label="@string/label_create_program"
-        tools:layout="@layout/fragment_program_create" />
+        android:id="@+id/programFragment"
+        android:name="com.example.fitnesslog.program.ui.program.ProgramFragment"
+        android:label="@string/create_program"
+        tools:layout="@layout/fragment_program">
+        <argument
+            android:name="programMode"
+            app:argType="com.example.fitnesslog.program.ui.ProgramMode" />
+        <argument
+            android:name="programId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_programFragment_to_scheduleSelectModal"
+            app:destination="@id/scheduleSelectModal" />
+        <action
+            android:id="@+id/action_programFragment_to_restTimeSelectDialog"
+            app:destination="@id/restTimeSelectDialog" />
+    </fragment>
+    <dialog
+        android:id="@+id/scheduleSelectModal"
+        android:name="com.example.fitnesslog.program.ui.program.ScheduleSelectModal"
+        android:label="ScheduleSelectModal"
+        tools:layout="@layout/modal_bottom_sheet_schedule_select">
+        <argument
+            android:name="scheduledDays"
+            app:argType="java.io.Serializable" />
+    </dialog>
+    <dialog
+        android:id="@+id/restTimeSelectDialog"
+        android:name="com.example.fitnesslog.program.ui.program.RestTimeSelectDialog"
+        android:label="RestTimeSelectDialog"
+        tools:layout="@layout/dialog_rest_time_select">
+        <argument
+            android:name="restDurationSeconds"
+            app:argType="integer" />
+    </dialog>
 </navigation>

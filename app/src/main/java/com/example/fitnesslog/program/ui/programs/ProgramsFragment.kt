@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui
+package com.example.fitnesslog.program.ui.programs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -15,12 +16,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
 import com.example.fitnesslog.databinding.FragmentProgramsBinding
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
+import com.example.fitnesslog.program.ui.ProgramMode
+import com.example.fitnesslog.shared.ui.SharedViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 
 class ProgramsFragment : Fragment() {
 
-    private val programsViewModel: ProgramsViewModel by activityViewModels { ProgramsViewModel.Factory }
+    // Scoped to this specific fragment instance
+    private val programsViewModel: ProgramsViewModel by viewModels { ProgramsViewModel.Factory }
+
+    // Scoped to parent activity
+    private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
     private lateinit var programsAdapter: ProgramsAdapter
     private lateinit var rvPrograms: RecyclerView
 
@@ -49,9 +57,26 @@ class ProgramsFragment : Fragment() {
         observeViewModel()
 
         binding.fabCreateProgram.setOnClickListener {
-            programsViewModel.onEvent(ProgramsEvent.ShowCreateForm)
-            // TODO: Navigate to ProgramCreateFragment with ref. to initializedProgramId
-            val action = ProgramsFragmentDirections.actionProgramFragmentToProgramCreateFragment()
+            val action =
+                ProgramsFragmentDirections.actionProgramsFragmentToProgramFragment(programMode = ProgramMode.CREATE)
+            findNavController().navigate(action)
+        }
+
+        binding.fabEditProgram.setOnClickListener {
+            val selectedProgramId = sharedViewModel.stateFlow.value.selectedProgram?.id
+            if (selectedProgramId == null) {
+                Snackbar.make(
+                    view,
+                    "Error selecting `null` selectedProgramId",
+                    Snackbar.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
+            val action =
+                ProgramsFragmentDirections.actionProgramsFragmentToProgramFragment(
+                    programMode = ProgramMode.EDIT,
+                    programId = selectedProgramId
+                )
             findNavController().navigate(action)
         }
     }

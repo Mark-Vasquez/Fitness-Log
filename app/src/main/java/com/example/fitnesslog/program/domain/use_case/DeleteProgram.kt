@@ -6,7 +6,7 @@ import com.example.fitnesslog.program.domain.repository.ProgramRepository
 class DeleteProgram(
     private val programRepository: ProgramRepository
 ) {
-    suspend operator fun invoke(programId: Long): Resource<Unit> {
+    suspend operator fun invoke(programId: Int): Resource<Unit> {
         return programRepository.deleteProgram(programId)
     }
 }

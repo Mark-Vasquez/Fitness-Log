@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">FitnessLog</string>
-    <string name="label_workout">Workout</string>
-    <string name="label_history">History</string>
+    <string name="workout">Workout</string>
+    <string name="history">History</string>
     <!--  Program Screen  -->
-    <string name="label_program">Program</string>
-    <string name="select_program_header">Select Program</string>
-    <string name="create_program_button">Create New Program</string>
-    <string name="edit_program_button">Edit</string>
+    <string name="program">Program</string>
+    <string name="select_program">Select Program</string>
+    <string name="edit_program">Edit Program</string>
+    <string name="create_new_program">Create New Program</string>
+    <string name="edit">Edit</string>
     <string name="workout_count">%1$d %2$s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_workout_fragment">Hello workout fragment</string>
@@ -23,5 +24,10 @@
     <string name="sunday">Sunday</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="label_create_program">Create Program</string>
+    <string name="timer">Timer</string>
+    <string name="select_schedule">Select Schedule</string>
+    <string name="program_name">Program Name</string>
+    <string name="create_program">Create Program</string>
+    <string name="schedule">Schedule</string>
+    <string name="rest_time">Rest Time</string>
 </resources>

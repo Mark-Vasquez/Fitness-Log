@@ -1,9 +1,5 @@
 package com.example.fitnesslog.program.data.repository
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.core.utils.safeCall
 import com.example.fitnesslog.core.utils.toErrorMessage
@@ -13,7 +9,6 @@ import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import com.example.fitnesslog.program.domain.repository.ProgramRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
@@ -23,31 +18,7 @@ import kotlinx.coroutines.flow.map
  */
 class ProgramRepositoryImpl(
     private val dao: ProgramDao,
-    private val dataStore: DataStore<Preferences>
 ) : ProgramRepository {
-
-    private val IS_SEEDED = booleanPreferencesKey("is_seeded")
-    private suspend fun isSeeded(): Boolean {
-        val preferences = dataStore.data.first()
-        return preferences[IS_SEEDED] ?: false
-    }
-
-    override suspend fun seedDatabaseIfFirstRun(): Resource<Unit> {
-        return safeCall {
-            if (!isSeeded()) {
-                val defaultProgram = Program(
-                    name = "Sample Push Pull Legs Program",
-                    restDurationSeconds = 90,
-                    createdAt = System.currentTimeMillis(),
-                    updatedAt = System.currentTimeMillis()
-                )
-                insertProgram(defaultProgram)
-                dataStore.edit { settings ->
-                    settings[IS_SEEDED] = true
-                }
-            }
-        }
-    }
 
 
     override suspend fun insertProgram(program: Program): Resource<Long> {
@@ -60,18 +31,28 @@ class ProgramRepositoryImpl(
             .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
+    override suspend fun getProgramById(programId: Int): Resource<Program> {
+        return safeCall { dao.getProgramById(programId) }
+    }
+
     override fun getSelectedProgram(): Flow<Resource<Program>> {
         return dao.getSelectedProgram()
             .map { Resource.Success(it) as Resource<Program> }
             .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
-    override suspend fun updateProgram(program: Program): Resource<Int> {
-        return safeCall { dao.updateProgram(program) }
+    override suspend fun updateAndSelectProgram(program: Program): Resource<Unit> {
+        return safeCall {
+            dao.updateAndSelectProgram(program)
+        }
     }
 
-    override suspend fun deleteProgram(programId: Long): Resource<Unit> {
+    override suspend fun deleteProgram(programId: Int): Resource<Unit> {
         return safeCall { dao.deleteProgram(programId) }
+    }
+
+    override suspend fun getProgramsCount(): Resource<Int> {
+        return safeCall { dao.getProgramsCount() }
     }
 
     override suspend fun setProgramAsSelected(programId: Int): Resource<Unit> {

@@ -8,7 +8,7 @@
     android:padding="12dp">
 
     <TextView
-        android:id="@+id/tvProgramName"
+        android:id="@+id/tvNameItemProgram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -19,12 +19,12 @@
         tools:text="Push Pull Legs" />
 
     <TextView
-        android:id="@+id/tvNumberOfWorkouts"
+        android:id="@+id/tvNumberWorkoutsItemProgram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceLabelMedium"
-        app:layout_constraintStart_toStartOf="@+id/tvProgramName"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramName"
+        app:layout_constraintStart_toStartOf="@+id/tvNameItemProgram"
+        app:layout_constraintTop_toBottomOf="@+id/tvNameItemProgram"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="8 Workouts" />
 

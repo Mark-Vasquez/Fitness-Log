@@ -11,7 +11,7 @@ import com.example.fitnesslog.core.enums.Day
 @TypeConverters(ScheduleConverter::class)
 data class Program(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
-    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "name", defaultValue = "") val name: String = "",
     @ColumnInfo(
         name = "scheduled_days",
         defaultValue = "MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY"

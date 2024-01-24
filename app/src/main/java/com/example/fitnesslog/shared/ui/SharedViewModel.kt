@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.FitnessLogApp.Companion.sharedModule
 import com.example.fitnesslog.core.utils.Resource
+import com.example.fitnesslog.core.utils.isSeeded
 import com.example.fitnesslog.shared.domain.use_case.SharedUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,27 +37,50 @@ class SharedViewModel(
 
     init {
         viewModelScope.launch {
-            sharedUseCases.getSelectedProgram().collectLatest { resource ->
-                when (resource) {
-                    is Resource.Success -> {
-                        val program = resource.data
-                        _stateFlow.value = stateFlow.value.copy(
-                            selectedProgram = program
-                        )
-                    }
+            if (!isSeeded()) {
+                seedInitialApplication()
+            }
+            getSelectedProgram()
+        }
+    }
 
-                    is Resource.Error -> {
-                        _stateFlow.value = stateFlow.value.copy(
-                            error = resource.errorMessage
-                        )
-                    }
+    fun onEvent(event: SharedEvent) {
+        when (event) {
+            is SharedEvent.ClearErrorState -> {
+                clearErrorState()
+            }
+        }
+    }
+
+    private suspend fun seedInitialApplication() {
+        val resource = sharedUseCases.seedInitialApplication()
+        if (resource is Resource.Error) {
+            _stateFlow.value = stateFlow.value.copy(
+                error = resource.errorMessage ?: "Error Seeding Program on Launch"
+            )
+        }
+    }
+
+    private suspend fun getSelectedProgram() {
+        sharedUseCases.getSelectedProgram().collectLatest { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    val program = resource.data
+                    _stateFlow.value = stateFlow.value.copy(
+                        selectedProgram = program
+                    )
+                }
+
+                is Resource.Error -> {
+                    _stateFlow.value = stateFlow.value.copy(
+                        error = resource.errorMessage
+                    )
                 }
             }
         }
     }
 
-
-    private fun clearError() {
+    private fun clearErrorState() {
         if (_stateFlow.value.error != null) {
             _stateFlow.value = stateFlow.value.copy(error = null)
         }

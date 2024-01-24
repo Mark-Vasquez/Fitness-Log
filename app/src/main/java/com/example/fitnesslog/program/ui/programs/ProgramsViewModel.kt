@@ -1,11 +1,10 @@
-package com.example.fitnesslog.program.ui
+package com.example.fitnesslog.program.ui.programs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.core.utils.Resource
-import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import com.example.fitnesslog.program.domain.use_case.ProgramUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,38 +42,18 @@ class ProgramsViewModel(
 
 
     init {
-        seedProgram()
         collectLatestPrograms()
     }
 
 
     fun onEvent(event: ProgramsEvent) {
         when (event) {
-            is ProgramsEvent.ShowCreateForm -> {
-                viewModelScope.launch {
-                    showCreateForm()
-                }
-            }
 
-            is ProgramsEvent.ShowEditForm -> {
-
-            }
-
-            is ProgramsEvent.SaveCreate -> {
-                saveCreate(event.program)
-            }
-
-            is ProgramsEvent.CancelCreate -> {
-                cancelCreate(event.programId)
-            }
 
             is ProgramsEvent.Select -> {
                 selectProgram(event.program)
             }
 
-            is ProgramsEvent.Edit -> {
-
-            }
 
             is ProgramsEvent.Delete -> {
 
@@ -83,17 +62,6 @@ class ProgramsViewModel(
         }
     }
 
-
-    private fun seedProgram() {
-        viewModelScope.launch {
-            val resource = programUseCases.seedProgram()
-            if (resource is Resource.Error) {
-                _stateFlow.value = stateFlow.value.copy(
-                    error = resource.errorMessage ?: "Error Seeding Program on Launch"
-                )
-            }
-        }
-    }
 
     private fun collectLatestPrograms() {
         // Use collectLatest because only want to render latest version of list and disregard intermediate changes
@@ -118,62 +86,6 @@ class ProgramsViewModel(
                                 ?: "Error Retrieving Programs in `collectLatestPrograms`"
                         )
                     }
-                }
-            }
-        }
-    }
-
-    private fun showCreateForm() {
-        viewModelScope.launch {
-            when (val resource = programUseCases.initializeProgram()) {
-                is Resource.Success -> {
-                    _stateFlow.value = stateFlow.value.copy(initializedProgramId = resource.data)
-                }
-
-                is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage
-                            ?: "Error Creating Default Program in `showCreateForm`"
-                    )
-                }
-            }
-
-        }
-    }
-
-    private fun saveCreate(program: Program) {
-        viewModelScope.launch {
-            when (val resource = programUseCases.editProgram(program)) {
-                is Resource.Success -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        initializedProgramId = null
-                    )
-                    programUseCases.editProgram(program)
-                }
-
-                is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage ?: "Error Creating Program in `saveCreate`"
-                    )
-                }
-            }
-
-        }
-    }
-
-    private fun cancelCreate(programId: Long) {
-        viewModelScope.launch {
-            when (val resource = programUseCases.deleteProgram(programId)) {
-                is Resource.Success -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        initializedProgramId = null
-                    )
-                }
-
-                is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
-                        error = resource.errorMessage ?: "Error Discard Program in `cancelCreate`"
-                    )
                 }
             }
         }

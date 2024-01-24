@@ -7,19 +7,31 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesslog.databinding.ActivityMainBinding
-import com.example.fitnesslog.program.ui.ProgramCreateFragment
+import com.example.fitnesslog.program.ui.program.ProgramFragment
+import com.example.fitnesslog.program.ui.program.ScheduleSelectModal
+import com.example.fitnesslog.shared.ui.SharedEvent
+import com.example.fitnesslog.shared.ui.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
 
+    private val sharedViewModel: SharedViewModel by viewModels { SharedViewModel.Factory }
     private lateinit var binding: ActivityMainBinding
 
     companion object {
@@ -31,8 +43,11 @@ class MainActivity : AppCompatActivity() {
         // Creates ViewObject instance based on the ViewBinding xml class
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val sharedViewModel =
+            ViewModelProvider(this, SharedViewModel.Factory)[SharedViewModel::class.java]
 
         setupNavigation()
+        observeSharedViewModel()
 
 
     }
@@ -56,12 +71,12 @@ class MainActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    
+
     private fun setupNavigation() {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.navHostFragmentActivityMain) as NavHostFragment
         val navController = navHostFragment.findNavController()
-        val bottomNavigation: BottomNavigationView = binding.bottomNavigation
+        val bottomNavigation: BottomNavigationView = binding.bottomNavActivityMain
         bottomNavigation.setupWithNavController(navController)
 
 
@@ -81,9 +96,11 @@ class MainActivity : AppCompatActivity() {
             ) {
 
                 when (fragment) {
-                    is ProgramCreateFragment -> {
+                    is ProgramFragment,
+                    is ScheduleSelectModal -> {
                         bottomNavigation.visibility = View.GONE
                     }
+
 
                     else -> {
                         bottomNavigation.visibility = View.VISIBLE
@@ -91,5 +108,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }, true)
+    }
+
+    // Snackbar any errors here
+    private fun observeSharedViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                sharedViewModel.stateFlow.collect { sharedState ->
+                    sharedState.error?.let {
+                        Snackbar.make(
+                            binding.root,
+                            it,
+                            Snackbar.LENGTH_LONG
+                        ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                super.onDismissed(transientBottomBar, event)
+                                sharedViewModel.onEvent(SharedEvent.ClearErrorState)
+                            }
+                        }).show()
+                    }
+                }
+            }
+        }
     }
 }
