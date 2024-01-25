@@ -21,7 +21,7 @@ class SharedModuleImpl(private val db: FitnessLogDatabase) : SharedModule {
         SharedRepositoryImpl(
             db,
             programModule.programDao,
-            workoutModule.workoutDao,
+            workoutModule.workoutTemplateDao,
             appModule.dataStore
         )
     }

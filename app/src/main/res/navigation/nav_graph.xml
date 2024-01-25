@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.fitnesslog.history.ui.history.fragment.HistoryFragment"
+        android:name="com.example.fitnesslog.history.HistoryFragment"
         android:label="@string/history"
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/workoutsFragment"
-        android:name="com.example.fitnesslog.workout.ui.WorkoutsFragment"
+        android:name="com.example.fitnesslog.workout.ui.workout_sessions.WorkoutsFragment"
         android:label="@string/workout"
         tools:layout="@layout/fragment_workouts" />
     <fragment

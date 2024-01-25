@@ -10,15 +10,15 @@ import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.core.utils.isSeeded
 import com.example.fitnesslog.core.utils.safeCall
 import com.example.fitnesslog.program.data.dao.ProgramDao
+import com.example.fitnesslog.program.data.dao.WorkoutTemplateDao
 import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.shared.domain.repository.SharedRepository
-import com.example.fitnesslog.workout.data.dao.WorkoutDao
 
 class SharedRepositoryImpl(
     private val db: FitnessLogDatabase,
     private val programDao: ProgramDao,
-    private val workoutDao: WorkoutDao,
-//    private val exerciseDao: ExerciseDao,
+    private val workoutTemplateDao: WorkoutTemplateDao,
+//    private val exerciseDao: ExerciseTemplateDao,
     private val dataStore: DataStore<Preferences>
 ) : SharedRepository {
 

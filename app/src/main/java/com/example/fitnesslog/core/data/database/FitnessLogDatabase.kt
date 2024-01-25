@@ -5,19 +5,19 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.fitnesslog.core.converter.ExerciseEnumConverter
 import com.example.fitnesslog.core.converter.ScheduleConverter
-import com.example.fitnesslog.exercise.data.dao.ExerciseDao
-import com.example.fitnesslog.exercise.data.dao.SetDao
-import com.example.fitnesslog.exercise.data.entity.ExerciseTemplate
-import com.example.fitnesslog.exercise.data.entity.SetTemplate
-import com.example.fitnesslog.exercise.data.entity.WorkoutTemplateExercise
-import com.example.fitnesslog.history.data.dao.HistoryDao
-import com.example.fitnesslog.history.data.entity.WorkoutSession
-import com.example.fitnesslog.history.data.entity.WorkoutSessionExercise
-import com.example.fitnesslog.history.data.entity.WorkoutSessionExerciseSet
+import com.example.fitnesslog.program.data.dao.ExerciseTemplateDao
 import com.example.fitnesslog.program.data.dao.ProgramDao
+import com.example.fitnesslog.program.data.dao.SetTemplateDao
+import com.example.fitnesslog.program.data.dao.WorkoutTemplateDao
+import com.example.fitnesslog.program.data.entity.ExerciseTemplate
 import com.example.fitnesslog.program.data.entity.Program
-import com.example.fitnesslog.workout.data.dao.WorkoutDao
-import com.example.fitnesslog.workout.data.entity.WorkoutTemplate
+import com.example.fitnesslog.program.data.entity.SetTemplate
+import com.example.fitnesslog.program.data.entity.WorkoutTemplate
+import com.example.fitnesslog.program.data.entity.WorkoutTemplateExercise
+import com.example.fitnesslog.workout.data.dao.WorkoutSessionDao
+import com.example.fitnesslog.workout.data.entity.WorkoutSession
+import com.example.fitnesslog.workout.data.entity.WorkoutSessionExercise
+import com.example.fitnesslog.workout.data.entity.WorkoutSessionExerciseSet
 
 @Database(
     entities = [
@@ -40,8 +40,8 @@ abstract class FitnessLogDatabase : RoomDatabase() {
     }
 
     abstract fun programDao(): ProgramDao
-    abstract fun workoutDao(): WorkoutDao
-    abstract fun exerciseDao(): ExerciseDao
-    abstract fun setDao(): SetDao
-    abstract fun historyDao(): HistoryDao
+    abstract fun workoutDao(): WorkoutTemplateDao
+    abstract fun exerciseDao(): ExerciseTemplateDao
+    abstract fun setDao(): SetTemplateDao
+    abstract fun historyDao(): WorkoutSessionDao
 }

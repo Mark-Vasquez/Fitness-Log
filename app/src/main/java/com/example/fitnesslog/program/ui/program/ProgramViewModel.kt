@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.Resource
-import com.example.fitnesslog.program.domain.use_case.ProgramUseCases
+import com.example.fitnesslog.program.domain.use_case.program.ProgramUseCases
 import com.example.fitnesslog.program.ui.ProgramMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
