@@ -47,8 +47,9 @@ class ProgramsAdapter(
 
     class ViewHolder(itemView: View, clickAtPosition: (position: Int) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
-        val tvProgramName: TextView = itemView.findViewById(R.id.tvNameItemProgram)
-        val tvNumberOfWorkouts: TextView = itemView.findViewById(R.id.tvNumberWorkoutsItemProgram)
+        val tvNameItemProgram: TextView = itemView.findViewById(R.id.tvNameItemProgram)
+        val tvNumberWorkoutsItemProgram: TextView =
+            itemView.findViewById(R.id.tvNumberWorkoutsItemProgram)
 
         // Sets a click listener one time when instantiating a ViewHolder,
         // Rather than on an itemView in onBindViewHolder each time it binds a new item
@@ -77,8 +78,8 @@ class ProgramsAdapter(
         val context = holder.itemView.context
         val workoutString = if (program.workoutCount == 1) "workout" else "workouts"
         holder.apply {
-            tvProgramName.text = program.name
-            tvNumberOfWorkouts.text = itemView.context.getString(
+            tvNameItemProgram.text = program.name
+            tvNumberWorkoutsItemProgram.text = itemView.context.getString(
                 R.string.workout_count,
                 program.workoutCount,
                 workoutString

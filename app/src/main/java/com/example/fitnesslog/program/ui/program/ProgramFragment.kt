@@ -3,7 +3,6 @@ package com.example.fitnesslog.program.ui.program
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,7 @@ import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.ui.ProgramMode
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
@@ -73,7 +73,8 @@ class ProgramFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUIViews()
-        observeViewModelState()
+        observeProgramState()
+        observeWorkoutTemplatesState()
 
         binding.btnCancelProgram.setOnClickListener {
             showDiscardDialog(requireContext()) {
@@ -106,7 +107,7 @@ class ProgramFragment : Fragment() {
             // To pass data to the modal child via navigation
             val action =
                 ProgramFragmentDirections.actionProgramFragmentToScheduleSelectModal(
-                    scheduledDays = programViewModel.stateFlow.value.scheduledDays as Serializable
+                    scheduledDays = programViewModel.programState.value.scheduledDays as Serializable
                 )
             findNavController().navigate(action)
         }
@@ -124,7 +125,7 @@ class ProgramFragment : Fragment() {
             }
             val action =
                 ProgramFragmentDirections.actionProgramFragmentToRestTimeSelectDialog(
-                    restDurationSeconds = programViewModel.stateFlow.value.restDurationSeconds
+                    restDurationSeconds = programViewModel.programState.value.restDurationSeconds
                 )
             findNavController().navigate(action)
         }
@@ -134,9 +135,9 @@ class ProgramFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val isDeletable = programViewModel.stateFlow.value.isDeletable
+            val isDeletable = programViewModel.programState.value.isDeletable
             if (isDeletable) {
-                val programName = programViewModel.stateFlow.value.program?.name
+                val programName = programViewModel.programState.value.program?.name
                 val message = if (programName.isNullOrEmpty()) {
                     "Are you sure you want to delete this program?"
                 } else {
@@ -172,15 +173,22 @@ class ProgramFragment : Fragment() {
         }
     }
 
-    private fun observeViewModelState() {
+    private fun observeProgramState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programViewModel.stateFlow.collect { state ->
+                programViewModel.programState.collect { state ->
                     updateNameInputView(state.name)
                     updateScheduledDaysView(state.scheduledDays)
                     updateRestDurationView(state.restDurationSeconds)
-                    Log.d(TAG, "${state}")
                 }
+            }
+        }
+    }
+
+    private fun observeWorkoutTemplatesState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                programViewModel.workoutTemplatesState.collectLatest { }
             }
         }
     }

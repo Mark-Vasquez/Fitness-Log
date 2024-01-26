@@ -1,5 +1,7 @@
 package com.example.fitnesslog
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
@@ -9,18 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesslog.databinding.ActivityMainBinding
-import com.example.fitnesslog.program.ui.program.ProgramFragment
-import com.example.fitnesslog.program.ui.program.ScheduleSelectModal
 import com.example.fitnesslog.shared.ui.SharedEvent
 import com.example.fitnesslog.shared.ui.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -33,23 +30,20 @@ class MainActivity : AppCompatActivity() {
 
     private val sharedViewModel: SharedViewModel by viewModels { SharedViewModel.Factory }
     private lateinit var binding: ActivityMainBinding
+    private lateinit var bottomNavigation: BottomNavigationView
 
     companion object {
         const val TAG = "MainActivity"
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Creates ViewObject instance based on the ViewBinding xml class
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val sharedViewModel =
-            ViewModelProvider(this, SharedViewModel.Factory)[SharedViewModel::class.java]
-
         setupNavigation()
         observeSharedViewModel()
-
-
     }
 
 
@@ -76,39 +70,48 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.navHostFragmentActivityMain) as NavHostFragment
         val navController = navHostFragment.findNavController()
-        val bottomNavigation: BottomNavigationView = binding.bottomNavActivityMain
+        bottomNavigation = binding.bottomNavActivityMain
         bottomNavigation.setupWithNavController(navController)
 
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.programFragment,
+                R.id.scheduleSelectModal -> hideBottomNav()
 
-        /**
-         * Replaces recommended addOnDestinationChangedListener from docs because the callback to hide
-         * bottomNav sometimes fires, too early, before creating and switching to the destination fragment
-         * view. This prevents the bottomNav flickering out before the new fragment can conceal the flicker.
-         * This calls the callback only when the 2nd destination View is created and on screen
-         */
-        supportFragmentManager.registerFragmentLifecycleCallbacks(object :
-            FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentViewCreated(
-                fm: FragmentManager,
-                fragment: Fragment,
-                v: View,
-                savedInstanceState: Bundle?
-            ) {
-
-                when (fragment) {
-                    is ProgramFragment,
-                    is ScheduleSelectModal -> {
-                        bottomNavigation.visibility = View.GONE
-                    }
-
-
-                    else -> {
-                        bottomNavigation.visibility = View.VISIBLE
-                    }
-                }
+                else -> showBottomNav()
             }
-        }, true)
+
+        }
     }
+
+    private fun hideBottomNav() {
+        // Animate the hiding of the bottom navigation
+        bottomNavigation.animate()
+            .translationY(bottomNavigation.height.toFloat()) // Move along y-axis down as much as height
+            .alpha(0.0f) // 0f is fully transparent
+            .setDuration(200) // duration in milliseconds
+            .setListener(object : AnimatorListenerAdapter() {
+                // Only set to visibility to gone when animation ends to avoid the large shift behavior
+                override fun onAnimationEnd(animation: Animator) {
+                    bottomNavigation.visibility = View.GONE
+                }
+            })
+    }
+
+    private fun showBottomNav() {
+        // Animate the showing of the bottom navigation
+        bottomNavigation.animate()
+            .translationY(0f) // Move back along y-axis to original position 0f from changed position
+            .alpha(1.0f) // 1.0f is fully opaque
+            .setDuration(400) // duration in milliseconds
+            .setListener(object : AnimatorListenerAdapter() {
+                // Make it visible as soon as animation start and slowly slide back into 0f position
+                override fun onAnimationStart(animation: Animator) {
+                    bottomNavigation.visibility = View.VISIBLE
+                }
+            })
+    }
+
 
     // Snackbar any errors here
     private fun observeSharedViewModel() {

@@ -5,8 +5,8 @@ import com.example.fitnesslog.core.di.AppModule
 import com.example.fitnesslog.core.di.AppModuleImpl
 import com.example.fitnesslog.program.di.ProgramModule
 import com.example.fitnesslog.program.di.ProgramModuleImpl
-import com.example.fitnesslog.program.di.WorkoutModule
-import com.example.fitnesslog.program.di.WorkoutModuleImpl
+import com.example.fitnesslog.program.di.WorkoutTemplateModule
+import com.example.fitnesslog.program.di.WorkoutTemplateModuleImpl
 import com.example.fitnesslog.shared.di.SharedModule
 import com.example.fitnesslog.shared.di.SharedModuleImpl
 
@@ -16,7 +16,7 @@ class FitnessLogApp : Application() {
     companion object {
         lateinit var appModule: AppModule
         lateinit var programModule: ProgramModule
-        lateinit var workoutModule: WorkoutModule
+        lateinit var workoutTemplateModule: WorkoutTemplateModule
         lateinit var sharedModule: SharedModule
     }
 
@@ -29,7 +29,7 @@ class FitnessLogApp : Application() {
         super.onCreate()
         appModule = AppModuleImpl(this)
         programModule = ProgramModuleImpl(appModule.db)
-        workoutModule = WorkoutModuleImpl(appModule.db)
+        workoutTemplateModule = WorkoutTemplateModuleImpl(appModule.db)
         sharedModule = SharedModuleImpl(appModule.db)
 
     }

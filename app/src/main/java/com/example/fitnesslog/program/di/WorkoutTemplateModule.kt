@@ -9,14 +9,14 @@ import com.example.fitnesslog.program.domain.use_case.workout_template.DeleteWor
 import com.example.fitnesslog.program.domain.use_case.workout_template.EditWorkoutTemplate
 import com.example.fitnesslog.program.domain.use_case.workout_template.GetWorkoutTemplates
 import com.example.fitnesslog.program.domain.use_case.workout_template.ReorderWorkoutTemplate
-import com.example.fitnesslog.program.domain.use_case.workout_template.WorkoutUseCases
+import com.example.fitnesslog.program.domain.use_case.workout_template.WorkoutTemplateUseCases
 
-interface WorkoutModule {
-    val workoutUseCases: WorkoutUseCases
+interface WorkoutTemplateModule {
+    val workoutTemplateUseCases: WorkoutTemplateUseCases
     val workoutTemplateDao: WorkoutTemplateDao
 }
 
-class WorkoutModuleImpl(private val db: FitnessLogDatabase) : WorkoutModule {
+class WorkoutTemplateModuleImpl(private val db: FitnessLogDatabase) : WorkoutTemplateModule {
     override val workoutTemplateDao: WorkoutTemplateDao by lazy {
         db.workoutDao()
     }
@@ -24,8 +24,8 @@ class WorkoutModuleImpl(private val db: FitnessLogDatabase) : WorkoutModule {
     private val workoutRepository: WorkoutRepository by lazy {
         WorkoutRepositoryImpl(workoutTemplateDao)
     }
-    override val workoutUseCases: WorkoutUseCases by lazy {
-        WorkoutUseCases(
+    override val workoutTemplateUseCases: WorkoutTemplateUseCases by lazy {
+        WorkoutTemplateUseCases(
             createWorkoutTemplate = CreateWorkoutTemplate(workoutRepository),
             getWorkoutTemplates = GetWorkoutTemplates(workoutRepository),
             editWorkoutTemplate = EditWorkoutTemplate(workoutRepository),

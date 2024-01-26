@@ -2,7 +2,7 @@ package com.example.fitnesslog.shared.di
 
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
-import com.example.fitnesslog.FitnessLogApp.Companion.workoutModule
+import com.example.fitnesslog.FitnessLogApp.Companion.workoutTemplateModule
 import com.example.fitnesslog.core.data.database.FitnessLogDatabase
 import com.example.fitnesslog.shared.data.repository.SharedRepositoryImpl
 import com.example.fitnesslog.shared.domain.repository.SharedRepository
@@ -21,7 +21,7 @@ class SharedModuleImpl(private val db: FitnessLogDatabase) : SharedModule {
         SharedRepositoryImpl(
             db,
             programModule.programDao,
-            workoutModule.workoutTemplateDao,
+            workoutTemplateModule.workoutTemplateDao,
             appModule.dataStore
         )
     }

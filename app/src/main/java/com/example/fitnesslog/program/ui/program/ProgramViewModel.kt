@@ -1,24 +1,31 @@
 package com.example.fitnesslog.program.ui.program
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
+import com.example.fitnesslog.FitnessLogApp.Companion.workoutTemplateModule
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.program.domain.use_case.program.ProgramUseCases
+import com.example.fitnesslog.program.domain.use_case.workout_template.WorkoutTemplateUseCases
 import com.example.fitnesslog.program.ui.ProgramMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProgramViewModel(
-    private val programUseCases: ProgramUseCases
+    private val programUseCases: ProgramUseCases,
+    private val workoutTemplateUseCases: WorkoutTemplateUseCases
 ) : ViewModel() {
 
-    private val _stateFlow = MutableStateFlow(ProgramState())
-    val stateFlow = _stateFlow.asStateFlow()
+    private val _programState = MutableStateFlow(ProgramState())
+    val programState = _programState.asStateFlow()
+
+    private val _workoutTemplatesState = MutableStateFlow(WorkoutTemplatesState())
+    val workoutTemplatesState = _workoutTemplatesState.asStateFlow()
 
     companion object {
         const val TAG = "ProgramViewModel"
@@ -27,7 +34,10 @@ class ProgramViewModel(
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(ProgramViewModel::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return ProgramViewModel(programModule.programUseCases) as T
+                    return ProgramViewModel(
+                        programModule.programUseCases,
+                        workoutTemplateModule.workoutTemplateUseCases
+                    ) as T
                 }
                 throw IllegalArgumentException("ViewModel type passed in the Provider does not match ViewModel configured in the Factory")
             }
@@ -39,14 +49,20 @@ class ProgramViewModel(
     fun onEvent(event: ProgramEvent) {
         when (event) {
             is ProgramEvent.CreateMode -> {
-                initializeProgram()
-                _stateFlow.value = stateFlow.value.copy(programMode = event.mode)
+                if (programState.value.program == null) {
+                    // Only initialize once, not again on rotate when onCreate is called again
+                    initializeProgram()
+                    _programState.value = programState.value.copy(programMode = event.mode)
+                }
             }
 
             is ProgramEvent.EditMode -> {
-                getProgram(event.programId)
-                checkIfDeletable()
-                _stateFlow.value = stateFlow.value.copy(programMode = event.mode)
+                if (programState.value.program == null) {
+                    getProgram(event.programId)
+                    checkIfDeletable()
+                    _programState.value = programState.value.copy(programMode = event.mode)
+
+                }
             }
 
             is ProgramEvent.Save -> {
@@ -54,7 +70,7 @@ class ProgramViewModel(
             }
 
             is ProgramEvent.Cancel -> {
-                when (stateFlow.value.programMode) {
+                when (programState.value.programMode) {
                     ProgramMode.CREATE -> cancelCreate()
                     ProgramMode.EDIT -> return
                 }
@@ -79,11 +95,25 @@ class ProgramViewModel(
         }
     }
 
-    private fun initializeProgram() {
-        if (stateFlow.value.program != null) {
-            // Program has already been initialized, in first fragment onCreate
-            return
+    private fun collectLatestWorkoutTemplates() {
+        val programId = programState.value.program?.id ?: return
+        viewModelScope.launch {
+            workoutTemplateUseCases.getWorkoutTemplates(programId).collectLatest { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        val workoutTemplates = resource.data
+                        _workoutTemplatesState.update { it.copy(workoutTemplates = workoutTemplates) }
+                    }
+
+                    is Resource.Error -> {
+                        _workoutTemplatesState.update { it.copy(error = resource.errorMessage) }
+                    }
+                }
+            }
         }
+    }
+
+    private fun initializeProgram() {
         viewModelScope.launch {
             when (val resource = programUseCases.initializeProgram()) {
                 is Resource.Success -> {
@@ -92,7 +122,7 @@ class ProgramViewModel(
                 }
 
                 is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
+                    _programState.value = programState.value.copy(
                         error = resource.errorMessage
                             ?: "Error Initializing Program in `$TAG`"
                     )
@@ -102,19 +132,19 @@ class ProgramViewModel(
     }
 
     private fun updateName(name: String) {
-        _stateFlow.value = stateFlow.value.copy(
+        _programState.value = programState.value.copy(
             name = name,
         )
     }
 
     private fun updateScheduledDays(scheduledDays: Set<Day>) {
-        _stateFlow.value = stateFlow.value.copy(
+        _programState.value = programState.value.copy(
             scheduledDays = scheduledDays
         )
     }
 
     private fun updateRestDurationSeconds(restDurationSeconds: Int) {
-        _stateFlow.value = stateFlow.value.copy(
+        _programState.value = programState.value.copy(
             restDurationSeconds = restDurationSeconds
         )
     }
@@ -124,9 +154,8 @@ class ProgramViewModel(
         viewModelScope.launch {
             when (val resource = programUseCases.getProgram(programId)) {
                 is Resource.Success -> {
-                    Log.d(TAG, "Success! ${resource.data}")
                     val program = resource.data
-                    _stateFlow.value = stateFlow.value.copy(
+                    _programState.value = programState.value.copy(
                         program = program,
                         name = program.name,
                         scheduledDays = program.scheduledDays,
@@ -135,9 +164,7 @@ class ProgramViewModel(
                 }
 
                 is Resource.Error -> {
-                    Log.d(TAG, "Fail! ${resource.errorMessage}")
-
-                    _stateFlow.value = stateFlow.value.copy(
+                    _programState.value = programState.value.copy(
                         error = resource.errorMessage ?: "Error Retrieving Program"
                     )
                 }
@@ -150,12 +177,12 @@ class ProgramViewModel(
         viewModelScope.launch {
             when (val resource = programUseCases.checkIfDeletable()) {
                 is Resource.Success -> {
-                    _stateFlow.value =
-                        stateFlow.value.copy(isDeletable = resource.data)
+                    _programState.value =
+                        programState.value.copy(isDeletable = resource.data)
                 }
 
                 is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
+                    _programState.value = programState.value.copy(
                         error = resource.errorMessage ?: "Error checking if deletable"
                     )
                 }
@@ -164,7 +191,7 @@ class ProgramViewModel(
     }
 
     private fun deleteProgram() {
-        val programId = stateFlow.value.program?.id ?: return
+        val programId = programState.value.program?.id ?: return
         viewModelScope.launch {
             programUseCases.deleteProgram(programId)
         }
@@ -172,23 +199,23 @@ class ProgramViewModel(
 
     // Calls an edit to the already initialized Program with the user inputs
     private fun saveProgram() {
-        val oldProgram = stateFlow.value.program
+        val oldProgram = programState.value.program
         if (oldProgram == null) {
-            _stateFlow.value =
-                stateFlow.value.copy(error = "Error Saving `null` Program in `save`")
+            _programState.value =
+                programState.value.copy(error = "Error Saving `null` Program in `save`")
             return
         }
         val newProgram = oldProgram.copy(
-            name = stateFlow.value.name,
-            scheduledDays = stateFlow.value.scheduledDays,
-            restDurationSeconds = stateFlow.value.restDurationSeconds,
+            name = programState.value.name,
+            scheduledDays = programState.value.scheduledDays,
+            restDurationSeconds = programState.value.restDurationSeconds,
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )
         viewModelScope.launch {
             val resource = programUseCases.editProgram(newProgram)
             if (resource is Resource.Error) {
-                _stateFlow.value = stateFlow.value.copy(
+                _programState.value = programState.value.copy(
                     error = resource.errorMessage ?: "Saving changes failed"
                 )
 
@@ -199,10 +226,10 @@ class ProgramViewModel(
 
     // Deletes the already initialized program instance along with associated workouts
     private fun cancelCreate() {
-        val programId = stateFlow.value.program?.id
+        val programId = programState.value.program?.id
         if (programId == null) {
-            _stateFlow.value =
-                stateFlow.value.copy(error = "Program is null in `cancelCreate`")
+            _programState.value =
+                programState.value.copy(error = "Program is null in `cancelCreate`")
             return
         }
         viewModelScope.launch {
@@ -211,7 +238,7 @@ class ProgramViewModel(
                 }
 
                 is Resource.Error -> {
-                    _stateFlow.value = stateFlow.value.copy(
+                    _programState.value = programState.value.copy(
                         error = resource.errorMessage
                             ?: "Error Discarding Program in `cancelCreate`"
                     )
