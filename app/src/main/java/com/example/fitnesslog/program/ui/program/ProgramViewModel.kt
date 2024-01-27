@@ -13,6 +13,7 @@ import com.example.fitnesslog.program.ui.ProgramMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -45,22 +46,48 @@ class ProgramViewModel(
         }
     }
 
+    init {
+        collectLatestWorkoutTemplatesByProgramId()
+    }
+
+    private fun collectLatestWorkoutTemplatesByProgramId() {
+        viewModelScope.launch {
+            // Only start collecting the flow of workoutTemplates when associated programId is available in our stateflow
+            programState
+                .mapNotNull { it.program?.id }
+                .collect { programId ->
+                    workoutTemplateUseCases.getWorkoutTemplates(programId)
+                        .collectLatest { resource ->
+                            when (resource) {
+                                is Resource.Success -> _workoutTemplatesState.update {
+                                    it.copy(
+                                        workoutTemplates = resource.data
+                                    )
+                                }
+
+                                is Resource.Error -> _programState.update { it.copy(error = resource.errorMessage) }
+                            }
+                        }
+                }
+        }
+    }
+
 
     fun onEvent(event: ProgramEvent) {
         when (event) {
             is ProgramEvent.CreateMode -> {
                 if (programState.value.program == null) {
                     // Only initialize once, not again on rotate when onCreate is called again
-                    initializeProgram()
                     _programState.value = programState.value.copy(programMode = event.mode)
+                    initializeProgram()
                 }
             }
 
             is ProgramEvent.EditMode -> {
                 if (programState.value.program == null) {
+                    _programState.value = programState.value.copy(programMode = event.mode)
                     getProgram(event.programId)
                     checkIfDeletable()
-                    _programState.value = programState.value.copy(programMode = event.mode)
 
                 }
             }
@@ -95,23 +122,6 @@ class ProgramViewModel(
         }
     }
 
-    private fun collectLatestWorkoutTemplates() {
-        val programId = programState.value.program?.id ?: return
-        viewModelScope.launch {
-            workoutTemplateUseCases.getWorkoutTemplates(programId).collectLatest { resource ->
-                when (resource) {
-                    is Resource.Success -> {
-                        val workoutTemplates = resource.data
-                        _workoutTemplatesState.update { it.copy(workoutTemplates = workoutTemplates) }
-                    }
-
-                    is Resource.Error -> {
-                        _workoutTemplatesState.update { it.copy(error = resource.errorMessage) }
-                    }
-                }
-            }
-        }
-    }
 
     private fun initializeProgram() {
         viewModelScope.launch {

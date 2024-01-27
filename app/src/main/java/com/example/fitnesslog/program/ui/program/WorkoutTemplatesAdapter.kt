@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.R
 import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 
-class WorkoutsAdapter(
+class WorkoutTemplatesAdapter(
 
 ) :
-    ListAdapter<WorkoutTemplate, WorkoutsAdapter.ViewHolder>(WorkoutsDiffUtil) {
+    ListAdapter<WorkoutTemplate, WorkoutTemplatesAdapter.ViewHolder>(WorkoutsDiffUtil) {
 
     object WorkoutsDiffUtil : DiffUtil.ItemCallback<WorkoutTemplate>() {
         override fun areItemsTheSame(oldItem: WorkoutTemplate, newItem: WorkoutTemplate): Boolean {
@@ -34,13 +34,14 @@ class WorkoutsAdapter(
         val tvNameItemWorkout: TextView = itemView.findViewById(R.id.tvNameItemWorkout)
 
         init {
-            
+
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_workout, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_workout_template, parent, false)
         return ViewHolder(itemView)
     }
 

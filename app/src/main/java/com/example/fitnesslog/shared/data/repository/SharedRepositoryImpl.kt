@@ -12,6 +12,7 @@ import com.example.fitnesslog.core.utils.safeCall
 import com.example.fitnesslog.program.data.dao.ProgramDao
 import com.example.fitnesslog.program.data.dao.WorkoutTemplateDao
 import com.example.fitnesslog.program.data.entity.Program
+import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 import com.example.fitnesslog.shared.domain.repository.SharedRepository
 
 class SharedRepositoryImpl(
@@ -36,8 +37,17 @@ class SharedRepositoryImpl(
                     )
 
                     // Runs sequentially because suspend functions
-                    val programId = programDao.insertProgram(defaultProgram)
+                    val programId = programDao.insertProgram(defaultProgram).toInt()
                     // TODO: Insert Workout with program ID
+                    val defaultWorkoutTemplate = WorkoutTemplate(
+                        name = "Chest Day",
+                        programId = programId,
+                        position = 0,
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    )
+                    val workoutTemplateId =
+                        workoutTemplateDao.insertWorkoutTemplate(defaultWorkoutTemplate).toInt()
                     // TODO: Insert Exercise Templates
 
                     dataStore.edit { settings ->

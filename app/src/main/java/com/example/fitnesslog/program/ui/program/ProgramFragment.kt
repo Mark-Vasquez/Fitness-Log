@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
@@ -36,6 +37,7 @@ class ProgramFragment : Fragment() {
     private var _binding: FragmentProgramBinding? = null
     private val binding get() = _binding!!
     private val args: ProgramFragmentArgs by navArgs()
+    private lateinit var workoutTemplatesAdapter: WorkoutTemplatesAdapter
 
     companion object {
         const val TAG = "ProgramFragment"
@@ -73,6 +75,7 @@ class ProgramFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUIViews()
+        setupRecyclerView()
         observeProgramState()
         observeWorkoutTemplatesState()
 
@@ -173,6 +176,14 @@ class ProgramFragment : Fragment() {
         }
     }
 
+    private fun setupRecyclerView() {
+        val rvWorkoutTemplates = binding.rvWorkoutTemplates
+        rvWorkoutTemplates.layoutManager = LinearLayoutManager(requireContext())
+
+        workoutTemplatesAdapter = WorkoutTemplatesAdapter()
+        rvWorkoutTemplates.adapter = workoutTemplatesAdapter
+    }
+
     private fun observeProgramState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -188,7 +199,9 @@ class ProgramFragment : Fragment() {
     private fun observeWorkoutTemplatesState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programViewModel.workoutTemplatesState.collectLatest { }
+                programViewModel.workoutTemplatesState.collectLatest { workoutTemplatesState ->
+                    workoutTemplatesAdapter.submitList(workoutTemplatesState.workoutTemplates)
+                }
             }
         }
     }

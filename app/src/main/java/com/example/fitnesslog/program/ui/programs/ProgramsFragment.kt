@@ -29,14 +29,14 @@ class ProgramsFragment : Fragment() {
 
     // Scoped to parent activity
     private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
-    private lateinit var programsAdapter: ProgramsAdapter
-    private lateinit var rvPrograms: RecyclerView
 
     // ViewBinding reference to the ViewObject instance from onCreateView to access FragmentProgram's layout views
     private var _binding: FragmentProgramsBinding? = null
 
     // Used to safely access an immutable version of binding, guaranteed that _binding will have a value when accessed
     private val binding get() = _binding!!
+    private lateinit var programsAdapter: ProgramsAdapter
+    private lateinit var rvPrograms: RecyclerView
 
     companion object {
         const val TAG = "ProgramsFragment"
@@ -90,7 +90,7 @@ class ProgramsFragment : Fragment() {
 
     private fun setupRecyclerView() {
         rvPrograms = binding.rvPrograms
-        rvPrograms.layoutManager = GridLayoutManager(context, 2)
+        rvPrograms.layoutManager = GridLayoutManager(requireContext(), 2)
         rvPrograms.addItemDecoration(GridSpacingItemDecoration(25))
 
         // Pass in an instance of the listener object and implement what should happen when onProgramClicked is called
