@@ -27,6 +27,7 @@ import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.ui.ProgramMode
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.Serializable
@@ -179,9 +180,14 @@ class ProgramFragment : Fragment() {
     private fun setupRecyclerView() {
         val rvWorkoutTemplates = binding.rvWorkoutTemplates
         rvWorkoutTemplates.layoutManager = LinearLayoutManager(requireContext())
-
         workoutTemplatesAdapter = WorkoutTemplatesAdapter()
         rvWorkoutTemplates.adapter = workoutTemplatesAdapter
+
+        val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+        divider.apply {
+            isLastItemDecorated = false
+        }
+        rvWorkoutTemplates.addItemDecoration(divider)
     }
 
     private fun observeProgramState() {

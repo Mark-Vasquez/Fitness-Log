@@ -40,14 +40,31 @@ class SharedRepositoryImpl(
                     val programId = programDao.insertProgram(defaultProgram).toInt()
                     // TODO: Insert Workout with program ID
                     val defaultWorkoutTemplate = WorkoutTemplate(
-                        name = "Chest Day",
+                        name = "Push Day (Chest Focused)",
                         programId = programId,
                         position = 0,
                         createdAt = System.currentTimeMillis(),
                         updatedAt = System.currentTimeMillis()
                     )
+                    val defaultWorkoutTemplate2 = WorkoutTemplate(
+                        name = "Push Day (Shoulder Focused)",
+                        programId = programId,
+                        position = 1,
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    )
+                    val defaultWorkoutTemplate3 = WorkoutTemplate(
+                        name = "Back Day",
+                        programId = programId,
+                        position = 2,
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    )
                     val workoutTemplateId =
                         workoutTemplateDao.insertWorkoutTemplate(defaultWorkoutTemplate).toInt()
+                    workoutTemplateDao.insertWorkoutTemplate(defaultWorkoutTemplate2).toInt()
+                    workoutTemplateDao.insertWorkoutTemplate(defaultWorkoutTemplate3).toInt()
+
                     // TODO: Insert Exercise Templates
 
                     dataStore.edit { settings ->
