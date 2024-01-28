@@ -10,14 +10,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".program.ui.program.ProgramFragment">
+        tools:context=".program.ui.program.program_edit.ProgramEditFragment">
 
 
         <TextView
-            android:id="@+id/btnCancelProgram"
+            android:id="@+id/btn_navigate_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/CancelButton"
+            style="@style/NavigateBackButton"
             app:layout_constraintTop_toTopOf="@+id/tvTitleProgram"
             app:layout_constraintBottom_toBottomOf="@+id/tvTitleProgram"
             app:layout_constraintStart_toStartOf="parent" />

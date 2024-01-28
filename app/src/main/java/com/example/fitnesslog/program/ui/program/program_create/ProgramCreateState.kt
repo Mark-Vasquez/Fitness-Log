@@ -1,11 +1,9 @@
-package com.example.fitnesslog.program.ui.program
+package com.example.fitnesslog.program.ui.program.program_create
 
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.program.data.entity.Program
-import com.example.fitnesslog.program.ui.ProgramMode
 
-data class ProgramState(
-    val programMode: ProgramMode = ProgramMode.CREATE,
+data class ProgramCreateState(
     val program: Program? = null,
     val name: String = "",
     val scheduledDays: Set<Day> = setOf(
@@ -17,5 +15,4 @@ data class ProgramState(
     ),
     val restDurationSeconds: Int = 90,
     val error: String? = null,
-    val isDeletable: Boolean = false
 )

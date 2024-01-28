@@ -1,4 +1,4 @@
-package com.example.fitnesslog.program.ui.program
+package com.example.fitnesslog.program.ui.program.program_edit
 
 import android.os.Bundle
 import android.text.Editable
@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,6 +20,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fitnesslog.FitnessLogApp.Companion.programModule
+import com.example.fitnesslog.FitnessLogApp.Companion.workoutTemplateModule
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
@@ -28,7 +31,7 @@ import com.example.fitnesslog.core.utils.setDebouncedOnClickListener
 import com.example.fitnesslog.core.utils.showDeleteDialog
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
-import com.example.fitnesslog.program.ui.ProgramMode
+import com.example.fitnesslog.program.ui.program.WorkoutTemplatesAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import kotlinx.coroutines.flow.collectLatest
@@ -37,32 +40,26 @@ import java.io.Serializable
 import java.util.Collections
 
 
-class ProgramFragment : Fragment() {
-    private val programViewModel: ProgramViewModel by viewModels { ProgramViewModel.Factory }
+class ProgramEditFragment : Fragment() {
+    private val programEditViewModel: ProgramEditViewModel by viewModels {
+        ProgramEditViewModel.Companion.Factory(
+            args.programId,
+            programModule.programUseCases,
+            workoutTemplateModule.workoutTemplateUseCases
+        )
+    }
     private var _binding: FragmentProgramBinding? = null
     private val binding get() = _binding!!
-    private val args: ProgramFragmentArgs by navArgs()
+    private val args: ProgramEditFragmentArgs by navArgs()
     private lateinit var workoutTemplatesAdapter: WorkoutTemplatesAdapter
 
     companion object {
-        const val TAG = "ProgramFragment"
+        const val TAG = "ProgramEditFragment"
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Only initialize the viewModel when Fragment is created for the first time
-        if (savedInstanceState == null) {
-            when (args.programMode) {
-                ProgramMode.CREATE -> programViewModel.onEvent(ProgramEvent.CreateMode(args.programMode))
-                ProgramMode.EDIT -> programViewModel.onEvent(
-                    ProgramEvent.EditMode(
-                        args.programMode,
-                        args.programId
-                    )
-                )
-            }
-        }
         setBackButtonListener()
     }
 
@@ -79,27 +76,31 @@ class ProgramFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupUIViews()
+        binding.tvTitleProgram.text = getString(R.string.edit_program)
+        binding.btnDeleteProgram.visibility = View.VISIBLE
+        binding.btnSaveProgram.visibility = View.GONE
+        binding.btnNavigateBack.apply {
+            text = getString(R.string.back)
+            val backArrowIcon = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.baseline_arrow_back_ios_new_24
+            )
+            setCompoundDrawablesWithIntrinsicBounds(backArrowIcon, null, null, null)
+            compoundDrawablePadding = 4
+        }
         setupRecyclerView()
         observeProgramState()
         observeWorkoutTemplatesState()
 
-        binding.btnCancelProgram.setOnClickListener {
-            showDiscardDialog(requireContext()) {
-                programViewModel.onEvent(ProgramEvent.Cancel)
-                findNavController().popBackStack()
-            }
-        }
-
-        binding.btnSaveProgram.setOnClickListener {
-            programViewModel.onEvent(ProgramEvent.Save)
+        binding.btnNavigateBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
 
         binding.etNameProgram.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val name = binding.etNameProgram.text.toString()
-                programViewModel.onEvent(ProgramEvent.UpdateName(name))
+                programEditViewModel.onEvent(ProgramEditEvent.UpdateName(name))
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -109,50 +110,46 @@ class ProgramFragment : Fragment() {
         // Debounce to eliminate trying to navigate to same location twice
         binding.btnScheduleProgram.setDebouncedOnClickListener {
             // To retrieve data back from modal child to this parent fragment via navigation
-            handleModalResult<Set<Day>>(R.id.programFragment, SCHEDULED_DAYS) { scheduledDays ->
-                programViewModel.onEvent(ProgramEvent.UpdateScheduledDays(scheduledDays!!))
+            handleModalResult<Set<Day>>(R.id.programEditFragment, SCHEDULED_DAYS) { scheduledDays ->
+                programEditViewModel.onEvent(ProgramEditEvent.UpdateScheduledDays(scheduledDays!!))
             }
             // To pass data to the modal child via navigation
             val action =
-                ProgramFragmentDirections.actionProgramFragmentToScheduleSelectModal(
-                    scheduledDays = programViewModel.programState.value.scheduledDays as Serializable
+                ProgramEditFragmentDirections.actionProgramEditFragmentToScheduleSelectModal(
+                    scheduledDays = programEditViewModel.programState.value.scheduledDays as Serializable
                 )
             findNavController().navigate(action)
         }
 
         binding.btnRestTimeProgram.setDebouncedOnClickListener {
             handleModalResult<Int>(
-                R.id.programFragment,
+                R.id.programEditFragment,
                 REST_DURATION_SECONDS
             ) { restDurationSeconds ->
-                programViewModel.onEvent(
-                    ProgramEvent.UpdateRestDurationSeconds(
+                programEditViewModel.onEvent(
+                    ProgramEditEvent.UpdateRestDurationSeconds(
                         restDurationSeconds!!
                     )
                 )
             }
             val action =
-                ProgramFragmentDirections.actionProgramFragmentToRestTimeSelectDialog(
-                    restDurationSeconds = programViewModel.programState.value.restDurationSeconds
+                ProgramEditFragmentDirections.actionProgramEditFragmentToRestTimeSelectDialog(
+                    restDurationSeconds = programEditViewModel.programState.value.restDurationSeconds
                 )
             findNavController().navigate(action)
         }
 
         binding.btnDeleteProgram.setOnClickListener {
-            if (args.programMode != ProgramMode.EDIT) {
-                return@setOnClickListener
-            }
-
-            val isDeletable = programViewModel.programState.value.isDeletable
+            val isDeletable = programEditViewModel.programState.value.isDeletable
             if (isDeletable) {
-                val programName = programViewModel.programState.value.program?.name
+                val programName = programEditViewModel.programState.value.program?.name
                 val message = if (programName.isNullOrEmpty()) {
                     "Are you sure you want to delete this program?"
                 } else {
                     "Are you sure you want to delete \"${programName}\" program?"
                 }
                 showDeleteDialog(requireContext(), message) {
-                    programViewModel.onEvent(ProgramEvent.Delete)
+                    programEditViewModel.onEvent(ProgramEditEvent.Delete)
                     findNavController().popBackStack()
                 }
             } else {
@@ -170,16 +167,6 @@ class ProgramFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupUIViews() = when (args.programMode) {
-        ProgramMode.CREATE -> {
-            binding.tvTitleProgram.text = getString(R.string.create_program)
-        }
-
-        ProgramMode.EDIT -> {
-            binding.tvTitleProgram.text = getString(R.string.edit_program)
-            binding.btnDeleteProgram.visibility = View.VISIBLE
-        }
-    }
 
     private fun setupRecyclerView() {
         val rvWorkoutTemplates = binding.rvWorkoutTemplates
@@ -242,7 +229,7 @@ class ProgramFragment : Fragment() {
     private fun observeProgramState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programViewModel.programState.collect { state ->
+                programEditViewModel.programState.collect { state ->
                     updateNameInputView(state.name)
                     updateScheduledDaysView(state.scheduledDays)
                     updateRestDurationView(state.restDurationSeconds)
@@ -254,7 +241,7 @@ class ProgramFragment : Fragment() {
     private fun observeWorkoutTemplatesState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programViewModel.workoutTemplatesState.collectLatest { workoutTemplatesState ->
+                programEditViewModel.workoutTemplatesState.collectLatest { workoutTemplatesState ->
                     workoutTemplatesAdapter.submitList(workoutTemplatesState.workoutTemplates)
                 }
             }
@@ -334,9 +321,6 @@ class ProgramFragment : Fragment() {
             showDiscardDialog(
                 requireContext()
             ) {
-                programViewModel.onEvent(
-                    ProgramEvent.Cancel
-                )
                 findNavController().popBackStack()
             }
         }

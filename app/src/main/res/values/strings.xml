@@ -4,6 +4,8 @@
     <string name="history">History</string>
     <!--  Program Screen  -->
     <string name="program">Program</string>
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
     <string name="select_program">Select Program</string>
     <string name="edit_program">Edit Program</string>
     <string name="create_new_program">Create New Program</string>

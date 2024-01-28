@@ -21,31 +21,47 @@
         android:label="@string/program"
         tools:layout="@layout/fragment_programs">
         <action
-            android:id="@+id/action_programsFragment_to_programFragment"
-            app:destination="@id/programFragment"
+            android:id="@+id/action_programsFragment_to_programCreateFragment"
+            app:destination="@id/programCreateFragment"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/slide_out_bottom" />
+        <action
+            android:id="@+id/action_programsFragment_to_programEditFragment"
+            app:destination="@id/programEditFragment"
             app:enterAnim="@anim/slide_in_bottom"
             app:exitAnim="@anim/slide_out_top"
             app:popEnterAnim="@anim/slide_in_top"
             app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
-        android:id="@+id/programFragment"
-        android:name="com.example.fitnesslog.program.ui.program.ProgramFragment"
-        android:label="@string/create_program"
+        android:id="@+id/programCreateFragment"
+        android:name="com.example.fitnesslog.program.ui.program.program_create.ProgramCreateFragment"
+        android:label="ProgramCreateFragment"
         tools:layout="@layout/fragment_program">
-        <argument
-            android:name="programMode"
-            app:argType="com.example.fitnesslog.program.ui.ProgramMode" />
+        <action
+            android:id="@+id/action_programCreateFragment_to_restTimeSelectDialog"
+            app:destination="@id/restTimeSelectDialog" />
+        <action
+            android:id="@+id/action_programCreateFragment_to_scheduleSelectModal"
+            app:destination="@id/scheduleSelectModal" />
+    </fragment>
+    <fragment
+        android:id="@+id/programEditFragment"
+        android:name="com.example.fitnesslog.program.ui.program.program_edit.ProgramEditFragment"
+        android:label="@string/edit_program"
+        tools:layout="@layout/fragment_program">
         <argument
             android:name="programId"
             app:argType="integer"
             android:defaultValue="-1" />
         <action
-            android:id="@+id/action_programFragment_to_scheduleSelectModal"
-            app:destination="@id/scheduleSelectModal" />
-        <action
-            android:id="@+id/action_programFragment_to_restTimeSelectDialog"
+            android:id="@+id/action_programEditFragment_to_restTimeSelectDialog"
             app:destination="@id/restTimeSelectDialog" />
+        <action
+            android:id="@+id/action_programEditFragment_to_scheduleSelectModal"
+            app:destination="@id/scheduleSelectModal" />
     </fragment>
     <dialog
         android:id="@+id/scheduleSelectModal"
@@ -65,4 +81,5 @@
             android:name="restDurationSeconds"
             app:argType="integer" />
     </dialog>
+
 </navigation>
