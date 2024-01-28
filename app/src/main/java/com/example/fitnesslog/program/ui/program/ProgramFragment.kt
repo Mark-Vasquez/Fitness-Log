@@ -3,6 +3,7 @@ package com.example.fitnesslog.program.ui.program
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
@@ -31,6 +34,7 @@ import com.google.android.material.divider.MaterialDividerItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.Serializable
+import java.util.Collections
 
 
 class ProgramFragment : Fragment() {
@@ -188,6 +192,51 @@ class ProgramFragment : Fragment() {
             isLastItemDecorated = false
         }
         rvWorkoutTemplates.addItemDecoration(divider)
+
+        class ItemTouchHelperCallback(private val adapter: WorkoutTemplatesAdapter) :
+            ItemTouchHelper.Callback() {
+
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+                val swipeFlags = ItemTouchHelper.LEFT
+                return makeMovementFlags(dragFlags, swipeFlags)
+            }
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val oldIndex = viewHolder.adapterPosition
+                val newIndex = target.adapterPosition
+                val updatedList = adapter.currentList.toMutableList()
+
+                if (oldIndex < newIndex) {
+                    for (i in oldIndex until newIndex) {
+                        Collections.swap(updatedList, i, i + 1)
+                    }
+                } else {
+                    for (i in oldIndex downTo newIndex + 1) {
+                        Collections.swap(updatedList, i, i - 1)
+                    }
+                }
+                adapter.submitList(updatedList)
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                Log.d(TAG, "${adapter.currentList[viewHolder.adapterPosition]}")
+            }
+
+        }
+
+        val itemTouchHelper =
+            ItemTouchHelper(ItemTouchHelperCallback(adapter = workoutTemplatesAdapter))
+        itemTouchHelper.attachToRecyclerView(rvWorkoutTemplates)
+
     }
 
     private fun observeProgramState() {

@@ -38,6 +38,7 @@ class WorkoutTemplatesAdapter(
         }
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
@@ -51,5 +52,6 @@ class WorkoutTemplatesAdapter(
             tvNameItemWorkout.text = workoutTemplate.name
         }
     }
+
 
 }
