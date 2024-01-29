@@ -85,8 +85,7 @@ class ProgramCreateFragment : Fragment() {
 
         binding.etNameProgram.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                val name = binding.etNameProgram.text.toString()
-                programCreateViewModel.onEvent(ProgramCreateEvent.UpdateName(name))
+                programCreateViewModel.onEvent(ProgramCreateEvent.UpdateName(s.toString()))
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

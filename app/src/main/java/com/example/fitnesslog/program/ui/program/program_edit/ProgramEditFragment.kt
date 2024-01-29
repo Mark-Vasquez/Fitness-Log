@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -26,12 +25,14 @@ import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
 import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
-import com.example.fitnesslog.core.utils.secondsToMinutesAndSeconds
 import com.example.fitnesslog.core.utils.setDebouncedOnClickListener
 import com.example.fitnesslog.core.utils.showDeleteDialog
 import com.example.fitnesslog.core.utils.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesAdapter
+import com.example.fitnesslog.program.ui.program.handleModalResult
+import com.example.fitnesslog.program.ui.program.updateRestDurationView
+import com.example.fitnesslog.program.ui.program.updateScheduledDaysView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import kotlinx.coroutines.flow.collectLatest
@@ -99,8 +100,7 @@ class ProgramEditFragment : Fragment() {
 
         binding.etNameProgram.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                val name = binding.etNameProgram.text.toString()
-                programEditViewModel.onEvent(ProgramEditEvent.UpdateName(name))
+                programEditViewModel.onEvent(ProgramEditEvent.UpdateName(s.toString()))
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -109,8 +109,13 @@ class ProgramEditFragment : Fragment() {
 
         // Debounce to eliminate trying to navigate to same location twice
         binding.btnScheduleProgram.setDebouncedOnClickListener {
+            val navBackStackEntry = findNavController().getBackStackEntry(R.id.programEditFragment)
             // To retrieve data back from modal child to this parent fragment via navigation
-            handleModalResult<Set<Day>>(R.id.programEditFragment, SCHEDULED_DAYS) { scheduledDays ->
+            handleModalResult<Set<Day>>(
+                navBackStackEntry,
+                viewLifecycleOwner,
+                SCHEDULED_DAYS
+            ) { scheduledDays ->
                 programEditViewModel.onEvent(ProgramEditEvent.UpdateScheduledDays(scheduledDays!!))
             }
             // To pass data to the modal child via navigation
@@ -122,8 +127,10 @@ class ProgramEditFragment : Fragment() {
         }
 
         binding.btnRestTimeProgram.setDebouncedOnClickListener {
+            val navBackStackEntry = findNavController().getBackStackEntry(R.id.programEditFragment)
             handleModalResult<Int>(
-                R.id.programEditFragment,
+                navBackStackEntry,
+                viewLifecycleOwner,
                 REST_DURATION_SECONDS
             ) { restDurationSeconds ->
                 programEditViewModel.onEvent(
@@ -231,8 +238,8 @@ class ProgramEditFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programEditViewModel.programState.collect { state ->
                     updateNameInputView(state.name)
-                    updateScheduledDaysView(state.scheduledDays)
-                    updateRestDurationView(state.restDurationSeconds)
+                    updateScheduledDaysView(binding, state.scheduledDays)
+                    updateRestDurationView(binding, state.restDurationSeconds)
                 }
             }
         }
@@ -257,64 +264,6 @@ class ProgramEditFragment : Fragment() {
         }
     }
 
-
-    private fun updateScheduledDaysView(scheduledDays: Set<Day>) {
-        if (scheduledDays.size == 1) {
-            binding.tvScheduledDaysProgram.text = scheduledDays.first().value
-            return
-        }
-        val selectedScheduleString = mutableListOf<String>()
-        if (Day.MONDAY in scheduledDays) selectedScheduleString.add("Mo")
-        if (Day.TUESDAY in scheduledDays) selectedScheduleString.add("Tu")
-        if (Day.WEDNESDAY in scheduledDays) selectedScheduleString.add("We")
-        if (Day.THURSDAY in scheduledDays) selectedScheduleString.add("Th")
-        if (Day.FRIDAY in scheduledDays) selectedScheduleString.add("Fr")
-        if (Day.SATURDAY in scheduledDays) selectedScheduleString.add("Sa")
-        if (Day.SUNDAY in scheduledDays) selectedScheduleString.add("Su")
-        binding.tvScheduledDaysProgram.text = selectedScheduleString.joinToString("/")
-    }
-
-    private fun updateRestDurationView(seconds: Int) {
-        val (minutes, seconds) = secondsToMinutesAndSeconds(seconds)
-        val durationString =
-            if (minutes == 0) "${seconds}s"
-            else if (seconds == 0) "${minutes}m"
-            else "${minutes}m${seconds}s"
-        binding.tvRestTimeProgram.text = durationString
-    }
-
-    private fun <T> handleModalResult(
-        currDestination: Int,
-        savedStateHandleKey: String,
-        handleResult: (T?) -> Unit
-    ) {
-        /** NavBackStackEntry is a lifecycleOwner reference to a destination on the nav backstack
-         *  that provides a lifecycle, viewmodelStore, and savedStateHandle. Allows the navBackStack
-         *  to manage the same viewModel and state in memory that the destination fragment owns
-         */
-        val navBackStackEntry =
-            findNavController().getBackStackEntry(currDestination)
-
-        // Create our observer and add it to the NavBackStackEntry's lifecycle
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME
-                && navBackStackEntry.savedStateHandle.contains(savedStateHandleKey)
-            ) {
-                val result = navBackStackEntry.savedStateHandle.get<T>(savedStateHandleKey);
-                // Do something with the result via the passed in lambda
-                handleResult(result)
-            }
-        }
-        navBackStackEntry.lifecycle.addObserver(observer)
-
-        // As addObserver() does not automatically remove the observer, we
-        // call removeObserver() manually when the view lifecycle is destroyed
-        viewLifecycleOwner.lifecycle.addObserver(LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                navBackStackEntry.lifecycle.removeObserver(observer)
-            }
-        })
-    }
 
     private fun setBackButtonListener() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
