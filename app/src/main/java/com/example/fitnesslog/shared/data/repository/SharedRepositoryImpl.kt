@@ -5,9 +5,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.room.withTransaction
 import com.example.fitnesslog.core.data.database.FitnessLogDatabase
-import com.example.fitnesslog.core.utils.IS_SEEDED
 import com.example.fitnesslog.core.utils.Resource
-import com.example.fitnesslog.core.utils.isSeeded
+import com.example.fitnesslog.core.utils.constants.IS_SEEDED
+import com.example.fitnesslog.core.utils.helpers.isSeeded
 import com.example.fitnesslog.core.utils.safeCall
 import com.example.fitnesslog.program.data.dao.ProgramDao
 import com.example.fitnesslog.program.data.dao.WorkoutTemplateDao

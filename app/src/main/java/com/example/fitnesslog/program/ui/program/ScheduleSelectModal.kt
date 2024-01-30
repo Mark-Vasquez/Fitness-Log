@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.fitnesslog.core.enums.Day
-import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
+import com.example.fitnesslog.core.utils.constants.SCHEDULED_DAYS
 import com.example.fitnesslog.databinding.ModalBottomSheetScheduleSelectBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog

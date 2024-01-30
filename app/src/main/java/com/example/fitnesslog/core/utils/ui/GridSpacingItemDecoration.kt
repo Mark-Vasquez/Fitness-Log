@@ -1,4 +1,4 @@
-package com.example.fitnesslog.core.utils
+package com.example.fitnesslog.core.utils.ui
 
 import android.graphics.Rect
 import android.view.View

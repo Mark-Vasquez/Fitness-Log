@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
-import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
-import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
-import com.example.fitnesslog.core.utils.setDebouncedOnClickListener
-import com.example.fitnesslog.core.utils.showDiscardDialog
+import com.example.fitnesslog.core.utils.constants.REST_DURATION_SECONDS
+import com.example.fitnesslog.core.utils.constants.SCHEDULED_DAYS
+import com.example.fitnesslog.core.utils.extensions.setDebouncedOnClickListener
+import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesAdapter
 import com.example.fitnesslog.program.ui.program.handleModalResult

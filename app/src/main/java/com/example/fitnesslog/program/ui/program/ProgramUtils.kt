@@ -5,7 +5,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavBackStackEntry
 import com.example.fitnesslog.core.enums.Day
-import com.example.fitnesslog.core.utils.secondsToMinutesAndSeconds
+import com.example.fitnesslog.core.utils.helpers.secondsToMinutesAndSeconds
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 
 fun updateNameInputView(binding: FragmentProgramBinding, name: String) {

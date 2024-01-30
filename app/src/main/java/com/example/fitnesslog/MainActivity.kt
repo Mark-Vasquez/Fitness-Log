@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -74,9 +75,12 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            Log.d(TAG, "ayo ${destination.label}")
             when (destination.id) {
+                R.id.programCreateFragment,
                 R.id.programEditFragment,
-                R.id.scheduleSelectModal -> hideBottomNav()
+                R.id.scheduleSelectModal,
+                R.id.restTimeSelectDialog -> hideBottomNav()
 
                 else -> showBottomNav()
             }

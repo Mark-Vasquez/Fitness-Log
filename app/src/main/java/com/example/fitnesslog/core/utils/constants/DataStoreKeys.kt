@@ -1,4 +1,4 @@
-package com.example.fitnesslog.core.utils
+package com.example.fitnesslog.core.utils.constants
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 

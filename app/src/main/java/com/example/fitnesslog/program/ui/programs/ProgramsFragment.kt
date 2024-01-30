@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fitnesslog.core.utils.GridSpacingItemDecoration
+import com.example.fitnesslog.core.utils.ui.GridSpacingItemDecoration
 import com.example.fitnesslog.databinding.FragmentProgramsBinding
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
 import com.example.fitnesslog.shared.ui.SharedViewModel

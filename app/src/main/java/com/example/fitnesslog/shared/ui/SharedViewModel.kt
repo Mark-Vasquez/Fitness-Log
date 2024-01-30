@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.FitnessLogApp.Companion.sharedModule
 import com.example.fitnesslog.core.utils.Resource
-import com.example.fitnesslog.core.utils.isSeeded
+import com.example.fitnesslog.core.utils.helpers.isSeeded
 import com.example.fitnesslog.shared.domain.use_case.SharedUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

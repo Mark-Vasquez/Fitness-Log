@@ -1,8 +1,8 @@
 package com.example.fitnesslog.program.data.repository
 
 import com.example.fitnesslog.core.utils.Resource
+import com.example.fitnesslog.core.utils.extensions.toErrorMessage
 import com.example.fitnesslog.core.utils.safeCall
-import com.example.fitnesslog.core.utils.toErrorMessage
 import com.example.fitnesslog.program.data.dao.ProgramDao
 import com.example.fitnesslog.program.data.entity.Program
 import com.example.fitnesslog.program.domain.model.ProgramWithWorkoutCount
@@ -31,8 +31,10 @@ class ProgramRepositoryImpl(
             .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
-    override suspend fun getProgramById(programId: Int): Resource<Program> {
-        return safeCall { dao.getProgramById(programId) }
+    override suspend fun getProgramById(programId: Int): Flow<Resource<Program>> {
+        return dao.getProgramById(programId)
+            .map { Resource.Success(it) as Resource<Program> }
+            .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
     }
 
     override fun getSelectedProgram(): Flow<Resource<Program>> {

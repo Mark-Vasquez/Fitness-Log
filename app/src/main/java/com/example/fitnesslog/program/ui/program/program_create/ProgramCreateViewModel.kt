@@ -97,23 +97,26 @@ class ProgramCreateViewModel(
 
     private fun getProgram(programId: Int) {
         viewModelScope.launch {
-            when (val resource = programUseCases.getProgram(programId)) {
-                is Resource.Success -> {
-                    val program = resource.data
-                    _programState.value = programState.value.copy(
-                        program = program,
-                        name = program.name,
-                        scheduledDays = program.scheduledDays,
-                        restDurationSeconds = program.restDurationSeconds
-                    )
-                }
+            programUseCases.getProgram(programId).collectLatest { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        val program = resource.data
+                        _programState.value = programState.value.copy(
+                            program = program,
+                            name = program.name,
+                            scheduledDays = program.scheduledDays,
+                            restDurationSeconds = program.restDurationSeconds
+                        )
+                    }
 
-                is Resource.Error -> {
-                    _programState.value = programState.value.copy(
-                        error = resource.errorMessage ?: "Error Retrieving Program"
-                    )
+                    is Resource.Error -> {
+                        _programState.value = programState.value.copy(
+                            error = resource.errorMessage ?: "Error Retrieving Program"
+                        )
+                    }
                 }
             }
+
         }
     }
 
@@ -139,7 +142,7 @@ class ProgramCreateViewModel(
                 programState.value.copy(error = "Error Saving `null` Program in `save`")
             return
         }
-        val newProgram = oldProgram.copy(
+        val editedProgram = oldProgram.copy(
             name = programState.value.name,
             scheduledDays = programState.value.scheduledDays,
             restDurationSeconds = programState.value.restDurationSeconds,
@@ -147,7 +150,7 @@ class ProgramCreateViewModel(
             updatedAt = System.currentTimeMillis()
         )
         viewModelScope.launch {
-            val resource = programUseCases.editProgram(newProgram)
+            val resource = programUseCases.editProgram(editedProgram)
             if (resource is Resource.Error) {
                 _programState.value = programState.value.copy(
                     error = resource.errorMessage ?: "Saving changes failed"

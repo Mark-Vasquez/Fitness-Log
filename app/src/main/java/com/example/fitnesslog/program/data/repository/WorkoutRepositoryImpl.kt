@@ -1,8 +1,8 @@
 package com.example.fitnesslog.program.data.repository
 
 import com.example.fitnesslog.core.utils.Resource
+import com.example.fitnesslog.core.utils.extensions.toErrorMessage
 import com.example.fitnesslog.core.utils.safeCall
-import com.example.fitnesslog.core.utils.toErrorMessage
 import com.example.fitnesslog.program.data.dao.WorkoutTemplateDao
 import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 import com.example.fitnesslog.program.domain.repository.WorkoutRepository

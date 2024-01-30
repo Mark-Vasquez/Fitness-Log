@@ -1,4 +1,4 @@
-package com.example.fitnesslog.core.utils
+package com.example.fitnesslog.core.utils.helpers
 
 fun secondsToMinutesAndSeconds(seconds: Int): Pair<Int, Int> {
     val minutes = (seconds / 60)

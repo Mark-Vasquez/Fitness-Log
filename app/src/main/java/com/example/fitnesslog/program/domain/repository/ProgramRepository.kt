@@ -16,7 +16,7 @@ interface ProgramRepository {
 
     fun getAllProgramsOrderedBySelected(): Flow<Resource<List<ProgramWithWorkoutCount>>>
 
-    suspend fun getProgramById(programId: Int): Resource<Program>
+    suspend fun getProgramById(programId: Int): Flow<Resource<Program>>
 
     fun getSelectedProgram(): Flow<Resource<Program>>
 

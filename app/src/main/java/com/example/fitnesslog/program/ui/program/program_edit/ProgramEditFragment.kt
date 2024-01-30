@@ -1,8 +1,6 @@
 package com.example.fitnesslog.program.ui.program.program_edit
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,11 +21,12 @@ import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.FitnessLogApp.Companion.workoutTemplateModule
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
-import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
-import com.example.fitnesslog.core.utils.SCHEDULED_DAYS
-import com.example.fitnesslog.core.utils.setDebouncedOnClickListener
-import com.example.fitnesslog.core.utils.showDeleteDialog
-import com.example.fitnesslog.core.utils.showDiscardDialog
+import com.example.fitnesslog.core.utils.constants.REST_DURATION_SECONDS
+import com.example.fitnesslog.core.utils.constants.SCHEDULED_DAYS
+import com.example.fitnesslog.core.utils.extensions.setDebouncedOnClickListener
+import com.example.fitnesslog.core.utils.extensions.textChangeFlow
+import com.example.fitnesslog.core.utils.ui.showDeleteDialog
+import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesAdapter
 import com.example.fitnesslog.program.ui.program.handleModalResult
@@ -36,6 +35,7 @@ import com.example.fitnesslog.program.ui.program.updateScheduledDaysView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import java.io.Serializable
 import java.util.Collections
@@ -77,6 +77,7 @@ class ProgramEditFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.tvTitleProgram.text = getString(R.string.edit_program)
         binding.btnDeleteProgram.visibility = View.VISIBLE
         binding.btnSaveProgram.visibility = View.GONE
@@ -98,14 +99,15 @@ class ProgramEditFragment : Fragment() {
         }
 
 
-        binding.etNameProgram.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                programEditViewModel.onEvent(ProgramEditEvent.UpdateName(s.toString()))
-            }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            binding.etNameProgram.textChangeFlow()
+                .debounce(500)
+                .collectLatest { name ->
+                    programEditViewModel.onEvent(ProgramEditEvent.UpdateName(name))
+                }
+        }
+
 
         // Debounce to eliminate trying to navigate to same location twice
         binding.btnScheduleProgram.setDebouncedOnClickListener {
@@ -149,6 +151,7 @@ class ProgramEditFragment : Fragment() {
         binding.btnDeleteProgram.setOnClickListener {
             val isDeletable = programEditViewModel.programState.value.isDeletable
             if (isDeletable) {
+                Log.d(TAG, "${programEditViewModel.programState.value}")
                 val programName = programEditViewModel.programState.value.program?.name
                 val message = if (programName.isNullOrEmpty()) {
                     "Are you sure you want to delete this program?"
@@ -237,9 +240,11 @@ class ProgramEditFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programEditViewModel.programState.collect { state ->
-                    updateNameInputView(state.name)
-                    updateScheduledDaysView(binding, state.scheduledDays)
-                    updateRestDurationView(binding, state.restDurationSeconds)
+                    state.program?.let {
+                        updateNameInputView(it.name)
+                        updateScheduledDaysView(binding, state.scheduledDays)
+                        updateRestDurationView(binding, state.restDurationSeconds)
+                    }
                 }
             }
         }

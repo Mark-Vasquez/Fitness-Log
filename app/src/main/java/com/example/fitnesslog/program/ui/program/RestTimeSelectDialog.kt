@@ -6,9 +6,9 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.fitnesslog.core.utils.REST_DURATION_SECONDS
-import com.example.fitnesslog.core.utils.minutesAndSecondsToSeconds
-import com.example.fitnesslog.core.utils.secondsToMinutesAndSeconds
+import com.example.fitnesslog.core.utils.constants.REST_DURATION_SECONDS
+import com.example.fitnesslog.core.utils.helpers.minutesAndSecondsToSeconds
+import com.example.fitnesslog.core.utils.helpers.secondsToMinutesAndSeconds
 import com.example.fitnesslog.databinding.DialogRestTimeSelectBinding
 
 class RestTimeSelectDialog : DialogFragment() {

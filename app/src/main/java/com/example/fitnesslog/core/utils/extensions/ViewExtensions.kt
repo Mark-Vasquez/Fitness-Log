@@ -1,4 +1,4 @@
-package com.example.fitnesslog.core.utils
+package com.example.fitnesslog.core.utils.extensions
 
 import android.os.SystemClock
 import android.view.View

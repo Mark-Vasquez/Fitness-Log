@@ -1,5 +1,6 @@
 package com.example.fitnesslog.program.ui.program.program_edit
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -20,8 +21,8 @@ class ProgramEditViewModel(
     private val workoutTemplateUseCases: WorkoutTemplateUseCases
 ) : ViewModel() {
 
-    private val _programEditState = MutableStateFlow(ProgramEditState())
-    val programState = _programEditState.asStateFlow()
+    private val _programState = MutableStateFlow(ProgramEditState())
+    val programState = _programState.asStateFlow()
 
     private val _workoutTemplatesState = MutableStateFlow(WorkoutTemplatesState())
     val workoutTemplatesState = _workoutTemplatesState.asStateFlow()
@@ -53,7 +54,7 @@ class ProgramEditViewModel(
     }
 
     init {
-        getProgram(programId)
+        collectLatestProgram(programId)
         checkIfDeletable()
         collectLatestWorkoutTemplatesByProgramId(programId)
     }
@@ -81,26 +82,30 @@ class ProgramEditViewModel(
         }
     }
 
-    private fun getProgram(programId: Int) {
+    private fun collectLatestProgram(programId: Int) {
         viewModelScope.launch {
-            when (val resource = programUseCases.getProgram(programId)) {
-                is Resource.Success -> {
-                    val program = resource.data
-                    _programEditState.value = programState.value.copy(
-                        program = program,
-                        name = program.name,
-                        scheduledDays = program.scheduledDays,
-                        restDurationSeconds = program.restDurationSeconds
-                    )
-                }
+            programUseCases.getProgram(programId).collectLatest { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        val program = resource.data
+                        Log.d(TAG, "Collecting Program: ${program}")
+                        program?.let {
+                            _programState.value = programState.value.copy(
+                                program = program,
+                                name = program.name,
+                                scheduledDays = program.scheduledDays,
+                                restDurationSeconds = program.restDurationSeconds
+                            )
+                        }
+                    }
 
-                is Resource.Error -> {
-                    _programEditState.value = programState.value.copy(
-                        error = resource.errorMessage ?: "Error Retrieving Program"
-                    )
+                    is Resource.Error -> {
+                        _programState.value = programState.value.copy(
+                            error = resource.errorMessage ?: "Error Retrieving Program"
+                        )
+                    }
                 }
             }
-
         }
     }
 
@@ -115,7 +120,7 @@ class ProgramEditViewModel(
                             )
                         }
 
-                        is Resource.Error -> _programEditState.update { it.copy(error = resource.errorMessage) }
+                        is Resource.Error -> _programState.update { it.copy(error = resource.errorMessage) }
                     }
                 }
         }
@@ -125,12 +130,12 @@ class ProgramEditViewModel(
         viewModelScope.launch {
             when (val resource = programUseCases.checkIfDeletable()) {
                 is Resource.Success -> {
-                    _programEditState.value =
+                    _programState.value =
                         programState.value.copy(isDeletable = resource.data)
                 }
 
                 is Resource.Error -> {
-                    _programEditState.value = programState.value.copy(
+                    _programState.value = programState.value.copy(
                         error = resource.errorMessage ?: "Error checking if deletable"
                     )
                 }
@@ -140,19 +145,30 @@ class ProgramEditViewModel(
 
 
     private fun updateName(name: String) {
-        _programEditState.value = programState.value.copy(
-            name = name
-        )
+        viewModelScope.launch {
+            val currentProgram = programState.value.program
+            currentProgram?.let {
+                // Only update if text input is not the current Program name state
+                if (name != currentProgram.name) {
+                    programUseCases.editProgram(
+                        it.copy(
+                            name = name, updatedAt = System.currentTimeMillis()
+                        )
+                    )
+                }
+            }
+
+        }
     }
 
     private fun updateScheduledDays(scheduledDays: Set<Day>) {
-        _programEditState.value = programState.value.copy(
+        _programState.value = programState.value.copy(
             scheduledDays = scheduledDays
         )
     }
 
     private fun updateRestDurationSeconds(restDurationSeconds: Int) {
-        _programEditState.value = programState.value.copy(
+        _programState.value = programState.value.copy(
             restDurationSeconds = restDurationSeconds
         )
     }
@@ -160,6 +176,7 @@ class ProgramEditViewModel(
 
     private fun deleteProgram() {
         val programId = programState.value.program?.id ?: return
+        Log.d(TAG, "welp heres the program id ${programId}")
         viewModelScope.launch {
             programUseCases.deleteProgram(programId)
         }
