@@ -19,6 +19,7 @@
 
     <NumberPicker
         android:id="@+id/npMinuteTimeSelect"
+        android:saveEnabled="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/tvTitleTimeSelect"
@@ -39,6 +40,7 @@
 
     <NumberPicker
         android:id="@+id/npSecondTimeSelect"
+        android:saveEnabled="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tvTitleTimeSelect"
@@ -49,6 +51,7 @@
     <TextView
         android:id="@+id/tvSecondTimeSelect"
         style="@style/TimerComponentText"
+        android:saveEnabled="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="sec"

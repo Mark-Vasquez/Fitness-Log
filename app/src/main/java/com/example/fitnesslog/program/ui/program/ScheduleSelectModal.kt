@@ -2,6 +2,7 @@ package com.example.fitnesslog.program.ui.program
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +46,9 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         val behavior = (dialog as BottomSheetDialog).behavior
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        checkmarkFormerDays()
+        if (savedInstanceState == null) {
+            checkmarkFormerDays()
+        }
 
     }
 
@@ -64,6 +67,7 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
     }
 
     private fun checkmarkFormerDays() {
+        Log.d(TAG, "setting checks${formerScheduledDays}")
         binding.run {
             chipMondayScheduleSelect.isChecked = Day.MONDAY in formerScheduledDays
             chipTuesdayScheduleSelect.isChecked = Day.TUESDAY in formerScheduledDays

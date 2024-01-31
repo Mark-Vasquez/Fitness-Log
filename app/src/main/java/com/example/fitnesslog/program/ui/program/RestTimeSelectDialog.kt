@@ -20,25 +20,39 @@ class RestTimeSelectDialog : DialogFragment() {
 
     companion object {
         const val TAG = "RestTimeSelectDialog"
+        const val MINUTE = "minute"
+        const val SECOND = "second"
     }
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
-            val builder = AlertDialog.Builder(it)
-            minutesAndSeconds = secondsToMinutesAndSeconds(args.restDurationSeconds)
-
             _binding = DialogRestTimeSelectBinding.inflate(layoutInflater)
+
+            val restoredMinutes: Int
+            val restoredSeconds: Int
+
+            if (savedInstanceState == null) {
+                restoredMinutes = secondsToMinutesAndSeconds(args.restDurationSeconds).first
+                restoredSeconds = secondsToMinutesAndSeconds(args.restDurationSeconds).second
+            } else {
+                restoredMinutes = savedInstanceState.getInt(MINUTE)
+                restoredSeconds = savedInstanceState.getInt(SECOND)
+            }
+
+
             binding.npMinuteTimeSelect.apply {
                 minValue = 0
                 maxValue = 10
-                value = minutesAndSeconds.first
+                value = restoredMinutes
             }
             binding.npSecondTimeSelect.apply {
                 minValue = 0
                 maxValue = 59
-                value = minutesAndSeconds.second
+                value = restoredSeconds
             }
+
+            val builder = AlertDialog.Builder(it)
             builder.setView(binding.root)
                 .setPositiveButton("OK") { _, _ ->
                     // pass the duration that the user set, back to the parent fragment
@@ -60,6 +74,11 @@ class RestTimeSelectDialog : DialogFragment() {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(MINUTE, binding.npMinuteTimeSelect.value)
+        outState.putInt(SECOND, binding.npSecondTimeSelect.value)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

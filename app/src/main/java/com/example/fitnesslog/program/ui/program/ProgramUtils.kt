@@ -1,9 +1,5 @@
 package com.example.fitnesslog.program.ui.program
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.navigation.NavBackStackEntry
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.helpers.secondsToMinutesAndSeconds
 import com.example.fitnesslog.databinding.FragmentProgramBinding
@@ -41,35 +37,5 @@ fun updateRestDurationView(binding: FragmentProgramBinding, seconds: Int) {
     binding.tvRestTimeProgram.text = durationString
 }
 
-/** NavBackStackEntry is a lifecycleOwner reference to a destination on the nav backstack
- *  that provides a lifecycle, viewmodelStore, and savedStateHandle. Allows the navBackStack
- *  to manage the same viewModel and state in memory that the destination fragment owns
- */
-fun <T> handleModalResult(
-    navBackStackEntry: NavBackStackEntry,
-    viewLifecycleOwner: LifecycleOwner,
-    savedStateHandleKey: String,
-    handleResult: (T?) -> Unit
-) {
 
-    // Create our observer and add it to the NavBackStackEntry's lifecycle
-    val observer = LifecycleEventObserver { _, event ->
-        if (event == Lifecycle.Event.ON_RESUME
-            && navBackStackEntry.savedStateHandle.contains(savedStateHandleKey)
-        ) {
-            val result = navBackStackEntry.savedStateHandle.get<T>(savedStateHandleKey);
-            // Do something with the result via the passed in lambda
-            handleResult(result)
-        }
-    }
-    navBackStackEntry.lifecycle.addObserver(observer)
-
-    // addObserver() for the fragment lifecycle on the navBackStack does not automatically remove the observer
-    // Call removeObserver() on the navBackStackEntry lifecycle manually when the view lifecycle is destroyed
-    viewLifecycleOwner.lifecycle.addObserver(LifecycleEventObserver { _, event ->
-        if (event == Lifecycle.Event.ON_DESTROY) {
-            navBackStackEntry.lifecycle.removeObserver(observer)
-        }
-    })
-}
 

@@ -101,12 +101,14 @@ class ProgramCreateViewModel(
                 when (resource) {
                     is Resource.Success -> {
                         val program = resource.data
-                        _programState.value = programState.value.copy(
-                            program = program,
-                            name = program.name,
-                            scheduledDays = program.scheduledDays,
-                            restDurationSeconds = program.restDurationSeconds
-                        )
+                        program?.let {
+                            _programState.value = programState.value.copy(
+                                program = program,
+                                name = program.name,
+                                scheduledDays = program.scheduledDays,
+                                restDurationSeconds = program.restDurationSeconds
+                            )
+                        }
                     }
 
                     is Resource.Error -> {

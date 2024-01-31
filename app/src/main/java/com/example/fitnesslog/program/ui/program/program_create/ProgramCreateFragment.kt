@@ -11,6 +11,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -25,7 +26,6 @@ import com.example.fitnesslog.core.utils.extensions.setDebouncedOnClickListener
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesAdapter
-import com.example.fitnesslog.program.ui.program.handleModalResult
 import com.example.fitnesslog.program.ui.program.updateNameInputView
 import com.example.fitnesslog.program.ui.program.updateRestDurationView
 import com.example.fitnesslog.program.ui.program.updateScheduledDaysView
@@ -64,10 +64,9 @@ class ProgramCreateFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.tvTitleProgram.text = getString(R.string.create_program)
-        binding.btnNavigateBack.text = getString(R.string.cancel)
-        binding.btnDeleteProgram.visibility = View.GONE
+        setupUI()
         setupRecyclerView()
+        setupNavBackStackEntryObservers()
         observeProgramState()
         observeWorkoutTemplatesState()
 
@@ -92,18 +91,9 @@ class ProgramCreateFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+
         // Debounce to eliminate trying to navigate to same location twice
         binding.btnScheduleProgram.setDebouncedOnClickListener {
-            val navBackStackEntry =
-                findNavController().getBackStackEntry(R.id.programCreateFragment)
-            // To retrieve data back from modal child to this parent fragment via navigation
-            handleModalResult<Set<Day>>(
-                navBackStackEntry,
-                viewLifecycleOwner,
-                SCHEDULED_DAYS
-            ) { scheduledDays ->
-                programCreateViewModel.onEvent(ProgramCreateEvent.UpdateScheduledDays(scheduledDays!!))
-            }
             // To pass data to the modal child via navigation
             val action =
                 ProgramCreateFragmentDirections.actionProgramCreateFragmentToScheduleSelectModal(
@@ -113,19 +103,6 @@ class ProgramCreateFragment : Fragment() {
         }
 
         binding.btnRestTimeProgram.setDebouncedOnClickListener {
-            val navBackStackEntry =
-                findNavController().getBackStackEntry(R.id.programCreateFragment) // reference the new xml
-            handleModalResult<Int>(
-                navBackStackEntry,
-                viewLifecycleOwner,
-                REST_DURATION_SECONDS
-            ) { restDurationSeconds ->
-                programCreateViewModel.onEvent(
-                    ProgramCreateEvent.UpdateRestDurationSeconds(
-                        restDurationSeconds!!
-                    )
-                )
-            }
             val action =
                 ProgramCreateFragmentDirections.actionProgramCreateFragmentToRestTimeSelectDialog(
                     restDurationSeconds = programCreateViewModel.programState.value.restDurationSeconds
@@ -141,6 +118,97 @@ class ProgramCreateFragment : Fragment() {
         _binding = null
     }
 
+
+    private fun setupUI() {
+        binding.tvTitleProgram.text = getString(R.string.create_program)
+        binding.btnNavigateBack.text = getString(R.string.cancel)
+        binding.btnDeleteProgram.visibility = View.GONE
+    }
+
+    private fun setupNavBackStackEntryObservers() {
+        val navBackStackEntry =
+            findNavController().getBackStackEntry(R.id.programCreateFragment)
+
+        // Create our observer and add it to the NavBackStackEntry's lifecycle
+        val scheduleSelectObserver = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME
+                && navBackStackEntry.savedStateHandle.contains(SCHEDULED_DAYS)
+            ) {
+                val scheduledDays =
+                    navBackStackEntry.savedStateHandle.get<Set<Day>>(SCHEDULED_DAYS);
+                if (scheduledDays != null) {
+                    // Do something with the passed in data from modal
+                    programCreateViewModel.onEvent(
+                        ProgramCreateEvent.UpdateScheduledDays(
+                            scheduledDays!!
+                        )
+                    )
+                }
+            }
+        }
+        val restTimeSelectObserver = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME
+                && navBackStackEntry.savedStateHandle.contains(REST_DURATION_SECONDS)
+            ) {
+                val restDurationSeconds =
+                    navBackStackEntry.savedStateHandle.get<Int>(REST_DURATION_SECONDS);
+                if (restDurationSeconds != null) {
+                    programCreateViewModel.onEvent(
+                        ProgramCreateEvent.UpdateRestDurationSeconds(
+                            restDurationSeconds!!
+                        )
+                    )
+                }
+            }
+        }
+        navBackStackEntry.lifecycle.addObserver(scheduleSelectObserver)
+        navBackStackEntry.lifecycle.addObserver(restTimeSelectObserver)
+
+        // addObserver() for the fragment lifecycle on the navBackStack does not automatically remove the observer
+        // Call removeObserver() on the navBackStackEntry lifecycle manually when the view lifecycle is destroyed
+        viewLifecycleOwner.lifecycle.addObserver(LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                navBackStackEntry.lifecycle.removeObserver(scheduleSelectObserver)
+                navBackStackEntry.lifecycle.removeObserver(restTimeSelectObserver)
+            }
+        })
+    }
+
+    private fun observeProgramState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                programCreateViewModel.programState.collect { state ->
+                    updateNameInputView(binding, state.name)
+                    updateScheduledDaysView(binding, state.scheduledDays)
+                    updateRestDurationView(binding, state.restDurationSeconds)
+                }
+            }
+        }
+    }
+
+    private fun observeWorkoutTemplatesState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                programCreateViewModel.workoutTemplatesState.collectLatest { workoutTemplatesState ->
+                    workoutTemplatesAdapter.submitList(workoutTemplatesState.workoutTemplates)
+                }
+            }
+        }
+    }
+
+
+    private fun setBackButtonListener() {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            showDiscardDialog(
+                requireContext()
+            ) {
+                programCreateViewModel.onEvent(
+                    ProgramCreateEvent.Cancel
+                )
+                findNavController().popBackStack()
+            }
+        }
+    }
 
     private fun setupRecyclerView() {
         val rvWorkoutTemplates = binding.rvWorkoutTemplates
@@ -198,41 +266,5 @@ class ProgramCreateFragment : Fragment() {
             ItemTouchHelper(ItemTouchHelperCallback(adapter = workoutTemplatesAdapter))
         itemTouchHelper.attachToRecyclerView(rvWorkoutTemplates)
 
-    }
-
-    private fun observeProgramState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programCreateViewModel.programState.collect { state ->
-                    updateNameInputView(binding, state.name)
-                    updateScheduledDaysView(binding, state.scheduledDays)
-                    updateRestDurationView(binding, state.restDurationSeconds)
-                }
-            }
-        }
-    }
-
-    private fun observeWorkoutTemplatesState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programCreateViewModel.workoutTemplatesState.collectLatest { workoutTemplatesState ->
-                    workoutTemplatesAdapter.submitList(workoutTemplatesState.workoutTemplates)
-                }
-            }
-        }
-    }
-
-
-    private fun setBackButtonListener() {
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            showDiscardDialog(
-                requireContext()
-            ) {
-                programCreateViewModel.onEvent(
-                    ProgramCreateEvent.Cancel
-                )
-                findNavController().popBackStack()
-            }
-        }
     }
 }

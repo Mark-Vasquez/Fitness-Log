@@ -162,9 +162,19 @@ class ProgramEditViewModel(
     }
 
     private fun updateScheduledDays(scheduledDays: Set<Day>) {
-        _programState.value = programState.value.copy(
-            scheduledDays = scheduledDays
-        )
+        viewModelScope.launch {
+            val currentProgram = programState.value.program
+            currentProgram?.let {
+                if (scheduledDays != currentProgram.scheduledDays) {
+                    programUseCases.editProgram(
+                        it.copy(
+                            scheduledDays = scheduledDays,
+                            updatedAt = System.currentTimeMillis()
+                        )
+                    )
+                }
+            }
+        }
     }
 
     private fun updateRestDurationSeconds(restDurationSeconds: Int) {

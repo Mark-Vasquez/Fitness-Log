@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -29,7 +30,6 @@ import com.example.fitnesslog.core.utils.ui.showDeleteDialog
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesAdapter
-import com.example.fitnesslog.program.ui.program.handleModalResult
 import com.example.fitnesslog.program.ui.program.updateRestDurationView
 import com.example.fitnesslog.program.ui.program.updateScheduledDaysView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -76,76 +76,37 @@ class ProgramEditFragment : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(TAG, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
-
-        binding.tvTitleProgram.text = getString(R.string.edit_program)
-        binding.btnDeleteProgram.visibility = View.VISIBLE
-        binding.btnSaveProgram.visibility = View.GONE
-        binding.btnNavigateBack.apply {
-            text = getString(R.string.back)
-            val backArrowIcon = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.baseline_arrow_back_ios_new_24
-            )
-            setCompoundDrawablesWithIntrinsicBounds(backArrowIcon, null, null, null)
-            compoundDrawablePadding = 4
-        }
+        setupUI()
         setupRecyclerView()
+        setupNavBackStackEntryObservers()
         observeProgramState()
         observeWorkoutTemplatesState()
-
-        binding.btnNavigateBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
-
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            binding.etNameProgram.textChangeFlow()
-                .debounce(500)
-                .collectLatest { name ->
-                    programEditViewModel.onEvent(ProgramEditEvent.UpdateName(name))
-                }
-        }
+        setupProgramNameChangeListener()
+        setupScheduledDaysChangeListener()
 
 
         // Debounce to eliminate trying to navigate to same location twice
         binding.btnScheduleProgram.setDebouncedOnClickListener {
-            val navBackStackEntry = findNavController().getBackStackEntry(R.id.programEditFragment)
-            // To retrieve data back from modal child to this parent fragment via navigation
-            handleModalResult<Set<Day>>(
-                navBackStackEntry,
-                viewLifecycleOwner,
-                SCHEDULED_DAYS
-            ) { scheduledDays ->
-                programEditViewModel.onEvent(ProgramEditEvent.UpdateScheduledDays(scheduledDays!!))
-            }
             // To pass data to the modal child via navigation
             val action =
                 ProgramEditFragmentDirections.actionProgramEditFragmentToScheduleSelectModal(
-                    scheduledDays = programEditViewModel.programState.value.scheduledDays as Serializable
+                    scheduledDays = programEditViewModel.programState.value.program?.scheduledDays as Serializable
                 )
             findNavController().navigate(action)
         }
 
         binding.btnRestTimeProgram.setDebouncedOnClickListener {
-            val navBackStackEntry = findNavController().getBackStackEntry(R.id.programEditFragment)
-            handleModalResult<Int>(
-                navBackStackEntry,
-                viewLifecycleOwner,
-                REST_DURATION_SECONDS
-            ) { restDurationSeconds ->
-                programEditViewModel.onEvent(
-                    ProgramEditEvent.UpdateRestDurationSeconds(
-                        restDurationSeconds!!
-                    )
-                )
-            }
             val action =
                 ProgramEditFragmentDirections.actionProgramEditFragmentToRestTimeSelectDialog(
-                    restDurationSeconds = programEditViewModel.programState.value.restDurationSeconds
+                    restDurationSeconds = programEditViewModel.programState.value.program?.restDurationSeconds as Int
                 )
             findNavController().navigate(action)
+        }
+
+        binding.btnNavigateBack.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         binding.btnDeleteProgram.setOnClickListener {
@@ -177,6 +138,129 @@ class ProgramEditFragment : Fragment() {
         _binding = null
     }
 
+
+    private fun observeProgramState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                programEditViewModel.programState.collect { state ->
+                    state.program?.let { program ->
+                        updateNameInputView(program.name)
+                        updateScheduledDaysView(binding, program.scheduledDays)
+                        updateRestDurationView(binding, state.restDurationSeconds)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeWorkoutTemplatesState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                programEditViewModel.workoutTemplatesState.collectLatest { workoutTemplatesState ->
+                    workoutTemplatesAdapter.submitList(workoutTemplatesState.workoutTemplates)
+                }
+            }
+        }
+    }
+
+    private fun setupProgramNameChangeListener() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            binding.etNameProgram.textChangeFlow()
+                .debounce(500)
+                .collectLatest { name ->
+                    programEditViewModel.onEvent(ProgramEditEvent.UpdateName(name))
+                }
+        }
+    }
+
+    private fun setupScheduledDaysChangeListener() {
+        viewLifecycleOwner.lifecycleScope.launch {
+
+        }
+    }
+
+
+    private fun updateNameInputView(name: String) {
+        // This allow the text input to only populate on initial Edit or on configuration changes
+        if (binding.etNameProgram.text.toString() != name) {
+            binding.etNameProgram.setText(name)
+            binding.etNameProgram.setSelection(binding.etNameProgram.length())
+        }
+    }
+
+
+    private fun setBackButtonListener() {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            showDiscardDialog(
+                requireContext()
+            ) {
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun setupUI() {
+        binding.tvTitleProgram.text = getString(R.string.edit_program)
+        binding.btnDeleteProgram.visibility = View.VISIBLE
+        binding.btnSaveProgram.visibility = View.GONE
+        binding.btnNavigateBack.apply {
+            text = getString(R.string.back)
+            val backArrowIcon = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.baseline_arrow_back_ios_new_24
+            )
+            setCompoundDrawablesWithIntrinsicBounds(backArrowIcon, null, null, null)
+            compoundDrawablePadding = 4
+        }
+    }
+
+    private fun setupNavBackStackEntryObservers() {
+        val navBackStackEntry = findNavController().getBackStackEntry(R.id.programEditFragment)
+        val scheduleSelectObserver = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME
+                && navBackStackEntry.savedStateHandle.contains(SCHEDULED_DAYS)
+            ) {
+                val scheduledDays =
+                    navBackStackEntry.savedStateHandle.get<Set<Day>>(SCHEDULED_DAYS);
+                if (scheduledDays != null) {
+                    // Do something with the passed in data from modal
+                    programEditViewModel.onEvent(
+                        ProgramEditEvent.UpdateScheduledDays(
+                            scheduledDays
+                        )
+                    )
+                }
+            }
+        }
+        val restTimeSelectObserver = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME
+                && navBackStackEntry.savedStateHandle.contains(REST_DURATION_SECONDS)
+            ) {
+                val restDurationSeconds =
+                    navBackStackEntry.savedStateHandle.get<Int>(REST_DURATION_SECONDS);
+                if (restDurationSeconds != null) {
+                    programEditViewModel.onEvent(
+                        ProgramEditEvent.UpdateRestDurationSeconds(
+                            restDurationSeconds
+                        )
+                    )
+                }
+            }
+        }
+        navBackStackEntry.lifecycle.addObserver(scheduleSelectObserver)
+        navBackStackEntry.lifecycle.addObserver(restTimeSelectObserver)
+
+        // addObserver() for the fragment lifecycle on the navBackStack does not automatically remove the observer
+        // Call removeObserver() on the navBackStackEntry lifecycle manually when the view lifecycle is destroyed
+        viewLifecycleOwner.lifecycle.addObserver(LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                navBackStackEntry.lifecycle.removeObserver(scheduleSelectObserver)
+                navBackStackEntry.lifecycle.removeObserver(restTimeSelectObserver)
+            }
+        })
+
+
+    }
 
     private fun setupRecyclerView() {
         val rvWorkoutTemplates = binding.rvWorkoutTemplates
@@ -234,49 +318,5 @@ class ProgramEditFragment : Fragment() {
             ItemTouchHelper(ItemTouchHelperCallback(adapter = workoutTemplatesAdapter))
         itemTouchHelper.attachToRecyclerView(rvWorkoutTemplates)
 
-    }
-
-    private fun observeProgramState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programEditViewModel.programState.collect { state ->
-                    state.program?.let {
-                        updateNameInputView(it.name)
-                        updateScheduledDaysView(binding, state.scheduledDays)
-                        updateRestDurationView(binding, state.restDurationSeconds)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun observeWorkoutTemplatesState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programEditViewModel.workoutTemplatesState.collectLatest { workoutTemplatesState ->
-                    workoutTemplatesAdapter.submitList(workoutTemplatesState.workoutTemplates)
-                }
-            }
-        }
-    }
-
-
-    private fun updateNameInputView(name: String) {
-        // This allow the text input to only populate on initial Edit or on configuration changes
-        if (binding.etNameProgram.text.toString() != name) {
-            binding.etNameProgram.setText(name)
-            binding.etNameProgram.setSelection(binding.etNameProgram.length())
-        }
-    }
-
-
-    private fun setBackButtonListener() {
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            showDiscardDialog(
-                requireContext()
-            ) {
-                findNavController().popBackStack()
-            }
-        }
     }
 }
