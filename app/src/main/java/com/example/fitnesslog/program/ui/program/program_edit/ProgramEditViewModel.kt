@@ -92,9 +92,6 @@ class ProgramEditViewModel(
                         program?.let {
                             _programState.value = programState.value.copy(
                                 program = program,
-                                name = program.name,
-                                scheduledDays = program.scheduledDays,
-                                restDurationSeconds = program.restDurationSeconds
                             )
                         }
                     }
@@ -130,6 +127,7 @@ class ProgramEditViewModel(
         viewModelScope.launch {
             when (val resource = programUseCases.checkIfDeletable()) {
                 is Resource.Success -> {
+                    _programState.update { it.copy(isDeletable = resource.data) }
                     _programState.value =
                         programState.value.copy(isDeletable = resource.data)
                 }
@@ -178,15 +176,24 @@ class ProgramEditViewModel(
     }
 
     private fun updateRestDurationSeconds(restDurationSeconds: Int) {
-        _programState.value = programState.value.copy(
-            restDurationSeconds = restDurationSeconds
-        )
+        viewModelScope.launch {
+            val currentProgram = programState.value.program
+            currentProgram?.let {
+                if (restDurationSeconds != currentProgram.restDurationSeconds) {
+                    programUseCases.editProgram(
+                        it.copy(
+                            restDurationSeconds = restDurationSeconds,
+                            updatedAt = System.currentTimeMillis()
+                        )
+                    )
+                }
+            }
+        }
     }
 
 
     private fun deleteProgram() {
         val programId = programState.value.program?.id ?: return
-        Log.d(TAG, "welp heres the program id ${programId}")
         viewModelScope.launch {
             programUseCases.deleteProgram(programId)
         }

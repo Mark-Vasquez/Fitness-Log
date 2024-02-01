@@ -76,7 +76,6 @@ class ProgramEditFragment : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
         setupUI()
         setupRecyclerView()
@@ -146,7 +145,7 @@ class ProgramEditFragment : Fragment() {
                     state.program?.let { program ->
                         updateNameInputView(program.name)
                         updateScheduledDaysView(binding, program.scheduledDays)
-                        updateRestDurationView(binding, state.restDurationSeconds)
+                        updateRestDurationView(binding, program.restDurationSeconds)
                     }
                 }
             }
