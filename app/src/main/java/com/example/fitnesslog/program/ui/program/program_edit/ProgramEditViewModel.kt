@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.Resource
+import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 import com.example.fitnesslog.program.domain.use_case.program.ProgramUseCases
 import com.example.fitnesslog.program.domain.use_case.workout_template.WorkoutTemplateUseCases
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -26,7 +28,7 @@ class ProgramEditViewModel(
 
     private val _workoutTemplatesState = MutableStateFlow(WorkoutTemplatesState())
     val workoutTemplatesState = _workoutTemplatesState.asStateFlow()
-
+    
     companion object {
         const val TAG = "ProgramEditViewModel"
 
@@ -75,6 +77,9 @@ class ProgramEditViewModel(
                 updateRestDurationSeconds(event.restDurationSeconds)
             }
 
+            is ProgramEditEvent.UpdateWorkoutTemplateOrder -> {
+                updateWorkoutTemplateOrder(event.workoutTemplates)
+            }
 
             is ProgramEditEvent.Delete -> {
                 deleteProgram()
@@ -188,6 +193,13 @@ class ProgramEditViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun updateWorkoutTemplateOrder(workoutTemplates: List<WorkoutTemplate>) {
+        viewModelScope.launch {
+            val programId = programState.value.program?.id
+            programId?.let { workoutTemplateUseCases.reorderWorkoutTemplates(workoutTemplates, it) }
         }
     }
 

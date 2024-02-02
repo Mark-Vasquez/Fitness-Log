@@ -4,7 +4,7 @@ import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 import com.example.fitnesslog.program.domain.repository.WorkoutRepository
 
-class ReorderWorkoutTemplate(
+class ReorderWorkoutTemplates(
     private val workoutRepository: WorkoutRepository
 ) {
     suspend operator fun invoke(

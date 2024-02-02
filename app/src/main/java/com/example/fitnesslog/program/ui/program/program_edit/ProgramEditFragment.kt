@@ -83,7 +83,6 @@ class ProgramEditFragment : Fragment() {
         observeProgramState()
         observeWorkoutTemplatesState()
         setupProgramNameChangeListener()
-        setupScheduledDaysChangeListener()
 
 
         // Debounce to eliminate trying to navigate to same location twice
@@ -169,12 +168,6 @@ class ProgramEditFragment : Fragment() {
                 .collectLatest { name ->
                     programEditViewModel.onEvent(ProgramEditEvent.UpdateName(name))
                 }
-        }
-    }
-
-    private fun setupScheduledDaysChangeListener() {
-        viewLifecycleOwner.lifecycleScope.launch {
-
         }
     }
 
@@ -293,18 +286,40 @@ class ProgramEditFragment : Fragment() {
                 val oldIndex = viewHolder.adapterPosition
                 val newIndex = target.adapterPosition
                 val updatedList = adapter.currentList.toMutableList()
+                Collections.swap(updatedList, oldIndex, newIndex)
 
-                if (oldIndex < newIndex) {
-                    for (i in oldIndex until newIndex) {
-                        Collections.swap(updatedList, i, i + 1)
-                    }
-                } else {
-                    for (i in oldIndex downTo newIndex + 1) {
-                        Collections.swap(updatedList, i, i - 1)
-                    }
-                }
+//                if (oldIndex < newIndex) {
+//                    for (i in oldIndex until newIndex) {
+//                        Collections.swap(updatedList, i, i + 1)
+//                    }
+//                } else {
+//                    for (i in oldIndex downTo newIndex + 1) {
+//                        Collections.swap(updatedList, i, i - 1)
+//                    }
+//                }
+                Log.d(TAG, "onMove")
                 adapter.submitList(updatedList)
                 return true
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    // Make semi-transparent on drag
+                    viewHolder?.itemView?.alpha = 0.5f
+                }
+            }
+
+            override fun clearView(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ) {
+                super.clearView(recyclerView, viewHolder)
+                // Take away transparency after finish dragging and dropped
+                viewHolder.itemView.alpha = 1.0f
+
+                val updatedList = workoutTemplatesAdapter.currentList
+                programEditViewModel.onEvent(ProgramEditEvent.UpdateWorkoutTemplateOrder(updatedList))
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
