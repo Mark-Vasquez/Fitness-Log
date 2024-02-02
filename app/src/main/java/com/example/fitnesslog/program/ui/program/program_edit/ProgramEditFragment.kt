@@ -1,7 +1,6 @@
 package com.example.fitnesslog.program.ui.program.program_edit
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,6 +102,10 @@ class ProgramEditFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        binding.fabAddWorkout.setOnClickListener {
+            programEditViewModel.onEvent(ProgramEditEvent.CreateWorkoutTemplate)
+        }
+
         binding.btnNavigateBack.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -110,7 +113,6 @@ class ProgramEditFragment : Fragment() {
         binding.btnDeleteProgram.setOnClickListener {
             val isDeletable = programEditViewModel.programState.value.isDeletable
             if (isDeletable) {
-                Log.d(TAG, "${programEditViewModel.programState.value}")
                 val programName = programEditViewModel.programState.value.program?.name
                 val message = if (programName.isNullOrEmpty()) {
                     "Are you sure you want to delete this program?"
@@ -274,7 +276,7 @@ class ProgramEditFragment : Fragment() {
                 viewHolder: RecyclerView.ViewHolder
             ): Int {
                 val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                val swipeFlags = ItemTouchHelper.LEFT
+                val swipeFlags = 0
                 return makeMovementFlags(dragFlags, swipeFlags)
             }
 
@@ -308,7 +310,11 @@ class ProgramEditFragment : Fragment() {
                 viewHolder.itemView.alpha = 1.0f
 
                 val updatedList = workoutTemplatesAdapter.currentList
-                programEditViewModel.onEvent(ProgramEditEvent.UpdateWorkoutTemplateOrder(updatedList))
+                programEditViewModel.onEvent(
+                    ProgramEditEvent.UpdateWorkoutTemplatesOrder(
+                        updatedList
+                    )
+                )
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}

@@ -143,6 +143,7 @@
             android:paddingHorizontal="16dp"
             android:paddingVertical="12dp"
             android:layout_marginBottom="24dp"
+            android:layout_marginTop="52dp"
             android:text="Delete Program"
             android:textColor="?attr/colorOnErrorContainer"
             android:visibility="visible"

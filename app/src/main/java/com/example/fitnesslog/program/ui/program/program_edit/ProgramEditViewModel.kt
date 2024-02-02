@@ -1,6 +1,5 @@
 package com.example.fitnesslog.program.ui.program.program_edit
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -76,8 +75,8 @@ class ProgramEditViewModel(
                 updateRestDurationSeconds(event.restDurationSeconds)
             }
 
-            is ProgramEditEvent.UpdateWorkoutTemplateOrder -> {
-                updateWorkoutTemplateOrder(event.workoutTemplates)
+            is ProgramEditEvent.UpdateWorkoutTemplatesOrder -> {
+                updateWorkoutTemplatesOrder(event.workoutTemplates)
             }
 
             is ProgramEditEvent.CreateWorkoutTemplate -> {
@@ -96,18 +95,18 @@ class ProgramEditViewModel(
                 when (resource) {
                     is Resource.Success -> {
                         val program = resource.data
-                        Log.d(TAG, "Collecting Program: ${program}")
+                        // Program will return null from the db after deleting
                         program?.let {
-                            _programState.value = programState.value.copy(
-                                program = program,
-                            )
+                            _programState.update { it.copy(program = program) }
                         }
                     }
 
                     is Resource.Error -> {
-                        _programState.value = programState.value.copy(
-                            error = resource.errorMessage ?: "Error Retrieving Program"
-                        )
+                        _programState.update {
+                            it.copy(
+                                error = resource.errorMessage ?: "Error Retrieving Program"
+                            )
+                        }
                     }
                 }
             }
@@ -194,7 +193,7 @@ class ProgramEditViewModel(
         }
     }
 
-    private fun updateWorkoutTemplateOrder(workoutTemplates: List<WorkoutTemplate>) {
+    private fun updateWorkoutTemplatesOrder(workoutTemplates: List<WorkoutTemplate>) {
         val programId = programState.value.program?.id ?: return
         viewModelScope.launch {
             workoutTemplateUseCases.reorderWorkoutTemplates(workoutTemplates, programId)

@@ -7,6 +7,7 @@ import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.FitnessLogApp.Companion.workoutTemplateModule
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.Resource
+import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 import com.example.fitnesslog.program.domain.use_case.program.ProgramUseCases
 import com.example.fitnesslog.program.domain.use_case.workout_template.WorkoutTemplateUseCases
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesState
@@ -71,6 +72,14 @@ class ProgramCreateViewModel(
 
             is ProgramCreateEvent.UpdateRestDurationSeconds -> {
                 updateRestDurationSeconds(event.restDurationSeconds)
+            }
+
+            is ProgramCreateEvent.UpdateWorkoutTemplatesOrder -> {
+                updateWorkoutTemplatesOrder(event.workoutTemplates)
+            }
+
+            is ProgramCreateEvent.CreateWorkoutTemplate -> {
+                createWorkoutTemplate()
             }
 
         }
@@ -202,6 +211,20 @@ class ProgramCreateViewModel(
         _programState.value = programState.value.copy(
             restDurationSeconds = restDurationSeconds
         )
+    }
+
+    private fun updateWorkoutTemplatesOrder(workoutTemplates: List<WorkoutTemplate>) {
+        val programId = programState.value.program?.id ?: return
+        viewModelScope.launch {
+            workoutTemplateUseCases.reorderWorkoutTemplates(workoutTemplates, programId)
+        }
+    }
+
+    private fun createWorkoutTemplate() {
+        val programId = programState.value.program?.id ?: return
+        viewModelScope.launch {
+            workoutTemplateUseCases.createWorkoutTemplate(programId)
+        }
     }
 
 

@@ -3,7 +3,6 @@ package com.example.fitnesslog.program.ui.program.program_create
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -108,6 +107,10 @@ class ProgramCreateFragment : Fragment() {
                     restDurationSeconds = programCreateViewModel.programState.value.restDurationSeconds
                 )
             findNavController().navigate(action)
+        }
+
+        binding.fabAddWorkout.setOnClickListener {
+            programCreateViewModel.onEvent(ProgramCreateEvent.CreateWorkoutTemplate)
         }
 
 
@@ -230,7 +233,7 @@ class ProgramCreateFragment : Fragment() {
                 viewHolder: RecyclerView.ViewHolder
             ): Int {
                 val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                val swipeFlags = ItemTouchHelper.LEFT
+                val swipeFlags = 0
                 return makeMovementFlags(dragFlags, swipeFlags)
             }
 
@@ -242,24 +245,35 @@ class ProgramCreateFragment : Fragment() {
                 val oldIndex = viewHolder.adapterPosition
                 val newIndex = target.adapterPosition
                 val updatedList = adapter.currentList.toMutableList()
-
-                if (oldIndex < newIndex) {
-                    for (i in oldIndex until newIndex) {
-                        Collections.swap(updatedList, i, i + 1)
-                    }
-                } else {
-                    for (i in oldIndex downTo newIndex + 1) {
-                        Collections.swap(updatedList, i, i - 1)
-                    }
-                }
+                Collections.swap(updatedList, oldIndex, newIndex)
                 adapter.submitList(updatedList)
                 return true
             }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                Log.d(TAG, "${adapter.currentList[viewHolder.adapterPosition]}")
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.5f
+                }
             }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+
+
+            override fun clearView(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ) {
+                super.clearView(recyclerView, viewHolder)
+                viewHolder.itemView.alpha = 1.0f
+
+                val updatedList = workoutTemplatesAdapter.currentList
+                programCreateViewModel.onEvent(
+                    ProgramCreateEvent.UpdateWorkoutTemplatesOrder(
+                        updatedList
+                    )
+                )
+            }
         }
 
         val itemTouchHelper =
