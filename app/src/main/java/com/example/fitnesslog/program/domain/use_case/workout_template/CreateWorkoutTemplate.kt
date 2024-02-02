@@ -8,23 +8,23 @@ class CreateWorkoutTemplate(
     private val workoutRepository: WorkoutRepository
 ) {
     suspend operator fun invoke(
-        name: String,
         programId: Int
     ): Resource<Long> {
-        return when (val lastPosition = workoutRepository.getPositionForInsert(programId)) {
+        when (val resource = workoutRepository.getPositionForInsert(programId)) {
             is Resource.Success -> {
+                val lastPosition = resource.data
                 val workoutTemplate = WorkoutTemplate(
-                    name = name,
+                    name = "New Workout",
                     programId = programId,
-                    position = lastPosition.data,
+                    position = lastPosition,
                     createdAt = System.currentTimeMillis(),
                     updatedAt = System.currentTimeMillis()
                 )
-                workoutRepository.insertWorkoutTemplate(workoutTemplate)
+                return workoutRepository.insertWorkoutTemplate(workoutTemplate)
             }
 
             else -> {
-                Resource.Error("Failed to get the last position ${lastPosition.errorMessage}")
+                return Resource.Error("Failed to get the last position ${resource.errorMessage}")
             }
         }
     }

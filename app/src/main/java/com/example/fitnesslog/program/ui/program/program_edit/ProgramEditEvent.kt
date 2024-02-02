@@ -11,5 +11,7 @@ sealed class ProgramEditEvent {
     data class UpdateWorkoutTemplateOrder(val workoutTemplates: List<WorkoutTemplate>) :
         ProgramEditEvent()
 
+    data object CreateWorkoutTemplate : ProgramEditEvent()
+
     data object Delete : ProgramEditEvent()
 }

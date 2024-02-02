@@ -10,7 +10,6 @@ import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 import com.example.fitnesslog.program.domain.use_case.program.ProgramUseCases
 import com.example.fitnesslog.program.domain.use_case.workout_template.WorkoutTemplateUseCases
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesState
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -28,7 +27,7 @@ class ProgramEditViewModel(
 
     private val _workoutTemplatesState = MutableStateFlow(WorkoutTemplatesState())
     val workoutTemplatesState = _workoutTemplatesState.asStateFlow()
-    
+
     companion object {
         const val TAG = "ProgramEditViewModel"
 
@@ -79,6 +78,10 @@ class ProgramEditViewModel(
 
             is ProgramEditEvent.UpdateWorkoutTemplateOrder -> {
                 updateWorkoutTemplateOrder(event.workoutTemplates)
+            }
+
+            is ProgramEditEvent.CreateWorkoutTemplate -> {
+                createWorkoutTemplate()
             }
 
             is ProgramEditEvent.Delete -> {
@@ -148,61 +151,62 @@ class ProgramEditViewModel(
 
 
     private fun updateName(name: String) {
+        val currentProgram = programState.value.program ?: return
         viewModelScope.launch {
-            val currentProgram = programState.value.program
-            currentProgram?.let {
-                // Only update if text input is not the current Program name state
-                if (name != currentProgram.name) {
-                    programUseCases.editProgram(
-                        it.copy(
-                            name = name, updatedAt = System.currentTimeMillis()
-                        )
+            // Only update if text input is not the current Program name state
+            if (name != currentProgram.name) {
+                programUseCases.editProgram(
+                    currentProgram.copy(
+                        name = name, updatedAt = System.currentTimeMillis()
                     )
-                }
+                )
             }
-
         }
     }
 
     private fun updateScheduledDays(scheduledDays: Set<Day>) {
+        val currentProgram = programState.value.program ?: return
         viewModelScope.launch {
-            val currentProgram = programState.value.program
-            currentProgram?.let {
-                if (scheduledDays != currentProgram.scheduledDays) {
-                    programUseCases.editProgram(
-                        it.copy(
-                            scheduledDays = scheduledDays,
-                            updatedAt = System.currentTimeMillis()
-                        )
+            if (scheduledDays != currentProgram.scheduledDays) {
+                programUseCases.editProgram(
+                    currentProgram.copy(
+                        scheduledDays = scheduledDays,
+                        updatedAt = System.currentTimeMillis()
                     )
-                }
+                )
             }
+
         }
     }
 
     private fun updateRestDurationSeconds(restDurationSeconds: Int) {
+        val currentProgram = programState.value.program ?: return
         viewModelScope.launch {
-            val currentProgram = programState.value.program
-            currentProgram?.let {
-                if (restDurationSeconds != currentProgram.restDurationSeconds) {
-                    programUseCases.editProgram(
-                        it.copy(
-                            restDurationSeconds = restDurationSeconds,
-                            updatedAt = System.currentTimeMillis()
-                        )
+            if (restDurationSeconds != currentProgram.restDurationSeconds) {
+                programUseCases.editProgram(
+                    currentProgram.copy(
+                        restDurationSeconds = restDurationSeconds,
+                        updatedAt = System.currentTimeMillis()
                     )
-                }
+                )
             }
+
         }
     }
 
     private fun updateWorkoutTemplateOrder(workoutTemplates: List<WorkoutTemplate>) {
+        val programId = programState.value.program?.id ?: return
         viewModelScope.launch {
-            val programId = programState.value.program?.id
-            programId?.let { workoutTemplateUseCases.reorderWorkoutTemplates(workoutTemplates, it) }
+            workoutTemplateUseCases.reorderWorkoutTemplates(workoutTemplates, programId)
         }
     }
 
+    private fun createWorkoutTemplate() {
+        val programId = programState.value.program?.id ?: return
+        viewModelScope.launch {
+            workoutTemplateUseCases.createWorkoutTemplate(programId)
+        }
+    }
 
     private fun deleteProgram() {
         val programId = programState.value.program?.id ?: return
