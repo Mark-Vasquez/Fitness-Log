@@ -322,9 +322,7 @@ class ProgramEditFragment : Fragment() {
                 programEditViewModel.onEvent(ProgramEditEvent.UpdateWorkoutTemplateOrder(updatedList))
             }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                Log.d(TAG, "${adapter.currentList[viewHolder.adapterPosition]}")
-            }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
 
         }
 
