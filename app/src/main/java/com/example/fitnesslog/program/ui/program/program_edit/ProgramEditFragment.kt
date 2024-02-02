@@ -287,17 +287,6 @@ class ProgramEditFragment : Fragment() {
                 val newIndex = target.adapterPosition
                 val updatedList = adapter.currentList.toMutableList()
                 Collections.swap(updatedList, oldIndex, newIndex)
-
-//                if (oldIndex < newIndex) {
-//                    for (i in oldIndex until newIndex) {
-//                        Collections.swap(updatedList, i, i + 1)
-//                    }
-//                } else {
-//                    for (i in oldIndex downTo newIndex + 1) {
-//                        Collections.swap(updatedList, i, i - 1)
-//                    }
-//                }
-                Log.d(TAG, "onMove")
                 adapter.submitList(updatedList)
                 return true
             }

@@ -24,7 +24,7 @@ class WorkoutTemplatesAdapter(
             oldItem: WorkoutTemplate,
             newItem: WorkoutTemplate
         ): Boolean {
-            return oldItem == newItem
+            return oldItem.name == newItem.name
         }
 
 
