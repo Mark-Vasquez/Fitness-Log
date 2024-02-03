@@ -32,4 +32,12 @@
     <string name="create_program">Create Program</string>
     <string name="schedule">Schedule</string>
     <string name="rest_time">Rest Time</string>
+    <string name="edit_workout">Edit Workout</string>
+    <string name="workout_name">Workout Name</string>
+    <string name="workouts">Workouts</string>
+    <string name="exercises">Exercises</string>
+    <string name="delete_workout">Delete Workout</string>
+    <string name="add_exercise">Add Exercise</string>
+    <string name="add_workout">Add Workout</string>
+    <string name="delete_program">Delete Program</string>
 </resources>

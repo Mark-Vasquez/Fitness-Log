@@ -53,7 +53,7 @@
                 android:id="@+id/etNameProgram"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textNoSuggestions"
+                android:inputType="textNoSuggestions|textCapWords"
                 android:maxLength="50" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -105,10 +105,10 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tvWorkout"
+            android:id="@+id/tvWorkouts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Workouts"
+            android:text="@string/workouts"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             app:layout_constraintStart_toStartOf="@+id/btnRestTimeProgram"
             app:layout_constraintTop_toBottomOf="@+id/btnRestTimeProgram"
@@ -118,8 +118,8 @@
             android:id="@+id/rvWorkoutTemplates"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tvWorkout"
-            app:layout_constraintStart_toStartOf="@id/tvWorkout"
+            app:layout_constraintTop_toBottomOf="@id/tvWorkouts"
+            app:layout_constraintStart_toStartOf="@id/tvWorkouts"
             app:layout_constraintEnd_toEndOf="@+id/btnRestTimeProgram" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -127,7 +127,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:backgroundTint="?attr/colorTertiaryContainer"
-            android:text="Add Workout"
+            android:text="@string/add_workout"
             app:icon="@drawable/baseline_add_24"
             app:iconGravity="textStart"
             app:layout_constraintStart_toStartOf="@id/rvWorkoutTemplates"
@@ -136,16 +136,10 @@
 
         <Button
             android:id="@+id/btnDeleteProgram"
-            style="@style/Widget.Material3.Button.TonalButton"
+            style="@style/DeleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="?attr/colorErrorContainer"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginTop="52dp"
-            android:text="Delete Program"
-            android:textColor="?attr/colorOnErrorContainer"
+            android:text="@string/delete_program"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
