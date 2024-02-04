@@ -19,6 +19,9 @@ interface WorkoutTemplateDao {
     @Query("SELECT COUNT(*) FROM workout_template WHERE program_id = :programId")
     suspend fun getPositionForInsert(programId: Int): Int
 
+    @Query("SELECT * FROM workout_template WHERE id = :workoutTemplateId")
+    fun getWorkoutTemplateById(workoutTemplateId: Int): Flow<WorkoutTemplate>
+
     @Query("SELECT * FROM workout_template WHERE program_id = :programId ORDER BY position")
     fun getWorkoutTemplatesForProgramOrderedByPosition(programId: Int): Flow<List<WorkoutTemplate>>
 

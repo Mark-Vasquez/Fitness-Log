@@ -9,14 +9,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.fitnesslog.databinding.FragmentWorkoutsBinding
+import com.example.fitnesslog.databinding.FragmentWorkoutTemplatesBinding
 import com.example.fitnesslog.shared.ui.SharedViewModel
 import kotlinx.coroutines.launch
 
 
 class WorkoutsFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
-    private var _binding: FragmentWorkoutsBinding? = null
+    private var _binding: FragmentWorkoutTemplatesBinding? = null
     private val binding get() = _binding!!
 
     companion object {
@@ -27,7 +27,7 @@ class WorkoutsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentWorkoutsBinding.inflate(inflater, container, false)
+        _binding = FragmentWorkoutTemplatesBinding.inflate(inflater, container, false)
         return binding.root
     }
 

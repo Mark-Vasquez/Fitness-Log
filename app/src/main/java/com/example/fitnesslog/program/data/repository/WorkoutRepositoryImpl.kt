@@ -19,6 +19,12 @@ class WorkoutRepositoryImpl(private val dao: WorkoutTemplateDao) : WorkoutReposi
         return safeCall { dao.getPositionForInsert(programId) }
     }
 
+    override fun getWorkoutTemplateById(workoutTemplateId: Int): Flow<Resource<WorkoutTemplate>> {
+        return dao.getWorkoutTemplateById(workoutTemplateId)
+            .map { Resource.Success(it) as Resource<WorkoutTemplate> }
+            .catch { e -> emit(Resource.Error(e.toErrorMessage())) }
+    }
+
     override fun getWorkoutTemplatesForProgramOrderedByPosition(programId: Int): Flow<Resource<List<WorkoutTemplate>>> {
         return dao.getWorkoutTemplatesForProgramOrderedByPosition(programId)
             .map { Resource.Success(it) as Resource<List<WorkoutTemplate>> }

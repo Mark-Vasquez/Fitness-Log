@@ -7,6 +7,7 @@ import com.example.fitnesslog.program.domain.repository.WorkoutRepository
 import com.example.fitnesslog.program.domain.use_case.workout_template.CreateWorkoutTemplate
 import com.example.fitnesslog.program.domain.use_case.workout_template.DeleteWorkoutTemplate
 import com.example.fitnesslog.program.domain.use_case.workout_template.EditWorkoutTemplate
+import com.example.fitnesslog.program.domain.use_case.workout_template.GetWorkoutTemplate
 import com.example.fitnesslog.program.domain.use_case.workout_template.GetWorkoutTemplates
 import com.example.fitnesslog.program.domain.use_case.workout_template.ReorderWorkoutTemplates
 import com.example.fitnesslog.program.domain.use_case.workout_template.WorkoutTemplateUseCases
@@ -30,7 +31,8 @@ class WorkoutTemplateModuleImpl(private val db: FitnessLogDatabase) : WorkoutTem
             getWorkoutTemplates = GetWorkoutTemplates(workoutRepository),
             editWorkoutTemplate = EditWorkoutTemplate(workoutRepository),
             reorderWorkoutTemplates = ReorderWorkoutTemplates(workoutRepository),
-            deleteWorkoutTemplate = DeleteWorkoutTemplate(workoutRepository)
+            deleteWorkoutTemplate = DeleteWorkoutTemplate(workoutRepository),
+            getWorkoutTemplate = GetWorkoutTemplate(workoutRepository)
         )
     }
 

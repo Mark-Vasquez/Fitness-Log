@@ -24,6 +24,7 @@ import com.example.fitnesslog.core.utils.constants.SCHEDULED_DAYS
 import com.example.fitnesslog.core.utils.extensions.setDebouncedOnClickListener
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
+import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesAdapter
 import com.example.fitnesslog.program.ui.program.updateNameInputView
 import com.example.fitnesslog.program.ui.program.updateRestDurationView
@@ -216,7 +217,17 @@ class ProgramCreateFragment : Fragment() {
     private fun setupRecyclerView() {
         val rvWorkoutTemplates = binding.rvWorkoutTemplates
         rvWorkoutTemplates.layoutManager = LinearLayoutManager(requireContext())
-        workoutTemplatesAdapter = WorkoutTemplatesAdapter()
+        workoutTemplatesAdapter =
+            WorkoutTemplatesAdapter(object : WorkoutTemplatesAdapter.WorkoutTemplateClickListener {
+                override fun onWorkoutTemplateClicked(workoutTemplate: WorkoutTemplate) {
+                    if (workoutTemplate.id == null) return
+                    val action =
+                        ProgramCreateFragmentDirections.actionProgramCreateFragmentToWorkoutTemplateFragment(
+                            workoutTemplateId = workoutTemplate.id
+                        )
+                    findNavController().navigate(action)
+                }
+            })
         rvWorkoutTemplates.adapter = workoutTemplatesAdapter
 
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)

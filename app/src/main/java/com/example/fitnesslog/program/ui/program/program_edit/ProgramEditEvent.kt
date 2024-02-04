@@ -12,6 +12,5 @@ sealed class ProgramEditEvent {
         ProgramEditEvent()
 
     data object CreateWorkoutTemplate : ProgramEditEvent()
-
     data object Delete : ProgramEditEvent()
 }

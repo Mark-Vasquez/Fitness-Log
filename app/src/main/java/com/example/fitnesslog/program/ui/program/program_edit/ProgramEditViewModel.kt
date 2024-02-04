@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProgramEditViewModel(
-    private val programId: Int,
+    programId: Int,
     private val programUseCases: ProgramUseCases,
     private val workoutTemplateUseCases: WorkoutTemplateUseCases
 ) : ViewModel() {
@@ -29,28 +29,26 @@ class ProgramEditViewModel(
 
     companion object {
         const val TAG = "ProgramEditViewModel"
+    }
 
-        class Factory(
-            val programId: Int,
-            private val programUseCases: ProgramUseCases,
-            private val workoutTemplateUseCases: WorkoutTemplateUseCases
-        ) : ViewModelProvider.Factory {
+    class Factory(
+        private val programId: Int,
+        private val programUseCases: ProgramUseCases,
+        private val workoutTemplateUseCases: WorkoutTemplateUseCases
+    ) : ViewModelProvider.Factory {
 
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(ProgramEditViewModel::class.java)) {
-                    @Suppress("UNCHECKED_CAST")
-                    return ProgramEditViewModel(
-                        programId,
-                        programUseCases,
-                        workoutTemplateUseCases
-                    ) as T
-                }
-                throw IllegalArgumentException("ViewModel type passed in the Provider does not match ViewModel configured in the Factory")
+
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(ProgramEditViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return ProgramEditViewModel(
+                    programId,
+                    programUseCases,
+                    workoutTemplateUseCases
+                ) as T
             }
-
+            throw IllegalArgumentException("ViewModel type passed in the Provider does not match ViewModel configured in the Factory")
         }
-
     }
 
     init {

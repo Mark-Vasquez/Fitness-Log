@@ -28,7 +28,9 @@ import com.example.fitnesslog.core.utils.extensions.textChangeFlow
 import com.example.fitnesslog.core.utils.ui.showDeleteDialog
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
+import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesAdapter
+import com.example.fitnesslog.program.ui.program.updateNameInputView
 import com.example.fitnesslog.program.ui.program.updateRestDurationView
 import com.example.fitnesslog.program.ui.program.updateScheduledDaysView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -42,7 +44,7 @@ import java.util.Collections
 
 class ProgramEditFragment : Fragment() {
     private val programEditViewModel: ProgramEditViewModel by viewModels {
-        ProgramEditViewModel.Companion.Factory(
+        ProgramEditViewModel.Factory(
             args.programId,
             programModule.programUseCases,
             workoutTemplateModule.workoutTemplateUseCases
@@ -144,7 +146,7 @@ class ProgramEditFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 programEditViewModel.programState.collect { state ->
                     state.program?.let { program ->
-                        updateNameInputView(program.name)
+                        updateNameInputView(binding, program.name)
                         updateScheduledDaysView(binding, program.scheduledDays)
                         updateRestDurationView(binding, program.restDurationSeconds)
                     }
@@ -174,15 +176,6 @@ class ProgramEditFragment : Fragment() {
     }
 
 
-    private fun updateNameInputView(name: String) {
-        // This allow the text input to only populate on initial Edit or on configuration changes
-        if (binding.etNameProgram.text.toString() != name) {
-            binding.etNameProgram.setText(name)
-            binding.etNameProgram.setSelection(binding.etNameProgram.length())
-        }
-    }
-
-
     private fun setBackButtonListener() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             showDiscardDialog(
@@ -204,7 +197,6 @@ class ProgramEditFragment : Fragment() {
                 R.drawable.baseline_arrow_back_ios_new_24
             )
             setCompoundDrawablesWithIntrinsicBounds(backArrowIcon, null, null, null)
-            compoundDrawablePadding = 4
         }
     }
 
@@ -252,14 +244,22 @@ class ProgramEditFragment : Fragment() {
                 navBackStackEntry.lifecycle.removeObserver(restTimeSelectObserver)
             }
         })
-
-
     }
 
     private fun setupRecyclerView() {
         val rvWorkoutTemplates = binding.rvWorkoutTemplates
         rvWorkoutTemplates.layoutManager = LinearLayoutManager(requireContext())
-        workoutTemplatesAdapter = WorkoutTemplatesAdapter()
+        workoutTemplatesAdapter =
+            WorkoutTemplatesAdapter(object : WorkoutTemplatesAdapter.WorkoutTemplateClickListener {
+                override fun onWorkoutTemplateClicked(workoutTemplate: WorkoutTemplate) {
+                    if (workoutTemplate.id == null) return
+                    val action =
+                        ProgramEditFragmentDirections.actionProgramEditFragmentToWorkoutTemplateFragment(
+                            workoutTemplateId = workoutTemplate.id
+                        )
+                    findNavController().navigate(action)
+                }
+            })
         rvWorkoutTemplates.adapter = workoutTemplatesAdapter
 
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)

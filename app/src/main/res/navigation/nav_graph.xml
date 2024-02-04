@@ -14,7 +14,7 @@
         android:id="@+id/workoutsFragment"
         android:name="com.example.fitnesslog.workout.ui.workout_sessions.WorkoutsFragment"
         android:label="@string/workout"
-        tools:layout="@layout/fragment_workouts" />
+        tools:layout="@layout/fragment_workout_templates" />
     <fragment
         android:id="@+id/programsFragment"
         android:name="com.example.fitnesslog.program.ui.programs.ProgramsFragment"
@@ -46,6 +46,13 @@
         <action
             android:id="@+id/action_programCreateFragment_to_scheduleSelectModal"
             app:destination="@id/scheduleSelectModal" />
+        <action
+            android:id="@+id/action_programCreateFragment_to_workoutTemplateFragment"
+            app:destination="@id/workoutTemplateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/programEditFragment"
@@ -62,6 +69,13 @@
         <action
             android:id="@+id/action_programEditFragment_to_scheduleSelectModal"
             app:destination="@id/scheduleSelectModal" />
+        <action
+            android:id="@+id/action_programEditFragment_to_workoutTemplateFragment"
+            app:destination="@id/workoutTemplateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <dialog
         android:id="@+id/scheduleSelectModal"
@@ -81,5 +95,16 @@
             android:name="restDurationSeconds"
             app:argType="integer" />
     </dialog>
+    <fragment
+        android:id="@+id/workoutTemplateFragment"
+        android:name="com.example.fitnesslog.program.ui.workout_templates.WorkoutTemplateFragment"
+        android:label="WorkoutTemplateFragment"
+        tools:layout="@layout/fragment_workout_template">
+        <argument
+            android:name="workoutTemplateId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+
 
 </navigation>

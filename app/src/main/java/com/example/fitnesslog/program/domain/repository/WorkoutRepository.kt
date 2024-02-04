@@ -8,6 +8,7 @@ interface WorkoutRepository {
     suspend fun insertWorkoutTemplate(workoutTemplate: WorkoutTemplate): Resource<Long>
 
     suspend fun getPositionForInsert(programId: Int): Resource<Int>
+    fun getWorkoutTemplateById(workoutTemplateId: Int): Flow<Resource<WorkoutTemplate>>
 
     fun getWorkoutTemplatesForProgramOrderedByPosition(programId: Int): Flow<Resource<List<WorkoutTemplate>>>
 
