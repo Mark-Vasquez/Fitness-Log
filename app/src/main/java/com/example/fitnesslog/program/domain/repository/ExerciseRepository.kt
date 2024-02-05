@@ -9,7 +9,9 @@ interface ExerciseRepository {
     // **Exercise Template**
     suspend fun insertExerciseTemplate(exerciseTemplate: ExerciseTemplate): Resource<Long>
 
-    fun getAllExercisesOrderedByName(): Resource<Flow<List<ExerciseTemplate>>>
+    // get exercise template to edit?
+
+    fun getAllExercisesOrderedByName(): Flow<Resource<List<ExerciseTemplate>>>
 
     suspend fun updateExerciseTemplate(exerciseTemplate: ExerciseTemplate): Resource<Int>
 
@@ -22,7 +24,12 @@ interface ExerciseRepository {
         workoutTemplateId: Int
     ): Resource<LongArray>
 
-    fun getExercisesForWorkoutTemplateOrderedByPosition(workoutTemplateId: Int): Resource<Flow<List<WorkoutTemplateExerciseWithName>>>
+    fun getWorkoutTemplateExercisesOrderedByPosition(workoutTemplateId: Int): Flow<Resource<List<WorkoutTemplateExerciseWithName>>>
 
+    suspend fun updateAllExercisePositionsForWorkoutTemplate(workoutExercises: List<WorkoutTemplateExerciseWithName>): Resource<Unit>
 
+    suspend fun deleteExerciseInWorkoutTemplateAndRearrange(
+        exerciseTemplateId: Int,
+        workoutTemplateId: Int
+    ): Resource<Unit>
 }

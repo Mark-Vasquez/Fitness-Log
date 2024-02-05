@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fitnesslog.FitnessLogApp.Companion.exerciseTemplateModule
 import com.example.fitnesslog.FitnessLogApp.Companion.workoutTemplateModule
 import com.example.fitnesslog.databinding.FragmentWorkoutTemplateBinding
 import com.example.fitnesslog.program.domain.model.WorkoutTemplateExerciseWithName
@@ -26,7 +27,8 @@ class WorkoutTemplateFragment : Fragment() {
     private val workoutTemplateViewModel: WorkoutTemplateViewModel by viewModels {
         WorkoutTemplateViewModel.Factory(
             args.workoutTemplateId,
-            workoutTemplateModule.workoutTemplateUseCases
+            workoutTemplateModule.workoutTemplateUseCases,
+            exerciseTemplateModule.exerciseTemplateUseCases
         )
     }
 
@@ -75,7 +77,9 @@ class WorkoutTemplateFragment : Fragment() {
     private fun observeWorkoutTemplateExerciseState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
+                workoutTemplateViewModel.workoutTemplateExercisesState.collectLatest {
+                    workoutTemplateExercisesAdapter.submitList(it.workoutTemplateExercises)
+                }
             }
         }
     }
