@@ -129,10 +129,10 @@ interface ExerciseTemplateDao {
 
     @Transaction
     suspend fun deleteExerciseInWorkoutTemplateAndRearrange(
-        exerciseId: Int,
+        exerciseTemplateId: Int,
         workoutTemplateId: Int
     ) {
-        deleteWorkoutTemplateExercise(exerciseId)
+        deleteWorkoutTemplateExercise(exerciseTemplateId)
 
         val remainingExerciseInWorkoutTemplate =
             getWorkoutTemplateExercisesOrderedByPosition(workoutTemplateId).first()
@@ -142,7 +142,7 @@ interface ExerciseTemplateDao {
         }
     }
 
-    @Query("DELETE FROM workout_template_exercise WHERE id = :exerciseId")
-    suspend fun deleteWorkoutTemplateExercise(exerciseId: Int)
+    @Query("DELETE FROM workout_template_exercise WHERE id = :exerciseTemplateId")
+    suspend fun deleteWorkoutTemplateExercise(exerciseTemplateId: Int)
 
 }

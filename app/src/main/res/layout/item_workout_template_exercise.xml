@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:id="@+id/ivDragItemWorkout"
+        android:id="@+id/ivDragItemWorkoutTemplateExercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/drag_handle_24px"
@@ -16,15 +16,15 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/tvNameItemWorkout"
+        android:id="@+id/tvNameItemWorkoutTemplateExercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chest Day"
+        android:text="Bench Press"
         android:maxLines="1"
         android:ellipsize="end"
         android:textAppearance="?attr/textAppearanceBodyLarge"
         android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@+id/ivDragItemWorkout"
+        app:layout_constraintStart_toEndOf="@+id/ivDragItemWorkoutTemplateExercise"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 

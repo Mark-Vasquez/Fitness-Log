@@ -1,6 +1,7 @@
 package com.example.fitnesslog.shared.di
 
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
+import com.example.fitnesslog.FitnessLogApp.Companion.exerciseTemplateModule
 import com.example.fitnesslog.FitnessLogApp.Companion.programModule
 import com.example.fitnesslog.FitnessLogApp.Companion.workoutTemplateModule
 import com.example.fitnesslog.core.data.database.FitnessLogDatabase
@@ -22,6 +23,7 @@ class SharedModuleImpl(private val db: FitnessLogDatabase) : SharedModule {
             db,
             programModule.programDao,
             workoutTemplateModule.workoutTemplateDao,
+            exerciseTemplateModule.exerciseTemplateDao,
             appModule.dataStore
         )
     }

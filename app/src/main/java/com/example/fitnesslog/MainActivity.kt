@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.animate()
             .translationY(bottomNavigation.height.toFloat()) // Move along y-axis down as much as height
             .alpha(0.0f) // 0f is fully transparent
-            .setDuration(200) // duration in milliseconds
+            .setDuration(100) // duration in milliseconds
             .setListener(object : AnimatorListenerAdapter() {
                 // Only set to visibility to gone when animation ends to avoid the large shift behavior
                 override fun onAnimationEnd(animation: Animator) {

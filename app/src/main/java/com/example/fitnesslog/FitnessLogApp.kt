@@ -3,6 +3,8 @@ package com.example.fitnesslog
 import android.app.Application
 import com.example.fitnesslog.core.di.AppModule
 import com.example.fitnesslog.core.di.AppModuleImpl
+import com.example.fitnesslog.program.di.ExerciseTemplateModule
+import com.example.fitnesslog.program.di.ExerciseTemplateModuleImpl
 import com.example.fitnesslog.program.di.ProgramModule
 import com.example.fitnesslog.program.di.ProgramModuleImpl
 import com.example.fitnesslog.program.di.WorkoutTemplateModule
@@ -17,6 +19,7 @@ class FitnessLogApp : Application() {
         lateinit var appModule: AppModule
         lateinit var programModule: ProgramModule
         lateinit var workoutTemplateModule: WorkoutTemplateModule
+        lateinit var exerciseTemplateModule: ExerciseTemplateModule
         lateinit var sharedModule: SharedModule
     }
 
@@ -30,6 +33,7 @@ class FitnessLogApp : Application() {
         appModule = AppModuleImpl(this)
         programModule = ProgramModuleImpl(appModule.db)
         workoutTemplateModule = WorkoutTemplateModuleImpl(appModule.db)
+        exerciseTemplateModule = ExerciseTemplateModuleImpl(appModule.db)
         sharedModule = SharedModuleImpl(appModule.db)
 
     }

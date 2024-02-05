@@ -38,6 +38,7 @@ class WorkoutTemplateViewModel(
 
     init {
         collectLatestWorkoutTemplate(workoutTemplateId)
+        collectLatestWorkoutTemplateExercise(workoutTemplateId)
     }
 
     private fun collectLatestWorkoutTemplate(workoutTemplateId: Int) {
@@ -61,6 +62,12 @@ class WorkoutTemplateViewModel(
                         }
                     }
                 }
+        }
+    }
+
+    private fun collectLatestWorkoutTemplateExercise(workoutTemplateId: Int) {
+        viewModelScope.launch {
+            //exercisetemplateusecases.getWorkoutTemplateExercises
         }
     }
 }

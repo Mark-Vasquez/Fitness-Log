@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -26,7 +25,6 @@ import com.example.fitnesslog.core.utils.constants.SCHEDULED_DAYS
 import com.example.fitnesslog.core.utils.extensions.setDebouncedOnClickListener
 import com.example.fitnesslog.core.utils.extensions.textChangeFlow
 import com.example.fitnesslog.core.utils.ui.showDeleteDialog
-import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.program.data.entity.WorkoutTemplate
 import com.example.fitnesslog.program.ui.program.WorkoutTemplatesAdapter
@@ -57,12 +55,6 @@ class ProgramEditFragment : Fragment() {
 
     companion object {
         const val TAG = "ProgramEditFragment"
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setBackButtonListener()
     }
 
 
@@ -172,17 +164,6 @@ class ProgramEditFragment : Fragment() {
                 .collectLatest { name ->
                     programEditViewModel.onEvent(ProgramEditEvent.UpdateName(name))
                 }
-        }
-    }
-
-
-    private fun setBackButtonListener() {
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            showDiscardDialog(
-                requireContext()
-            ) {
-                findNavController().popBackStack()
-            }
         }
     }
 
@@ -309,7 +290,7 @@ class ProgramEditFragment : Fragment() {
                 // Take away transparency after finish dragging and dropped
                 viewHolder.itemView.alpha = 1.0f
 
-                val updatedList = workoutTemplatesAdapter.currentList
+                val updatedList = adapter.currentList
                 programEditViewModel.onEvent(
                     ProgramEditEvent.UpdateWorkoutTemplatesOrder(
                         updatedList
