@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.core.utils.Resource
+import com.example.fitnesslog.program.domain.model.WorkoutTemplateExerciseWithName
 import com.example.fitnesslog.program.domain.use_case.exercise_template.ExerciseTemplateUseCases
 import com.example.fitnesslog.program.domain.use_case.workout_template.WorkoutTemplateUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,6 +52,20 @@ class WorkoutTemplateViewModel(
         collectLatestWorkoutTemplateExercise(workoutTemplateId)
     }
 
+    fun onEvent(event: WorkoutTemplateEvent) {
+        when (event) {
+            is WorkoutTemplateEvent.UpdateName -> {
+                updateName(event.name)
+            }
+
+            is WorkoutTemplateEvent.UpdateWorkoutTemplateExercisesOrder -> {
+                updateWorkoutTemplateExercisesOrder(event.workoutTemplateExercises)
+            }
+
+            is WorkoutTemplateEvent.Delete -> {}
+        }
+    }
+
     private fun collectLatestWorkoutTemplate(workoutTemplateId: Int) {
         viewModelScope.launch {
             workoutTemplateUseCases.getWorkoutTemplate(workoutTemplateId)
@@ -89,6 +104,25 @@ class WorkoutTemplateViewModel(
                         is Resource.Error -> _workoutTemplateState.update { it.copy(error = resource.errorMessage) }
                     }
                 }
+        }
+    }
+
+    private fun updateName(name: String) {
+        val currentWorkoutTemplate = workoutTemplateState.value.workoutTemplate ?: return
+        viewModelScope.launch {
+            if (name != currentWorkoutTemplate.name)
+                workoutTemplateUseCases.editWorkoutTemplate(
+                    currentWorkoutTemplate.copy(
+                        name = name,
+                        updatedAt = System.currentTimeMillis()
+                    )
+                )
+        }
+    }
+
+    private fun updateWorkoutTemplateExercisesOrder(workoutTemplateExercises: List<WorkoutTemplateExerciseWithName>) {
+        viewModelScope.launch {
+            exerciseTemplateUseCases.reorderExercisesForWorkoutTemplate(workoutTemplateExercises)
         }
     }
 }

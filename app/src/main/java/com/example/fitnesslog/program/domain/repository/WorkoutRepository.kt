@@ -15,8 +15,7 @@ interface WorkoutRepository {
     suspend fun updateWorkoutTemplate(workoutTemplate: WorkoutTemplate): Resource<Int>
 
     suspend fun updateWorkoutTemplatePositionsForProgram(
-        workoutTemplates: List<WorkoutTemplate>,
-        programId: Int
+        workoutTemplates: List<WorkoutTemplate>
     ): Resource<Unit>
 
     suspend fun deleteWorkoutTemplateAndRearrange(

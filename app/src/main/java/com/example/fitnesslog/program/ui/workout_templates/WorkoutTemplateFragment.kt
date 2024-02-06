@@ -16,10 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.FitnessLogApp.Companion.exerciseTemplateModule
 import com.example.fitnesslog.FitnessLogApp.Companion.workoutTemplateModule
+import com.example.fitnesslog.core.utils.extensions.textChangeFlow
 import com.example.fitnesslog.databinding.FragmentWorkoutTemplateBinding
 import com.example.fitnesslog.program.domain.model.WorkoutTemplateExerciseWithName
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import java.util.Collections
 
@@ -51,6 +53,7 @@ class WorkoutTemplateFragment : Fragment() {
         setupRecyclerView()
         observeWorkoutTemplateState()
         observeWorkoutTemplateExerciseState()
+        setupWorkoutTemplateNameChangeListener()
 
         binding.btnNavigateBack.setOnClickListener {
             findNavController().popBackStack()
@@ -80,6 +83,18 @@ class WorkoutTemplateFragment : Fragment() {
                 workoutTemplateViewModel.workoutTemplateExercisesState.collectLatest {
                     workoutTemplateExercisesAdapter.submitList(it.workoutTemplateExercises)
                 }
+            }
+        }
+    }
+
+    private fun setupWorkoutTemplateNameChangeListener() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                binding.etNameWorkoutTemplate.textChangeFlow()
+                    .debounce(500)
+                    .collectLatest { name ->
+                        workoutTemplateViewModel.onEvent(WorkoutTemplateEvent.UpdateName(name))
+                    }
             }
         }
     }
@@ -147,7 +162,11 @@ class WorkoutTemplateFragment : Fragment() {
                 viewHolder.itemView.alpha = 1.0f
 
                 val updatedList = adapter.currentList
-                // TODO("send list through event to db to update")
+                workoutTemplateViewModel.onEvent(
+                    WorkoutTemplateEvent.UpdateWorkoutTemplateExercisesOrder(
+                        updatedList
+                    )
+                )
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}

@@ -159,11 +159,13 @@ class ProgramEditFragment : Fragment() {
 
     private fun setupProgramNameChangeListener() {
         viewLifecycleOwner.lifecycleScope.launch {
-            binding.etNameProgram.textChangeFlow()
-                .debounce(500)
-                .collectLatest { name ->
-                    programEditViewModel.onEvent(ProgramEditEvent.UpdateName(name))
-                }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                binding.etNameProgram.textChangeFlow()
+                    .debounce(500)
+                    .collectLatest { name ->
+                        programEditViewModel.onEvent(ProgramEditEvent.UpdateName(name))
+                    }
+            }
         }
     }
 

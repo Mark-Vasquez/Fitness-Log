@@ -40,8 +40,7 @@ class WorkoutRepositoryImpl(private val dao: WorkoutTemplateDao) : WorkoutReposi
     }
 
     override suspend fun updateWorkoutTemplatePositionsForProgram(
-        workoutTemplates: List<WorkoutTemplate>,
-        programId: Int
+        workoutTemplates: List<WorkoutTemplate>
     ): Resource<Unit> {
         return safeCall {
             dao.updateAllWorkoutTemplatePositionsForProgram(workoutTemplates)

@@ -214,9 +214,8 @@ class ProgramCreateViewModel(
     }
 
     private fun updateWorkoutTemplatesOrder(workoutTemplates: List<WorkoutTemplate>) {
-        val programId = programState.value.program?.id ?: return
         viewModelScope.launch {
-            workoutTemplateUseCases.reorderWorkoutTemplates(workoutTemplates, programId)
+            workoutTemplateUseCases.reorderWorkoutTemplates(workoutTemplates)
         }
     }
 

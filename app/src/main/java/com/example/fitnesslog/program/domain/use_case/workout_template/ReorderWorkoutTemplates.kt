@@ -8,12 +8,10 @@ class ReorderWorkoutTemplates(
     private val workoutRepository: WorkoutRepository
 ) {
     suspend operator fun invoke(
-        workoutTemplates: List<WorkoutTemplate>,
-        programId: Int
+        workoutTemplates: List<WorkoutTemplate>
     ): Resource<Unit> {
         return workoutRepository.updateWorkoutTemplatePositionsForProgram(
-            workoutTemplates,
-            programId
+            workoutTemplates
         )
     }
 }
