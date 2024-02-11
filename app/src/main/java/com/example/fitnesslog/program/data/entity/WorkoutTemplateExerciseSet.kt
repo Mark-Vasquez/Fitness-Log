@@ -8,23 +8,23 @@ import androidx.room.PrimaryKey
 
 
 /**
- * Represents a set template and its unique position within a specific exercise template.
+ * Represents a set template and its unique position within a specific workout_template_exercise.
  */
 @Entity(
-    tableName = "set_template",
-    indices = [Index(value = ["exercise_template_id", "position"], unique = true)],
+    tableName = "workout_template_exercise_set",
+    indices = [Index(value = ["workout_template_exercise_id", "position"], unique = true)],
     foreignKeys = [
         ForeignKey(
-            entity = ExerciseTemplate::class,
+            entity = WorkoutTemplateExercise::class,
             parentColumns = ["id"],
-            childColumns = ["exercise_template_id"],
+            childColumns = ["workout_template_exercise_id"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class SetTemplate(
+data class WorkoutTemplateExerciseSet(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
-    @ColumnInfo(name = "exercise_template_id") val exerciseTemplateId: Int,
+    @ColumnInfo(name = "workout_template_exercise_id") val workoutTemplateExerciseId: Int,
     @ColumnInfo(name = "goal_reps") val goalReps: Int,
     @ColumnInfo(name = "weight_in_lbs") val weightInLbs: Int,
     @ColumnInfo(name = "position") val position: Int,

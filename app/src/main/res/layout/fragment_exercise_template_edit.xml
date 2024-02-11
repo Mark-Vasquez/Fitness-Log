@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/btn_navigate_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/NavigateBackButton"
+            android:text="@string/workout"
+            app:drawableStartCompat="@drawable/baseline_arrow_back_ios_new_24"
+            app:layout_constraintTop_toTopOf="@id/tvTitleExerciseTemplate"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitleExerciseTemplate"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTitleExerciseTemplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/FragmentTitle"
+            android:text="@string/edit_exercise"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilNameExerciseTemplate"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/exercise_name"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleExerciseTemplate">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNameExerciseTemplate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions|textCapWords"
+                android:maxLength="50" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnDeleteWorkout"
+            style="@style/DeleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_exercise"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

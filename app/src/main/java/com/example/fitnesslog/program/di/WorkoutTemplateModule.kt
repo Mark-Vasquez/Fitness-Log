@@ -20,7 +20,7 @@ interface WorkoutTemplateModule {
 
 class WorkoutTemplateModuleImpl(private val db: FitnessLogDatabase) : WorkoutTemplateModule {
     override val workoutTemplateDao: WorkoutTemplateDao by lazy {
-        db.workoutDao()
+        db.workoutTemplateDao()
     }
 
     override val workoutRepository: WorkoutRepository by lazy {

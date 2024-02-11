@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.FitnessLogApp.Companion.exerciseTemplateModule
 import com.example.fitnesslog.FitnessLogApp.Companion.workoutTemplateModule
 import com.example.fitnesslog.core.utils.extensions.textChangeFlow
+import com.example.fitnesslog.core.utils.ui.showDeleteDialog
 import com.example.fitnesslog.databinding.FragmentWorkoutTemplateBinding
 import com.example.fitnesslog.program.domain.model.WorkoutTemplateExerciseWithName
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -57,6 +58,20 @@ class WorkoutTemplateFragment : Fragment() {
 
         binding.btnNavigateBack.setOnClickListener {
             findNavController().popBackStack()
+        }
+
+        binding.btnDeleteWorkout.setOnClickListener {
+            val workoutTemplateName =
+                workoutTemplateViewModel.workoutTemplateState.value.workoutTemplate?.name
+            val message = if (workoutTemplateName.isNullOrEmpty()) {
+                "Are you sure you want to delete this workout?"
+            } else {
+                "Are you sure you wan to delete \"${workoutTemplateName}\" workout?"
+            }
+            showDeleteDialog(requireContext(), "Delete Workout", message) {
+                workoutTemplateViewModel.onEvent(WorkoutTemplateEvent.Delete)
+                findNavController().popBackStack()
+            }
         }
     }
 

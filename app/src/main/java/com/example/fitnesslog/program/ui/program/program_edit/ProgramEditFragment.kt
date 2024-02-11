@@ -113,7 +113,7 @@ class ProgramEditFragment : Fragment() {
                 } else {
                     "Are you sure you want to delete \"${programName}\" program?"
                 }
-                showDeleteDialog(requireContext(), message) {
+                showDeleteDialog(requireContext(), "Delete Program", message) {
                     programEditViewModel.onEvent(ProgramEditEvent.Delete)
                     findNavController().popBackStack()
                 }

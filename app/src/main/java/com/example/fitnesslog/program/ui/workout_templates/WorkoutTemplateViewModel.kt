@@ -62,7 +62,9 @@ class WorkoutTemplateViewModel(
                 updateWorkoutTemplateExercisesOrder(event.workoutTemplateExercises)
             }
 
-            is WorkoutTemplateEvent.Delete -> {}
+            is WorkoutTemplateEvent.Delete -> {
+                deleteWorkoutTemplate()
+            }
         }
     }
 
@@ -123,6 +125,18 @@ class WorkoutTemplateViewModel(
     private fun updateWorkoutTemplateExercisesOrder(workoutTemplateExercises: List<WorkoutTemplateExerciseWithName>) {
         viewModelScope.launch {
             exerciseTemplateUseCases.reorderExercisesForWorkoutTemplate(workoutTemplateExercises)
+        }
+    }
+
+    private fun deleteWorkoutTemplate() {
+        val workoutTemplate = workoutTemplateState.value.workoutTemplate ?: return
+        val workoutTemplateId = workoutTemplate.id ?: return
+
+        viewModelScope.launch {
+            workoutTemplateUseCases.deleteWorkoutTemplate(
+                workoutTemplateId,
+                workoutTemplate.programId
+            )
         }
     }
 }

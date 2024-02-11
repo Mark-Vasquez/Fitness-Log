@@ -21,7 +21,6 @@ import androidx.room.PrimaryKey
     tableName = "workout_template_exercise",
     indices = [
         Index(value = ["workout_template_id", "position"], unique = true),
-        Index(value = ["exercise_template_id"])
     ],
     foreignKeys = [
         ForeignKey(
@@ -29,19 +28,13 @@ import androidx.room.PrimaryKey
             parentColumns = ["id"],
             childColumns = ["workout_template_id"],
             onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = ExerciseTemplate::class,
-            parentColumns = ["id"],
-            childColumns = ["exercise_template_id"],
-            onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class WorkoutTemplateExercise(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo(name = "workout_template_id") val workoutTemplateId: Int,
-    @ColumnInfo(name = "exercise_template_id") val exerciseTemplateId: Int,
+    @ColumnInfo(name = "name", defaultValue = "") val name: String = "",
     @ColumnInfo(name = "position") val position: Int,
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long

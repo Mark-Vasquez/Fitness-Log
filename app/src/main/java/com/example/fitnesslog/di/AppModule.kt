@@ -1,4 +1,4 @@
-package com.example.fitnesslog.core.di
+package com.example.fitnesslog.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore

@@ -49,18 +49,18 @@ interface WorkoutTemplateDao {
 
     @Transaction
     suspend fun deleteWorkoutTemplateInProgramAndRearrange(workoutTemplateId: Int, programId: Int) {
-        deleteWorkoutTemplateById(workoutTemplateId)
+        deleteWorkoutTemplate(workoutTemplateId)
 
-        val remainingWorkoutTemplates =
+        val remainingWorkoutTemplatesInProgram =
             getWorkoutTemplatesForProgramOrderedByPosition(programId).first()
 
-        if (remainingWorkoutTemplates.isNotEmpty()) {
-            updateAllWorkoutTemplatePositionsForProgram(remainingWorkoutTemplates)
+        if (remainingWorkoutTemplatesInProgram.isNotEmpty()) {
+            updateAllWorkoutTemplatePositionsForProgram(remainingWorkoutTemplatesInProgram)
         }
 
     }
 
     @Query("DELETE FROM workout_template WHERE id = :workoutTemplateId")
-    suspend fun deleteWorkoutTemplateById(workoutTemplateId: Int)
+    suspend fun deleteWorkoutTemplate(workoutTemplateId: Int)
 
 }

@@ -1,8 +1,8 @@
 package com.example.fitnesslog
 
 import android.app.Application
-import com.example.fitnesslog.core.di.AppModule
-import com.example.fitnesslog.core.di.AppModuleImpl
+import com.example.fitnesslog.di.AppModule
+import com.example.fitnesslog.di.AppModuleImpl
 import com.example.fitnesslog.program.di.ExerciseTemplateModule
 import com.example.fitnesslog.program.di.ExerciseTemplateModuleImpl
 import com.example.fitnesslog.program.di.ProgramModule

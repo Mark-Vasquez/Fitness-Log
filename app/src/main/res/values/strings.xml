@@ -40,4 +40,7 @@
     <string name="add_exercise">Add Exercise</string>
     <string name="add_workout">Add Workout</string>
     <string name="delete_program">Delete Program</string>
+    <string name="edit_exercise">Edit Exercise</string>
+    <string name="exercise_name">Exercise Name</string>
+    <string name="delete_exercise">Delete Exercise</string>
 </resources>
