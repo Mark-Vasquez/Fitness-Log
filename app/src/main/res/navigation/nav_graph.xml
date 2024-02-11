@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.fitnesslog.history.HistoryFragment"
+        android:name="com.example.fitnesslog.ui.history.HistoryFragment"
         android:label="@string/history"
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/workoutsFragment"
-        android:name="com.example.fitnesslog.workout.ui.workout_sessions.WorkoutsFragment"
+        android:name="com.example.fitnesslog.ui.workout.WorkoutsFragment"
         android:label="@string/workout"
         tools:layout="@layout/fragment_workout_templates" />
     <fragment
         android:id="@+id/programsFragment"
-        android:name="com.example.fitnesslog.program.ui.programs.ProgramsFragment"
+        android:name="com.example.fitnesslog.ui.program.programs.ProgramsFragment"
         android:label="@string/program"
         tools:layout="@layout/fragment_programs">
         <action
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/programCreateFragment"
-        android:name="com.example.fitnesslog.program.ui.program.program_create.ProgramCreateFragment"
+        android:name="com.example.fitnesslog.ui.program.program_create.ProgramCreateFragment"
         android:label="ProgramCreateFragment"
         tools:layout="@layout/fragment_program">
         <action
@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/programEditFragment"
-        android:name="com.example.fitnesslog.program.ui.program.program_edit.ProgramEditFragment"
+        android:name="com.example.fitnesslog.ui.program.program_edit.ProgramEditFragment"
         android:label="@string/edit_program"
         tools:layout="@layout/fragment_program">
         <argument
@@ -79,7 +79,7 @@
     </fragment>
     <dialog
         android:id="@+id/scheduleSelectModal"
-        android:name="com.example.fitnesslog.program.ui.program.ScheduleSelectModal"
+        android:name="com.example.fitnesslog.ui.program.ScheduleSelectModal"
         android:label="ScheduleSelectModal"
         tools:layout="@layout/modal_bottom_sheet_schedule_select">
         <argument
@@ -88,7 +88,7 @@
     </dialog>
     <dialog
         android:id="@+id/restTimeSelectDialog"
-        android:name="com.example.fitnesslog.program.ui.program.RestTimeSelectDialog"
+        android:name="com.example.fitnesslog.ui.program.RestTimeSelectDialog"
         android:label="RestTimeSelectDialog"
         tools:layout="@layout/dialog_rest_time_select">
         <argument
@@ -97,7 +97,7 @@
     </dialog>
     <fragment
         android:id="@+id/workoutTemplateFragment"
-        android:name="com.example.fitnesslog.program.ui.workout_templates.WorkoutTemplateFragment"
+        android:name="com.example.fitnesslog.ui.program.workout_templates.WorkoutTemplateFragment"
         android:label="WorkoutTemplateFragment"
         tools:layout="@layout/fragment_workout_template">
         <argument

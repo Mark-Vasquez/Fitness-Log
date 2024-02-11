@@ -3,14 +3,14 @@ package com.example.fitnesslog
 import android.app.Application
 import com.example.fitnesslog.di.AppModule
 import com.example.fitnesslog.di.AppModuleImpl
-import com.example.fitnesslog.program.di.ExerciseTemplateModule
-import com.example.fitnesslog.program.di.ExerciseTemplateModuleImpl
-import com.example.fitnesslog.program.di.ProgramModule
-import com.example.fitnesslog.program.di.ProgramModuleImpl
-import com.example.fitnesslog.program.di.WorkoutTemplateModule
-import com.example.fitnesslog.program.di.WorkoutTemplateModuleImpl
-import com.example.fitnesslog.shared.di.SharedModule
-import com.example.fitnesslog.shared.di.SharedModuleImpl
+import com.example.fitnesslog.di.ExerciseTemplateModule
+import com.example.fitnesslog.di.ExerciseTemplateModuleImpl
+import com.example.fitnesslog.di.ProgramModule
+import com.example.fitnesslog.di.ProgramModuleImpl
+import com.example.fitnesslog.di.SharedModule
+import com.example.fitnesslog.di.SharedModuleImpl
+import com.example.fitnesslog.di.WorkoutTemplateModule
+import com.example.fitnesslog.di.WorkoutTemplateModuleImpl
 
 // Manual dependency injection for each feature Module
 // Each module implementation instance also provides dependencies that can be injected throughout app

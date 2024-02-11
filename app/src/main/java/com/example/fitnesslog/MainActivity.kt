@@ -18,8 +18,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesslog.databinding.ActivityMainBinding
-import com.example.fitnesslog.shared.ui.SharedEvent
-import com.example.fitnesslog.shared.ui.SharedViewModel
+import com.example.fitnesslog.ui.shared.SharedEvent
+import com.example.fitnesslog.ui.shared.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
