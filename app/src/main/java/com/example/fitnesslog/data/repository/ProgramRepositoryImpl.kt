@@ -5,6 +5,7 @@ import com.example.fitnesslog.core.utils.extensions.toErrorMessage
 import com.example.fitnesslog.core.utils.safeCall
 import com.example.fitnesslog.data.dao.ProgramDao
 import com.example.fitnesslog.data.entity.Program
+import com.example.fitnesslog.domain.repository.ProgramRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.map
  */
 class ProgramRepositoryImpl(
     private val dao: ProgramDao,
-) : com.example.fitnesslog.domain.repository.ProgramRepository {
+) : ProgramRepository {
 
 
     override suspend fun insertProgram(program: Program): Resource<Long> {

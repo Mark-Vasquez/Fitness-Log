@@ -3,8 +3,9 @@ package com.example.fitnesslog.ui.program.programs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.fitnesslog.FitnessLogApp.Companion.programModule
+import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.core.utils.Resource
+import com.example.fitnesslog.domain.use_case.program.ProgramUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ProgramsViewModel(
-    private val programUseCases: com.example.fitnesslog.domain.use_case.program.ProgramUseCases,
+    private val programUseCases: ProgramUseCases,
 ) : ViewModel() {
 
     // _stateflow is mutable flow of ProgramsState, modified only internally
@@ -30,7 +31,7 @@ class ProgramsViewModel(
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(ProgramsViewModel::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return ProgramsViewModel(programModule.programUseCases) as T
+                    return ProgramsViewModel(appModule.programUseCases) as T
                 }
                 throw IllegalArgumentException("ViewModel type passed in the Provider does not match ViewModel configured in the Factory")
             }

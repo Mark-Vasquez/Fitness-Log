@@ -1,17 +1,18 @@
 package com.example.fitnesslog.domain.use_case.workout_template
 
 import com.example.fitnesslog.core.utils.Resource
-import com.example.fitnesslog.data.entity.WorkoutTemplate
 import com.example.fitnesslog.domain.repository.TemplateRepository
 
-class ReorderWorkoutTemplates(
+class AddExercisesToWorkoutTemplate(
     private val templateRepository: TemplateRepository
 ) {
     suspend operator fun invoke(
-        workoutTemplates: List<WorkoutTemplate>
+        exerciseTemplateIds: List<Int>,
+        workoutTemplateId: Int
     ): Resource<Unit> {
-        return templateRepository.updateWorkoutTemplatePositionsForProgram(
-            workoutTemplates
+        return templateRepository.addExercisesToWorkoutTemplate(
+            exerciseTemplateIds,
+            workoutTemplateId
         )
     }
 }

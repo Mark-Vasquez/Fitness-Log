@@ -3,7 +3,7 @@ package com.example.fitnesslog.ui.shared
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.fitnesslog.FitnessLogApp.Companion.sharedModule
+import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.core.utils.helpers.isSeeded
 import com.example.fitnesslog.domain.use_case.shared.SharedUseCases
@@ -27,7 +27,7 @@ class SharedViewModel(
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(SharedViewModel::class.java)) {
-                    return SharedViewModel(sharedModule.sharedUseCases) as T
+                    return SharedViewModel(appModule.sharedUseCases) as T
                 }
                 throw IllegalArgumentException("ViewModel type passed in the Provider does not match ViewModel configured in the Factory")
             }

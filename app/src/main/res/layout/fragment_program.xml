@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.program.program_edit.ProgramEditFragment">
+        tools:context=".ui.program.program_create_edit_shared.program_edit.ProgramEditFragment">
 
 
         <TextView

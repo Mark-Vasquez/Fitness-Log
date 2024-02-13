@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.room.withTransaction
-import com.example.fitnesslog.core.database.FitnessLogDatabase
 import com.example.fitnesslog.core.enums.ExerciseMuscle
 import com.example.fitnesslog.core.enums.ExerciseResistance
 import com.example.fitnesslog.core.utils.Resource
@@ -14,6 +13,8 @@ import com.example.fitnesslog.core.utils.safeCall
 import com.example.fitnesslog.data.dao.ExerciseTemplateDao
 import com.example.fitnesslog.data.dao.ProgramDao
 import com.example.fitnesslog.data.dao.WorkoutTemplateDao
+import com.example.fitnesslog.data.dao.WorkoutTemplateExerciseDao
+import com.example.fitnesslog.data.database.FitnessLogDatabase
 import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.data.entity.Program
 import com.example.fitnesslog.data.entity.WorkoutTemplate
@@ -24,7 +25,8 @@ class SharedRepositoryImpl(
     private val db: FitnessLogDatabase,
     private val programDao: ProgramDao,
     private val workoutTemplateDao: WorkoutTemplateDao,
-    private val exerciseDao: ExerciseTemplateDao,
+    private val workoutTemplateExerciseDao: WorkoutTemplateExerciseDao,
+    private val exerciseTemplateDao: ExerciseTemplateDao,
     private val dataStore: DataStore<Preferences>
 ) : SharedRepository {
 
@@ -96,62 +98,61 @@ class SharedRepositoryImpl(
                     )
                     val exerciseTemplate4 = ExerciseTemplate(
                         name = "Lateral Raise",
-                        exerciseMuscle = ExerciseMuscle.CHEST,
+                        exerciseMuscle = ExerciseMuscle.SHOULDERS,
                         exerciseResistance = ExerciseResistance.DUMBBELL,
                         isDefault = true,
                         createdAt = System.currentTimeMillis(),
                         updatedAt = System.currentTimeMillis()
                     )
                     val exerciseTemplateId1 =
-                        exerciseDao.insertExerciseTemplate(exerciseTemplate1).toInt()
+                        exerciseTemplateDao.insertExerciseTemplate(exerciseTemplate1).toInt()
                     val exerciseTemplateId2 =
-                        exerciseDao.insertExerciseTemplate(exerciseTemplate2).toInt()
+                        exerciseTemplateDao.insertExerciseTemplate(exerciseTemplate2).toInt()
                     val exerciseTemplateId3 =
-                        exerciseDao.insertExerciseTemplate(exerciseTemplate3).toInt()
+                        exerciseTemplateDao.insertExerciseTemplate(exerciseTemplate3).toInt()
                     val exerciseTemplateId4 =
-                        exerciseDao.insertExerciseTemplate(exerciseTemplate4).toInt()
+                        exerciseTemplateDao.insertExerciseTemplate(exerciseTemplate4).toInt()
 
-                    // TODO: Insert Exercise Templates
-                    val defaultWorkoutTemplateExercise1 = WorkoutTemplateExercise(
-                        workoutTemplateId = workoutTemplateId,
-                        exerciseTemplateId = exerciseTemplateId1,
-                        position = 0,
-                        createdAt = System.currentTimeMillis(),
-                        updatedAt = System.currentTimeMillis()
-                    )
-                    val defaultWorkoutTemplateExercise2 = WorkoutTemplateExercise(
-                        workoutTemplateId = workoutTemplateId,
-                        exerciseTemplateId = exerciseTemplateId2,
-                        position = 1,
-                        createdAt = System.currentTimeMillis(),
-                        updatedAt = System.currentTimeMillis()
-                    )
-                    val defaultWorkoutTemplateExercise3 = WorkoutTemplateExercise(
-                        workoutTemplateId = workoutTemplateId,
-                        exerciseTemplateId = exerciseTemplateId3,
-                        position = 2,
-                        createdAt = System.currentTimeMillis(),
-                        updatedAt = System.currentTimeMillis()
-                    )
-                    val defaultWorkoutTemplateExercise4 = WorkoutTemplateExercise(
-                        workoutTemplateId = workoutTemplateId,
-                        exerciseTemplateId = exerciseTemplateId4,
-                        position = 3,
-                        createdAt = System.currentTimeMillis(),
-                        updatedAt = System.currentTimeMillis()
-                    )
-                    exerciseDao.insertExercisesIntoWorkoutTemplate(
+
+                    addExercisesToWorkoutTemplate(
                         listOf(
-                            defaultWorkoutTemplateExercise1, defaultWorkoutTemplateExercise2,
-                            defaultWorkoutTemplateExercise3, defaultWorkoutTemplateExercise4
-                        )
+                            exerciseTemplateId1,
+                            exerciseTemplateId2,
+                            exerciseTemplateId3,
+                            exerciseTemplateId4
+                        ), workoutTemplateId
                     )
+
                     dataStore.edit { settings ->
                         settings[IS_SEEDED] = true
                     }
                 }
             }
         }
+    }
+
+    private suspend fun addExercisesToWorkoutTemplate(
+        exerciseTemplateIds: List<Int>,
+        workoutTemplateId: Int
+    ) {
+        val lastPosition = workoutTemplateExerciseDao.getPositionForInsert(workoutTemplateId)
+        val selectedExerciseTemplates = exerciseTemplateDao.getExercisesByIds(exerciseTemplateIds)
+
+        val newWorkoutTemplateExercises =
+            selectedExerciseTemplates.mapIndexed { index, exerciseTemplate ->
+                WorkoutTemplateExercise(
+                    workoutTemplateId = workoutTemplateId,
+                    name = exerciseTemplate.name,
+                    position = lastPosition + index,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                )
+            }
+
+        workoutTemplateExerciseDao.insertWorkoutTemplateExercises(
+            newWorkoutTemplateExercises
+        )
+
     }
 
 }
