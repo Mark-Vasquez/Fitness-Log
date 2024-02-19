@@ -43,7 +43,7 @@ class WorkoutTemplateFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentWorkoutTemplateBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -71,6 +71,14 @@ class WorkoutTemplateFragment : Fragment() {
                 workoutTemplateViewModel.onEvent(WorkoutTemplateEvent.Delete)
                 findNavController().popBackStack()
             }
+        }
+
+        binding.fabAddExercise.setOnClickListener {
+            val action =
+                WorkoutTemplateFragmentDirections.actionWorkoutTemplateFragmentToExerciseTemplatesFragment(
+                    workoutTemplateId = args.workoutTemplateId
+                )
+            findNavController().navigate(action)
         }
     }
 

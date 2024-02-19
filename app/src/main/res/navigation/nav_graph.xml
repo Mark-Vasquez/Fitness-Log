@@ -104,6 +104,22 @@
             android:name="workoutTemplateId"
             app:argType="integer"
             android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_workoutTemplateFragment_to_exerciseTemplatesFragment"
+            app:destination="@id/exerciseTemplatesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/exerciseTemplatesFragment"
+        android:name="com.example.fitnesslog.ui.program.exercise_templates.ExerciseTemplatesFragment"
+        android:label="ExerciseTemplatesFragment"
+        tools:layout="@layout/fragment_exercise_templates">
+        <argument
+            android:name="workoutTemplateId"
+            app:argType="integer" />
     </fragment>
 
 

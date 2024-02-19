@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/NavigateBackButton"
+            android:text="@string/cancel"
+            app:layout_constraintTop_toTopOf="@id/tvTitleSelectExercise"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitleSelectExercise"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTitleSelectExercise"
+            style="@style/FragmentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_exercise"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/btn_Add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add"
+            style="@style/SaveButton"
+            android:enabled="false"
+            android:alpha="0.3"
+            app:layout_constraintTop_toTopOf="@id/tvTitleSelectExercise"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitleSelectExercise"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvExerciseTemplates"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginHorizontal="24dp"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleSelectExercise"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/fabCreateExercise" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabCreateExercise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="?attr/colorTertiaryContainer"
+            android:text="@string/create_exercise"
+            app:icon="@drawable/baseline_add_24"
+            app:iconGravity="textStart"
+            app:layout_constraintEnd_toEndOf="@id/rvExerciseTemplates"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="?attr/colorErrorContainer"
+            android:textColor="?attr/colorOnErrorContainer"
+            app:iconTint="?attr/colorOnErrorContainer"
+            android:text="Delete(1)"
+            app:icon="@drawable/delete_24px"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/rvExerciseTemplates"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/fabCreateExercise"
+            app:layout_constraintHorizontal_bias="0.3" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

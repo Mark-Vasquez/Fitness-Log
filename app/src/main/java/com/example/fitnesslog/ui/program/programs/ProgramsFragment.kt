@@ -82,7 +82,7 @@ class ProgramsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Releases the ViewBinding instance's references to the ViewObject instance destroyed
+        // Releases the ViewBinding instance's references to the ViewObject instance that was destroyed
         // Garbage collection reclaims memory from both instances
         _binding = null
     }
