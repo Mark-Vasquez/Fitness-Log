@@ -1,6 +1,7 @@
 package com.example.fitnesslog.ui.workout
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class WorkoutsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 sharedViewModel.stateFlow.collect { sharedState ->
+                    Log.d(TAG, sharedState.toString())
                     binding.tvWorkoutTemp.text =
                         sharedState.selectedProgram?.name ?: sharedState.toString()
 

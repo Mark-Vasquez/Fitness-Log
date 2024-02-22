@@ -1,18 +1,13 @@
-class RoomSchemaProvider(
-    @get: InputDirectory
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    val schemaDir: File
-) : CommandLineArgumentProvider {
-    override fun asArguments(): Iterable<String> {
-        return listOf("room.schemaLocation=${schemaDir.path}")
-    }
-}
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.navigation.safeargs.kotlin")
+    id("androidx.room")
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
@@ -55,20 +50,17 @@ android {
     }
 }
 
-ksp {
-    arg(RoomSchemaProvider(File(projectDir, "schemas")))
-}
 
 dependencies {
-    val navVersion = "2.7.6"
-    val fragmentVersion = "1.6.1"
-    val roomVersion = "2.5.2"
+    val navVersion = "2.7.7"
+    val fragmentVersion = "1.6.2"
+    val roomVersion = "2.6.1"
     val coroutinesVersion = "1.7.3"
     val dataStoreVersion = "1.0.0"
 
-    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

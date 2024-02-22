@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.core.utils.Resource
-import com.example.fitnesslog.core.utils.helpers.isSeeded
 import com.example.fitnesslog.domain.use_case.shared.SharedUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,9 +36,9 @@ class SharedViewModel(
 
     init {
         viewModelScope.launch {
-            if (!isSeeded()) {
-                seedInitialApplication()
-            }
+//            if (!isSeeded()) {
+//                seedInitialApplication()
+//            }
             getSelectedProgram()
         }
     }

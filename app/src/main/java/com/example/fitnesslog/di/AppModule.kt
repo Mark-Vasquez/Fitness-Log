@@ -77,7 +77,8 @@ class AppModuleImpl(
             appContext,
             FitnessLogDatabase::class.java,
             FitnessLogDatabase.DATABASE_NAME
-        ).build()
+        ).createFromAsset("database/fitness_log.db")
+            .build()
     }
 
     override val dataStore: DataStore<Preferences> = PreferenceDataStoreFactory.create(
