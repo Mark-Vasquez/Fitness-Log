@@ -5,6 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.fitnesslog.core.converter.ExerciseEnumConverter
+import com.example.fitnesslog.core.enums.ExerciseResistance
 
 /**
  * Represents the association between a workout template and its exercises.
@@ -31,10 +34,12 @@ import androidx.room.PrimaryKey
         )
     ]
 )
+@TypeConverters(ExerciseEnumConverter::class)
 data class WorkoutTemplateExercise(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo(name = "workout_template_id") val workoutTemplateId: Int,
     @ColumnInfo(name = "name", defaultValue = "") val name: String = "",
+    @ColumnInfo(name = "exercise_resistance") val exerciseResistance: ExerciseResistance,
     @ColumnInfo(name = "position") val position: Int,
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "updated_at") val updatedAt: Long

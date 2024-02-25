@@ -88,6 +88,7 @@ class TemplateRepositoryImpl(
                 WorkoutTemplateExercise(
                     workoutTemplateId = workoutTemplateId,
                     name = exerciseTemplate.name,
+                    exerciseResistance = exerciseTemplate.exerciseResistance,
                     position = lastPosition + index,
                     createdAt = System.currentTimeMillis(),
                     updatedAt = System.currentTimeMillis()
