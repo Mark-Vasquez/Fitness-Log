@@ -46,4 +46,5 @@
     <string name="select_exercise">Select Exercise</string>
     <string name="add">Add</string>
     <string name="create_exercise">Create Exercise</string>
+    <string name="btn_add_count">Add (%1$d)</string>
 </resources>

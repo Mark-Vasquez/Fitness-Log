@@ -22,6 +22,9 @@ class ExerciseTemplatesViewModel(
     private val _exerciseTemplatesState = MutableStateFlow(ExerciseTemplatesState())
     val exerciseTemplatesState = _exerciseTemplatesState.asStateFlow()
 
+    private val _checkedExerciseTemplatesState = MutableStateFlow<Set<Int>>(emptySet())
+    val checkedExerciseTemplatesState = _checkedExerciseTemplatesState.asStateFlow()
+
     init {
         collectLatestExerciseTemplates()
     }
@@ -43,6 +46,14 @@ class ExerciseTemplatesViewModel(
         }
     }
 
+    fun onEvent(event: ExerciseTemplateEvent) {
+        when (event) {
+            is ExerciseTemplateEvent.ToggleCheckbox -> {
+                toggleCheckbox(event.exerciseTemplateId)
+            }
+        }
+    }
+
     private fun collectLatestExerciseTemplates() {
         viewModelScope.launch {
             exerciseTemplateUseCases.getExerciseTemplates().collectLatest { resource ->
@@ -56,6 +67,18 @@ class ExerciseTemplatesViewModel(
                     is Resource.Error -> _exerciseTemplatesState.update { it.copy(error = resource.errorMessage) }
                 }
             }
+        }
+    }
+
+    private fun toggleCheckbox(exerciseTemplateId: Int) {
+        val newCheckedExerciseTemplates =
+            if (exerciseTemplateId in checkedExerciseTemplatesState.value) {
+                checkedExerciseTemplatesState.value - exerciseTemplateId
+            } else {
+                checkedExerciseTemplatesState.value + exerciseTemplateId
+            }
+        _checkedExerciseTemplatesState.update {
+            newCheckedExerciseTemplates
         }
     }
 }

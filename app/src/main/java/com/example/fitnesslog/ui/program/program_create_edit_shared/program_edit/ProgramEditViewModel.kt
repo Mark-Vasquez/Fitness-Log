@@ -60,7 +60,6 @@ class ProgramEditViewModel(
 
     fun onEvent(event: ProgramEditEvent) {
         when (event) {
-
             is ProgramEditEvent.UpdateName -> {
                 updateName(event.name)
             }

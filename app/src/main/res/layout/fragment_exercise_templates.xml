@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:text="@string/add"
             style="@style/SaveButton"
-            android:enabled="false"
+
             android:alpha="0.3"
             app:layout_constraintTop_toTopOf="@id/tvTitleSelectExercise"
             app:layout_constraintBottom_toBottomOf="@id/tvTitleSelectExercise"

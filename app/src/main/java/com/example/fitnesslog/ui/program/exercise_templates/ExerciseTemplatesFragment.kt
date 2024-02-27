@@ -9,10 +9,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
-import com.example.fitnesslog.data.entity.ExerciseTemplate
+import com.example.fitnesslog.R
 import com.example.fitnesslog.databinding.FragmentExerciseTemplatesBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -43,6 +44,12 @@ class ExerciseTemplatesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeExerciseTemplatesState()
+        observeCheckedExerciseTemplatesState()
+
+        binding.btnCancel.setOnClickListener {
+            findNavController().popBackStack()
+            // dialog to ensure cancel
+        }
     }
 
     override fun onDestroyView() {
@@ -55,7 +62,27 @@ class ExerciseTemplatesFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 exerciseTemplatesViewModel.exerciseTemplatesState.collectLatest {
                     exerciseTemplatesAdapter.submitList(it.exerciseTemplates)
-                    exerciseTemplatesAdapter.updateExerciseTemplateCheckedMap(it.exerciseTemplateCheckedMap)
+                }
+            }
+        }
+    }
+
+    private fun observeCheckedExerciseTemplatesState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                exerciseTemplatesViewModel.checkedExerciseTemplatesState.collectLatest {
+                    exerciseTemplatesAdapter.submitSet(it)
+                    if (it.isNotEmpty()) {
+                        binding.btnAdd.apply {
+                            text = getString(R.string.btn_add_count, it.size)
+                            alpha = 1F
+                        }
+                    } else {
+                        binding.btnAdd.apply {
+                            text = getString(R.string.add)
+                            alpha = 0.3F
+                        }
+                    }
                 }
             }
         }
@@ -65,12 +92,15 @@ class ExerciseTemplatesFragment : Fragment() {
         val rvExerciseTemplates = binding.rvExerciseTemplates
         exerciseTemplatesAdapter = ExerciseTemplatesAdapter(object :
             ExerciseTemplatesAdapter.ExerciseTemplateClickListener {
-            override fun onExerciseTemplateClicked(exerciseTemplateUIModel: ExerciseTemplate) {
-                TODO("Not yet implemented")
-
+            override fun onExerciseTemplateClicked(exerciseTemplateId: Int) {
+                exerciseTemplatesViewModel.onEvent(
+                    ExerciseTemplateEvent.ToggleCheckbox(
+                        exerciseTemplateId
+                    )
+                )
             }
 
-            override fun onIconClicked(exerciseTemplate: ExerciseTemplate) {
+            override fun onIconClicked(exerciseTemplateId: Int) {
                 TODO("Not yet implemented")
             }
 
