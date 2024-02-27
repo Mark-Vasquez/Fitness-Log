@@ -5,11 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fitnesslog.FitnessLogApp.Companion.appModule
+import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.databinding.FragmentExerciseTemplatesBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class ExerciseTemplatesFragment : Fragment() {
+    private val exerciseTemplatesViewModel: ExerciseTemplatesViewModel by viewModels {
+        ExerciseTemplatesViewModel.Factory(
+            args.workoutTemplateId,
+            appModule.exerciseTemplateUseCases,
+            appModule.workoutTemplateUseCases
+        )
+    }
     private var _binding: FragmentExerciseTemplatesBinding? = null
     private val binding: FragmentExerciseTemplatesBinding get() = _binding!!
+    private val args: ExerciseTemplatesFragmentArgs by navArgs()
+    private lateinit var exerciseTemplatesAdapter: ExerciseTemplatesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,8 +39,45 @@ class ExerciseTemplatesFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+        observeExerciseTemplatesState()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun observeExerciseTemplatesState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                exerciseTemplatesViewModel.exerciseTemplatesState.collectLatest {
+                    exerciseTemplatesAdapter.submitList(it.exerciseTemplates)
+                    exerciseTemplatesAdapter.updateExerciseTemplateCheckedMap(it.exerciseTemplateCheckedMap)
+                }
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
+        val rvExerciseTemplates = binding.rvExerciseTemplates
+        exerciseTemplatesAdapter = ExerciseTemplatesAdapter(object :
+            ExerciseTemplatesAdapter.ExerciseTemplateClickListener {
+            override fun onExerciseTemplateClicked(exerciseTemplateUIModel: ExerciseTemplate) {
+                TODO("Not yet implemented")
+
+            }
+
+            override fun onIconClicked(exerciseTemplate: ExerciseTemplate) {
+                TODO("Not yet implemented")
+            }
+
+        })
+        rvExerciseTemplates.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = exerciseTemplatesAdapter
+        }
     }
 }

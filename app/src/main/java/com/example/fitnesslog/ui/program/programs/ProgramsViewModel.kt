@@ -17,12 +17,12 @@ class ProgramsViewModel(
 ) : ViewModel() {
 
     // _stateflow is mutable flow of ProgramsState, modified only internally
-    private val _stateFlow = MutableStateFlow(ProgramsState())
+    private val _programsState = MutableStateFlow(ProgramsState())
 
     // stateflow is the immutable public API exposing the _stateflow as a read only flow
     // External observers can used this stateflow to subscribe to state changes
     // When _stateFlow's value changes, stateFlow will emit these changes to its collectors.
-    val stateFlow: StateFlow<ProgramsState> = _stateFlow.asStateFlow()
+    val programsState: StateFlow<ProgramsState> = _programsState.asStateFlow()
 
     companion object {
         const val TAG = "ProgramsViewModel"
@@ -74,13 +74,13 @@ class ProgramsViewModel(
                             // Ensure the first item in the list is always selected
                             onEvent(ProgramsEvent.Select(programs.first()))
                         }
-                        _stateFlow.value = stateFlow.value.copy(
+                        _programsState.value = programsState.value.copy(
                             programs = programs
                         )
                     }
 
                     is Resource.Error -> {
-                        _stateFlow.value = stateFlow.value.copy(
+                        _programsState.value = programsState.value.copy(
                             error = resource.errorMessage
                                 ?: "Error Retrieving Programs in `collectLatestPrograms`"
                         )
@@ -95,7 +95,7 @@ class ProgramsViewModel(
         viewModelScope.launch {
             val resource = programUseCases.selectProgram(program.id)
             if (resource is Resource.Error) {
-                _stateFlow.value = stateFlow.value.copy(
+                _programsState.value = programsState.value.copy(
                     error = resource.errorMessage ?: "Error Selecting Program in `selectProgram`"
                 )
             }

@@ -35,7 +35,6 @@ class WorkoutTemplateExercisesAdapter(
         ): Boolean {
             return oldItem.name == newItem.name
         }
-
     }
 
     class ViewHolder(itemView: View, clickAtPosition: (position: Int) -> Unit) :

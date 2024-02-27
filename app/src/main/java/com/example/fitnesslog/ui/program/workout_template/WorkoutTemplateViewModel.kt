@@ -30,7 +30,7 @@ class WorkoutTemplateViewModel(
     }
 
     class Factory(
-        private val programId: Int,
+        private val workoutTemplateId: Int,
         private val workoutTemplateUseCases: WorkoutTemplateUseCases,
         private val exerciseTemplateUseCases: ExerciseTemplateUseCases
     ) : ViewModelProvider.Factory {
@@ -38,7 +38,7 @@ class WorkoutTemplateViewModel(
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(WorkoutTemplateViewModel::class.java)) {
                 return WorkoutTemplateViewModel(
-                    programId,
+                    workoutTemplateId,
                     workoutTemplateUseCases,
                     exerciseTemplateUseCases
                 ) as T
@@ -49,7 +49,7 @@ class WorkoutTemplateViewModel(
 
     init {
         collectLatestWorkoutTemplate(workoutTemplateId)
-        collectLatestWorkoutTemplateExercise(workoutTemplateId)
+        collectLatestWorkoutTemplateExercises(workoutTemplateId)
     }
 
     fun onEvent(event: WorkoutTemplateEvent) {
@@ -92,7 +92,7 @@ class WorkoutTemplateViewModel(
         }
     }
 
-    private fun collectLatestWorkoutTemplateExercise(workoutTemplateId: Int) {
+    private fun collectLatestWorkoutTemplateExercises(workoutTemplateId: Int) {
         viewModelScope.launch {
             workoutTemplateUseCases.getExercisesForWorkoutTemplate(workoutTemplateId)
                 .collectLatest { resource ->

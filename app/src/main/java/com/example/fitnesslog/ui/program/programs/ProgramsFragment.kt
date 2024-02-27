@@ -53,7 +53,7 @@ class ProgramsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        observeViewModel()
+        observeProgramsState()
 
         binding.fabCreateProgram.setOnClickListener {
             val action =
@@ -110,23 +110,16 @@ class ProgramsFragment : Fragment() {
      * paused and resumed based on the fragment's lifecycle
      * Collect listens for any changes to the _stateflow
      */
-    private fun observeViewModel() {
+    private fun observeProgramsState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                programsViewModel.stateFlow.collect { programState ->
-                    updateRecyclerView(programState.programs)
+                programsViewModel.programsState.collect { programState ->
+                    programsAdapter.submitList(programState.programs) {
+                        rvPrograms.scrollToPosition(0)
+                    }
                 }
             }
         }
     }
-
-    // When submitList() is used to populate or update the recyclerView list,
-    // the ListAdapter calculates the diffs internally without having to manually update and notifyDataSetChanged()
-    private fun updateRecyclerView(programs: List<com.example.fitnesslog.domain.model.ProgramWithWorkoutCount>) {
-        programsAdapter.submitList(programs) {
-            rvPrograms.scrollToPosition(0)
-        }
-    }
-
 
 }
