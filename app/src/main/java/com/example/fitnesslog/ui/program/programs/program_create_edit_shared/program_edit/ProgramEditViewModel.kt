@@ -1,4 +1,4 @@
-package com.example.fitnesslog.ui.program.program_create_edit_shared.program_edit
+package com.example.fitnesslog.ui.program.programs.program_create_edit_shared.program_edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,7 +8,7 @@ import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.data.entity.WorkoutTemplate
 import com.example.fitnesslog.domain.use_case.program.ProgramUseCases
 import com.example.fitnesslog.domain.use_case.workout_template.WorkoutTemplateUseCases
-import com.example.fitnesslog.ui.program.program_create_edit_shared.WorkoutTemplatesState
+import com.example.fitnesslog.ui.program.programs.program_create_edit_shared.WorkoutTemplatesState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest

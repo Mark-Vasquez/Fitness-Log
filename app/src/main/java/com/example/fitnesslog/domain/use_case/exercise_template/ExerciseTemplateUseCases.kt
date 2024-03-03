@@ -4,4 +4,5 @@ data class ExerciseTemplateUseCases(
     val createExerciseTemplate: CreateExerciseTemplate,
     val getExerciseTemplates: GetExerciseTemplates,
     val editExerciseTemplate: EditExerciseTemplate,
+    val getExerciseTemplateById: GetExerciseTemplateById
 )

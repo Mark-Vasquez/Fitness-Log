@@ -5,5 +5,11 @@ enum class ExerciseResistance {
     BODY_WEIGHT,
     DUMBBELL,
     MACHINE,
-    OTHER
+    OTHER;
+
+    val displayName: String
+        get() = this.name
+            .lowercase()
+            .split("_")
+            .joinToString(" ") { it.replaceFirstChar { char -> char.titlecase() } }
 }

@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.R
+import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.databinding.FragmentExerciseTemplatesBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -100,8 +101,15 @@ class ExerciseTemplatesFragment : Fragment() {
                 )
             }
 
-            override fun onIconClicked(exerciseTemplateId: Int) {
-                TODO("Not yet implemented")
+            override fun onIconClicked(exerciseTemplate: ExerciseTemplate) {
+                if (exerciseTemplate.id == null) return
+                if (exerciseTemplate.isDefault) {
+                    val action =
+                        ExerciseTemplatesFragmentDirections.actionExerciseTemplatesFragmentToDefaultExerciseInfoFragment(
+                            exerciseTemplateId = exerciseTemplate.id
+                        )
+                    findNavController().navigate(action)
+                }
             }
 
         })

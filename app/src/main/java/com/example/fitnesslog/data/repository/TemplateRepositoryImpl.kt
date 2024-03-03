@@ -145,5 +145,9 @@ class TemplateRepositoryImpl(
         return safeCall { exerciseTemplateDao.updateExerciseTemplate(exerciseTemplate) }
     }
 
-
+    override fun getExerciseTemplateById(exerciseTemplateId: Int): Flow<Resource<ExerciseTemplate>> {
+        return exerciseTemplateDao.getExerciseTemplateById(exerciseTemplateId)
+            .map { Resource.Success(it) as Resource<ExerciseTemplate> }
+            .catch { emit(Resource.Error(it.toErrorMessage())) }
+    }
 }

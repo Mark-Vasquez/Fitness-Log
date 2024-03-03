@@ -1,4 +1,4 @@
-package com.example.fitnesslog.ui.program.program_create_edit_shared.program_create
+package com.example.fitnesslog.ui.program.programs.program_create_edit_shared.program_create
 
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.data.entity.Program

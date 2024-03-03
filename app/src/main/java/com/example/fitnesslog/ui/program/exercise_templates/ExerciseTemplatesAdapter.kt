@@ -25,7 +25,7 @@ class ExerciseTemplatesAdapter(private val exerciseTemplateClickListener: Exerci
 
     interface ExerciseTemplateClickListener {
         fun onExerciseTemplateClicked(exerciseTemplateId: Int)
-        fun onIconClicked(exerciseTemplateId: Int)
+        fun onIconClicked(exerciseTemplate: ExerciseTemplate)
     }
 
     object ExerciseTemplatesDiffUtil : DiffUtil.ItemCallback<ExerciseTemplate>() {
@@ -74,7 +74,7 @@ class ExerciseTemplatesAdapter(private val exerciseTemplateClickListener: Exerci
             exerciseTemplate.id?.let {
                 if (view.id == R.id.ivInfoEditIcon) {
                     // If only icon view clicked
-                    exerciseTemplateClickListener.onIconClicked(it)
+                    exerciseTemplateClickListener.onIconClicked(exerciseTemplate)
                 } else {
                     // If whole item clicked
                     exerciseTemplateClickListener.onExerciseTemplateClicked(it)

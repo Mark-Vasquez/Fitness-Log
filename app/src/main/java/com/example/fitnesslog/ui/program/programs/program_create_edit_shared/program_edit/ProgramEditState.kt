@@ -1,4 +1,4 @@
-package com.example.fitnesslog.ui.program.program_create_edit_shared.program_edit
+package com.example.fitnesslog.ui.program.programs.program_create_edit_shared.program_edit
 
 import com.example.fitnesslog.data.entity.Program
 

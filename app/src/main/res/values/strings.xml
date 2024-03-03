@@ -47,4 +47,6 @@
     <string name="add">Add</string>
     <string name="create_exercise">Create Exercise</string>
     <string name="btn_add_count">Add (%1$d)</string>
+    <string name="muscle">Muscle</string>
+    <string name="resistance">Resistance</string>
 </resources>

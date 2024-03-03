@@ -6,5 +6,11 @@ enum class ExerciseMuscle {
     BACK,
     CHEST,
     LEGS,
-    SHOULDERS
+    SHOULDERS;
+
+    val displayName: String
+        get() = this.name
+            .lowercase()
+            .split("_")
+            .joinToString(" ") { it.replaceFirstChar { char -> char.titlecase() } }
 }

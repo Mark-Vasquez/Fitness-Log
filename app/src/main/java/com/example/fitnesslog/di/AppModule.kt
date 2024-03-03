@@ -23,6 +23,7 @@ import com.example.fitnesslog.domain.repository.TemplateRepository
 import com.example.fitnesslog.domain.use_case.exercise_template.CreateExerciseTemplate
 import com.example.fitnesslog.domain.use_case.exercise_template.EditExerciseTemplate
 import com.example.fitnesslog.domain.use_case.exercise_template.ExerciseTemplateUseCases
+import com.example.fitnesslog.domain.use_case.exercise_template.GetExerciseTemplateById
 import com.example.fitnesslog.domain.use_case.exercise_template.GetExerciseTemplates
 import com.example.fitnesslog.domain.use_case.program.CheckIfDeletable
 import com.example.fitnesslog.domain.use_case.program.DeleteProgram
@@ -105,7 +106,8 @@ class AppModuleImpl(
         ExerciseTemplateUseCases(
             createExerciseTemplate = CreateExerciseTemplate(templateRepository),
             getExerciseTemplates = GetExerciseTemplates(templateRepository),
-            editExerciseTemplate = EditExerciseTemplate(templateRepository)
+            editExerciseTemplate = EditExerciseTemplate(templateRepository),
+            getExerciseTemplateById = GetExerciseTemplateById(templateRepository)
         )
     }
 

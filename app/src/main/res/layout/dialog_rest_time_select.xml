@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.program.program_create_edit_shared.RestTimeSelectDialog">
+    tools:context=".ui.program.programs.program_create_edit_shared.RestTimeSelectDialog">
 
     <TextView
         android:id="@+id/tvTitleTimeSelect"

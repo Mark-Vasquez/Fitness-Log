@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/programCreateFragment"
-        android:name="com.example.fitnesslog.ui.program.program_create_edit_shared.program_create.ProgramCreateFragment"
+        android:name="com.example.fitnesslog.ui.program.programs.program_create_edit_shared.program_create.ProgramCreateFragment"
         android:label="ProgramCreateFragment"
         tools:layout="@layout/fragment_program">
         <action
@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/programEditFragment"
-        android:name="com.example.fitnesslog.ui.program.program_create_edit_shared.program_edit.ProgramEditFragment"
+        android:name="com.example.fitnesslog.ui.program.programs.program_create_edit_shared.program_edit.ProgramEditFragment"
         android:label="@string/edit_program"
         tools:layout="@layout/fragment_program">
         <argument
@@ -79,7 +79,7 @@
     </fragment>
     <dialog
         android:id="@+id/scheduleSelectModal"
-        android:name="com.example.fitnesslog.ui.program.program_create_edit_shared.ScheduleSelectModal"
+        android:name="com.example.fitnesslog.ui.program.programs.program_create_edit_shared.ScheduleSelectModal"
         android:label="ScheduleSelectModal"
         tools:layout="@layout/modal_bottom_sheet_schedule_select">
         <argument
@@ -88,7 +88,7 @@
     </dialog>
     <dialog
         android:id="@+id/restTimeSelectDialog"
-        android:name="com.example.fitnesslog.ui.program.program_create_edit_shared.RestTimeSelectDialog"
+        android:name="com.example.fitnesslog.ui.program.programs.program_create_edit_shared.RestTimeSelectDialog"
         android:label="RestTimeSelectDialog"
         tools:layout="@layout/dialog_rest_time_select">
         <argument
@@ -102,8 +102,7 @@
         tools:layout="@layout/fragment_workout_template">
         <argument
             android:name="workoutTemplateId"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            app:argType="integer" />
         <action
             android:id="@+id/action_workoutTemplateFragment_to_exerciseTemplatesFragment"
             app:destination="@id/exerciseTemplatesFragment"
@@ -119,6 +118,18 @@
         tools:layout="@layout/fragment_exercise_templates">
         <argument
             android:name="workoutTemplateId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_exerciseTemplatesFragment_to_defaultExerciseInfoFragment"
+            app:destination="@id/defaultExerciseInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/defaultExerciseInfoFragment"
+        android:name="com.example.fitnesslog.ui.program.exercise_templates.default_exercise_info.DefaultExerciseInfoFragment"
+        android:label="DefaultExerciseInfoFragment"
+        tools:layout="@layout/fragment_default_exercise_info">
+        <argument
+            android:name="exerciseTemplateId"
             app:argType="integer" />
     </fragment>
 

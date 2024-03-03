@@ -1,4 +1,4 @@
-package com.example.fitnesslog.ui.program.program_create_edit_shared
+package com.example.fitnesslog.ui.program.programs.program_create_edit_shared
 
 import android.content.DialogInterface
 import android.os.Bundle
