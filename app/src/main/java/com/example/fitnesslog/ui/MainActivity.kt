@@ -81,7 +81,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.scheduleSelectModal,
                 R.id.restTimeSelectDialog,
                 R.id.workoutTemplateFragment,
-                R.id.exerciseTemplatesFragment -> hideBottomNav()
+                R.id.exerciseTemplatesFragment,
+                R.id.exerciseTemplateEditorFragment -> hideBottomNav()
 
                 else -> showBottomNav()
             }

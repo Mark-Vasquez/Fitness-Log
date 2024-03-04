@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/btn_navigate_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/NavigateBackButton"
+            app:layout_constraintTop_toTopOf="@+id/tvTitleExerciseTemplate"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitleExerciseTemplate"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTitleExerciseTemplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/FragmentTitle"
+            tools:text="Create/Edit Exercise"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/btnSaveExerciseTemplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/SaveButton"
+            app:layout_constraintTop_toTopOf="@id/tvTitleExerciseTemplate"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitleExerciseTemplate"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilNameExerciseTemplate"
+            style="@style/TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/exercise_name"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleExerciseTemplate">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNameExerciseTemplate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions|textCapWords"
+                android:maxLength="50" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@id/infoMuscle"
+            style="@style/ActionInfoButton"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilNameExerciseTemplate">
+
+            <TextView
+                style="@style/ActionInfoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/muscle" />
+
+            <TextView
+                android:id="@+id/tvMuscleType"
+                style="@style/ActionInfoContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="Muscle Type" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/infoResistance"
+            style="@style/ActionInfoButton"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/infoMuscle">
+
+            <TextView
+                style="@style/ActionInfoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/resistance" />
+
+            <TextView
+                android:id="@+id/tvResistanceType"
+                style="@style/ActionInfoContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="Resistance Type" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnDeleteExercise"
+            style="@style/DeleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_exercise"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

@@ -47,10 +47,13 @@ interface TemplateRepository {
 
     // **Exercise Template**
     suspend fun insertExerciseTemplate(exerciseTemplate: ExerciseTemplate): Resource<Long>
+    suspend fun initializeExerciseTemplate(): Resource<Long>
 
     suspend fun updateExerciseTemplate(exerciseTemplate: ExerciseTemplate): Resource<Int>
 
     fun getAllExercisesOrderedByName(): Flow<Resource<List<ExerciseTemplate>>>
 
     fun getExerciseTemplateById(exerciseTemplateId: Int): Flow<Resource<ExerciseTemplate>>
+
+    suspend fun deleteExerciseTemplate(exerciseTemplateId: Int): Resource<Unit>
 }

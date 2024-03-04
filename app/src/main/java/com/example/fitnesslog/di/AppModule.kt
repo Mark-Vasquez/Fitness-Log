@@ -21,10 +21,12 @@ import com.example.fitnesslog.domain.repository.ProgramRepository
 import com.example.fitnesslog.domain.repository.SharedRepository
 import com.example.fitnesslog.domain.repository.TemplateRepository
 import com.example.fitnesslog.domain.use_case.exercise_template.CreateExerciseTemplate
+import com.example.fitnesslog.domain.use_case.exercise_template.DiscardInitializedTemplate
 import com.example.fitnesslog.domain.use_case.exercise_template.EditExerciseTemplate
 import com.example.fitnesslog.domain.use_case.exercise_template.ExerciseTemplateUseCases
 import com.example.fitnesslog.domain.use_case.exercise_template.GetExerciseTemplateById
 import com.example.fitnesslog.domain.use_case.exercise_template.GetExerciseTemplates
+import com.example.fitnesslog.domain.use_case.exercise_template.InitializeExerciseTemplate
 import com.example.fitnesslog.domain.use_case.program.CheckIfDeletable
 import com.example.fitnesslog.domain.use_case.program.DeleteProgram
 import com.example.fitnesslog.domain.use_case.program.EditProgram
@@ -107,7 +109,9 @@ class AppModuleImpl(
             createExerciseTemplate = CreateExerciseTemplate(templateRepository),
             getExerciseTemplates = GetExerciseTemplates(templateRepository),
             editExerciseTemplate = EditExerciseTemplate(templateRepository),
-            getExerciseTemplateById = GetExerciseTemplateById(templateRepository)
+            getExerciseTemplateById = GetExerciseTemplateById(templateRepository),
+            initializeExerciseTemplate = InitializeExerciseTemplate(templateRepository),
+            discardInitializedTemplate = DiscardInitializedTemplate(templateRepository)
         )
     }
 

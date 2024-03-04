@@ -122,6 +122,9 @@
         <action
             android:id="@+id/action_exerciseTemplatesFragment_to_defaultExerciseInfoFragment"
             app:destination="@id/defaultExerciseInfoFragment" />
+        <action
+            android:id="@+id/action_exerciseTemplatesFragment_to_exerciseTemplateEditorFragment"
+            app:destination="@id/exerciseTemplateEditorFragment" />
     </fragment>
     <fragment
         android:id="@+id/defaultExerciseInfoFragment"
@@ -131,6 +134,19 @@
         <argument
             android:name="exerciseTemplateId"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/exerciseTemplateEditorFragment"
+        android:name="com.example.fitnesslog.ui.program.exercise_templates.exercise_template_editor.ExerciseTemplateEditorFragment"
+        android:label="ExerciseTemplateEditorFragment"
+        tools:layout="@layout/fragment_exercise_template_editor">
+        <argument
+            android:name="exerciseTemplateId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="editorMode"
+            app:argType="com.example.fitnesslog.core.enums.EditorMode" />
     </fragment>
 
 

@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.R
+import com.example.fitnesslog.core.enums.EditorMode
 import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.databinding.FragmentExerciseTemplatesBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -50,6 +51,14 @@ class ExerciseTemplatesFragment : Fragment() {
         binding.btnCancel.setOnClickListener {
             findNavController().popBackStack()
             // dialog to ensure cancel
+        }
+
+        binding.fabCreateExercise.setOnClickListener {
+            val action =
+                ExerciseTemplatesFragmentDirections.actionExerciseTemplatesFragmentToExerciseTemplateEditorFragment(
+                    editorMode = EditorMode.CREATE
+                )
+            findNavController().navigate(action)
         }
     }
 

@@ -7,6 +7,8 @@ import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.data.entity.WorkoutTemplate
+import com.example.fitnesslog.domain.use_case.program.ProgramUseCases
+import com.example.fitnesslog.domain.use_case.workout_template.WorkoutTemplateUseCases
 import com.example.fitnesslog.ui.program.programs.program_create_edit_shared.WorkoutTemplatesState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,8 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProgramCreateViewModel(
-    private val programUseCases: com.example.fitnesslog.domain.use_case.program.ProgramUseCases,
-    private val workoutTemplateUseCases: com.example.fitnesslog.domain.use_case.workout_template.WorkoutTemplateUseCases
+    private val programUseCases: ProgramUseCases,
+    private val workoutTemplateUseCases: WorkoutTemplateUseCases
 ) : ViewModel() {
 
     private val _programState = MutableStateFlow(ProgramCreateState())

@@ -1,5 +1,7 @@
 package com.example.fitnesslog.data.repository
 
+import com.example.fitnesslog.core.enums.ExerciseMuscle
+import com.example.fitnesslog.core.enums.ExerciseResistance
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.core.utils.extensions.toErrorMessage
 import com.example.fitnesslog.core.utils.safeCall
@@ -135,6 +137,18 @@ class TemplateRepositoryImpl(
         return safeCall { exerciseTemplateDao.insertExerciseTemplate(exerciseTemplate) }
     }
 
+    override suspend fun initializeExerciseTemplate(): Resource<Long> {
+        val newExerciseTemplate = ExerciseTemplate(
+            name = "",
+            exerciseMuscle = ExerciseMuscle.CHEST,
+            exerciseResistance = ExerciseResistance.BARBELL,
+            isDefault = false,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
+        )
+        return safeCall { exerciseTemplateDao.insertExerciseTemplate(newExerciseTemplate) }
+    }
+
     override fun getAllExercisesOrderedByName(): Flow<Resource<List<ExerciseTemplate>>> {
         return exerciseTemplateDao.getAllExercisesOrderedByName()
             .map { Resource.Success(it) as Resource<List<ExerciseTemplate>> }
@@ -150,4 +164,9 @@ class TemplateRepositoryImpl(
             .map { Resource.Success(it) as Resource<ExerciseTemplate> }
             .catch { emit(Resource.Error(it.toErrorMessage())) }
     }
+
+    override suspend fun deleteExerciseTemplate(exerciseTemplateId: Int): Resource<Unit> {
+        return safeCall { exerciseTemplateDao.deleteExerciseTemplate(exerciseTemplateId) }
+    }
+
 }
