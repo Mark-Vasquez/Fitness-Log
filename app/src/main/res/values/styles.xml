@@ -56,7 +56,7 @@
         <item name="hintTextAppearance">?attr/textAppearanceLabelLarge</item>
     </style>
 
-    <style name="ChipFilter" parent="Widget.Material3.Chip.Filter.Elevated">
+    <style name="ChipSelect" parent="Widget.Material3.Chip.Filter.Elevated">
         <item name="chipMinHeight">40dp</item>
         <item name="ensureMinTouchTargetSize">true</item>
         <item name="android:layoutDirection">rtl</item>

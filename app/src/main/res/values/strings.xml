@@ -49,4 +49,10 @@
     <string name="btn_add_count">Add (%1$d)</string>
     <string name="muscle">Muscle</string>
     <string name="resistance">Resistance</string>
+    <string name="abs">Abs</string>
+    <string name="arms">Arms</string>
+    <string name="chest">Chest</string>
+    <string name="back_muscle">Back</string>
+    <string name="legs">Legs</string>
+    <string name="shoulders">Shoulders</string>
 </resources>

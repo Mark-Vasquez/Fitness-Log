@@ -76,6 +76,7 @@ class RestTimeSelectDialog : DialogFragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        // Save user input state when rotating
         outState.putInt(MINUTE, binding.npMinuteTimeSelect.value)
         outState.putInt(SECOND, binding.npSecondTimeSelect.value)
     }
