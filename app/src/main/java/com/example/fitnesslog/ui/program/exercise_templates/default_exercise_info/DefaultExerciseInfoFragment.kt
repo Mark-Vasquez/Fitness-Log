@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.databinding.FragmentDefaultExerciseInfoBinding
@@ -39,6 +40,10 @@ class DefaultExerciseInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeExerciseInfoState()
+
+        binding.btnNavigateBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     override fun onDestroyView() {
@@ -52,6 +57,7 @@ class DefaultExerciseInfoFragment : Fragment() {
                 defaultExerciseInfoViewModel.exerciseInfoState.collectLatest {
                     it.exerciseTemplate?.let { exerciseTemplate ->
                         binding.apply {
+                            tvWorkoutNameTitle.text = exerciseTemplate.name
                             tvMuscleType.text = exerciseTemplate.exerciseMuscle.displayName
                             tvResistanceType.text = exerciseTemplate.exerciseResistance.displayName
                         }

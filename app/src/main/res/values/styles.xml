@@ -23,7 +23,6 @@
     <style name="NavigateBackButton">
         <item name="android:layout_marginStart">10dp</item>
         <item name="android:paddingVertical">25dp</item>
-        <item name="android:text">Navigate Back</item>
         <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
         <item name="android:textColor">?attr/colorOnTertiaryContainer</item>
         <item name="android:background">?attr/selectableItemBackground</item>

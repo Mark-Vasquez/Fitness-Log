@@ -16,7 +16,7 @@ class RestTimeSelectDialog : DialogFragment() {
     private var _binding: DialogRestTimeSelectBinding? = null
     private val binding get() = _binding!!
     private val args: RestTimeSelectDialogArgs by navArgs()
-    private lateinit var minutesAndSeconds: Pair<Int, Int>
+
 
     companion object {
         const val TAG = "RestTimeSelectDialog"

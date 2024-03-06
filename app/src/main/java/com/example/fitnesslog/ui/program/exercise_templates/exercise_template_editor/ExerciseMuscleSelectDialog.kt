@@ -17,23 +17,24 @@ class ExerciseMuscleSelectDialog : DialogFragment() {
     private val args: ExerciseMuscleSelectDialogArgs by navArgs()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let { activity ->
+        return activity?.let { context ->
             _binding = DialogExerciseMuscleSelectBinding.inflate(layoutInflater)
 
-
-            binding.apply {
-                cgMuscleSelect.clearCheck()
-                when (args.exerciseMuscle) {
-                    ExerciseMuscle.ABS -> chipSelectAbs.isChecked = true
-                    ExerciseMuscle.ARMS -> chipSelectArms.isChecked = true
-                    ExerciseMuscle.BACK -> chipSelectBack.isChecked = true
-                    ExerciseMuscle.CHEST -> chipSelectChest.isChecked = true
-                    ExerciseMuscle.LEGS -> chipSelectLegs.isChecked = true
-                    ExerciseMuscle.SHOULDERS -> chipSelectShoulders.isChecked = true
+            if (savedInstanceState == null) {
+                binding.apply {
+                    cgMuscleSelect.clearCheck()
+                    when (args.exerciseMuscle) {
+                        ExerciseMuscle.ABS -> chipSelectAbs.isChecked = true
+                        ExerciseMuscle.ARMS -> chipSelectArms.isChecked = true
+                        ExerciseMuscle.BACK -> chipSelectBack.isChecked = true
+                        ExerciseMuscle.CHEST -> chipSelectChest.isChecked = true
+                        ExerciseMuscle.LEGS -> chipSelectLegs.isChecked = true
+                        ExerciseMuscle.SHOULDERS -> chipSelectShoulders.isChecked = true
+                    }
                 }
             }
 
-            val builder = AlertDialog.Builder(activity)
+            val builder = AlertDialog.Builder(context)
             builder.setView(binding.root)
                 .setPositiveButton("OK") { _, _ ->
                     findNavController().previousBackStackEntry?.savedStateHandle?.set(

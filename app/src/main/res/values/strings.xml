@@ -55,4 +55,9 @@
     <string name="back_muscle">Back</string>
     <string name="legs">Legs</string>
     <string name="shoulders">Shoulders</string>
+    <string name="other">Other</string>
+    <string name="machine">Machine</string>
+    <string name="body_weight">Body Weight</string>
+    <string name="dumbbell">Dumbbell</string>
+    <string name="barbell">Barbell</string>
 </resources>

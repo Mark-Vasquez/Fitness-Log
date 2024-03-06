@@ -106,10 +106,10 @@
         <action
             android:id="@+id/action_workoutTemplateFragment_to_exerciseTemplatesFragment"
             app:destination="@id/exerciseTemplatesFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
         android:id="@+id/exerciseTemplatesFragment"
@@ -121,10 +121,18 @@
             app:argType="integer" />
         <action
             android:id="@+id/action_exerciseTemplatesFragment_to_defaultExerciseInfoFragment"
-            app:destination="@id/defaultExerciseInfoFragment" />
+            app:destination="@id/defaultExerciseInfoFragment"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/slide_out_bottom" />
         <action
             android:id="@+id/action_exerciseTemplatesFragment_to_exerciseTemplateEditorFragment"
-            app:destination="@id/exerciseTemplateEditorFragment" />
+            app:destination="@id/exerciseTemplateEditorFragment"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
         android:id="@+id/defaultExerciseInfoFragment"
@@ -150,6 +158,9 @@
         <action
             android:id="@+id/action_exerciseTemplateEditorFragment_to_exerciseMuscleSelectDialog"
             app:destination="@id/exerciseMuscleSelectDialog" />
+        <action
+            android:id="@+id/action_exerciseTemplateEditorFragment_to_exerciseResistanceSelectDialog"
+            app:destination="@id/exerciseResistanceSelectDialog" />
     </fragment>
     <dialog
         android:id="@+id/exerciseMuscleSelectDialog"
@@ -159,6 +170,15 @@
         <argument
             android:name="exerciseMuscle"
             app:argType="com.example.fitnesslog.core.enums.ExerciseMuscle" />
+    </dialog>
+    <dialog
+        android:id="@+id/exerciseResistanceSelectDialog"
+        android:name="com.example.fitnesslog.ui.program.exercise_templates.exercise_template_editor.ExerciseResistanceSelectDialog"
+        android:label="ExerciseResistanceSelectDialog"
+        tools:layout="@layout/dialog_exercise_resistance_select">
+        <argument
+            android:name="exerciseResistance"
+            app:argType="com.example.fitnesslog.core.enums.ExerciseResistance" />
     </dialog>
 
 
