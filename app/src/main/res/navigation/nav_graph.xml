@@ -147,7 +147,19 @@
         <argument
             android:name="editorMode"
             app:argType="com.example.fitnesslog.core.enums.EditorMode" />
+        <action
+            android:id="@+id/action_exerciseTemplateEditorFragment_to_exerciseMuscleSelectDialog"
+            app:destination="@id/exerciseMuscleSelectDialog" />
     </fragment>
+    <dialog
+        android:id="@+id/exerciseMuscleSelectDialog"
+        android:name="com.example.fitnesslog.ui.program.exercise_templates.exercise_template_editor.ExerciseMuscleSelectDialog"
+        android:label="ExerciseMuscleSelectDialog"
+        tools:layout="@layout/dialog_exercise_muscle_select">
+        <argument
+            android:name="exerciseMuscle"
+            app:argType="com.example.fitnesslog.core.enums.ExerciseMuscle" />
+    </dialog>
 
 
 </navigation>

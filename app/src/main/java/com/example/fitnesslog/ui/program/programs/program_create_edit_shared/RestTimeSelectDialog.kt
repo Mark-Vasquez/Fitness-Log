@@ -70,7 +70,6 @@ class RestTimeSelectDialog : DialogFragment() {
                 }
             builder.create() as Dialog
 
-            // What happens if you set view values here?
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 

@@ -3,6 +3,7 @@ package com.example.fitnesslog.ui.program.exercise_templates.exercise_template_e
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.fitnesslog.core.enums.ExerciseMuscle
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.domain.use_case.exercise_template.ExerciseTemplateUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,10 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
                 cancelCreate()
             }
 
-            is ExerciseTemplateEditorEvent.UpdateExerciseMuscle -> TODO()
+            is ExerciseTemplateEditorEvent.UpdateExerciseMuscle -> {
+                updateExerciseMuscle(event.exerciseMuscle)
+            }
+
             is ExerciseTemplateEditorEvent.UpdateExerciseResistance -> TODO()
             is ExerciseTemplateEditorEvent.UpdateName -> TODO()
         }
@@ -102,6 +106,20 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
                             ?: "Error Discarding Initialized Exercise Template"
                     )
                 }
+            }
+        }
+    }
+
+    private fun updateExerciseMuscle(exerciseMuscle: ExerciseMuscle) {
+        val currentExerciseTemplate = exerciseTemplateState.value.exerciseTemplate ?: return
+        viewModelScope.launch {
+            if (exerciseMuscle != currentExerciseTemplate.exerciseMuscle) {
+                exerciseTemplateUseCases.editExerciseTemplate(
+                    currentExerciseTemplate.copy(
+                        exerciseMuscle = exerciseMuscle,
+                        updatedAt = System.currentTimeMillis()
+                    )
+                )
             }
         }
     }

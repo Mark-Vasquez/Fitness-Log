@@ -45,6 +45,8 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         val behavior = (dialog as BottomSheetDialog).behavior
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        // Certain built in components automatically save state on config changes. We want the most
+        // recent saved state if not null, not the initial checkmarked former days
         if (savedInstanceState == null) {
             checkmarkFormerDays()
         }
@@ -66,7 +68,7 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
     }
 
     private fun checkmarkFormerDays() {
-        binding.run {
+        binding.apply {
             chipMondayScheduleSelect.isChecked = Day.MONDAY in formerScheduledDays
             chipTuesdayScheduleSelect.isChecked = Day.TUESDAY in formerScheduledDays
             chipWednesdayScheduleSelect.isChecked = Day.WEDNESDAY in formerScheduledDays
@@ -80,7 +82,7 @@ class ScheduleSelectModal : BottomSheetDialogFragment() {
     private fun getSelectedDays(): Set<Day> {
         val selectedDays = mutableSetOf<Day>()
 
-        binding.run {
+        binding.apply {
             if (chipMondayScheduleSelect.isChecked) selectedDays.add(Day.MONDAY)
             if (chipTuesdayScheduleSelect.isChecked) selectedDays.add(Day.TUESDAY)
             if (chipWednesdayScheduleSelect.isChecked) selectedDays.add(Day.WEDNESDAY)

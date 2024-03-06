@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -15,6 +17,11 @@ import androidx.navigation.fragment.navArgs
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.EditorMode
+import com.example.fitnesslog.core.enums.ExerciseMuscle
+import com.example.fitnesslog.core.enums.ExerciseResistance
+import com.example.fitnesslog.core.utils.constants.EXERCISE_MUSCLE
+import com.example.fitnesslog.core.utils.constants.EXERCISE_RESISTANCE
+import com.example.fitnesslog.core.utils.extensions.setDebouncedOnClickListener
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentExerciseTemplateEditorBinding
 import kotlinx.coroutines.launch
@@ -29,6 +36,11 @@ class ExerciseTemplateEditorFragment : Fragment() {
     private val binding: FragmentExerciseTemplateEditorBinding get() = _binding!!
     private val args: ExerciseTemplateEditorFragmentArgs by navArgs()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setBackButtonListener()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,10 +54,13 @@ class ExerciseTemplateEditorFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         when (args.editorMode) {
             EditorMode.CREATE -> {
-                initializeCreateMode()
+                if (savedInstanceState == null) {
+                    initializeCreateMode()
+                }
                 binding.btnNavigateBack.setOnClickListener {
                     showDiscardDialog(requireContext()) {
                         exerciseTemplateEditorViewModel.onEvent(ExerciseTemplateEditorEvent.CancelCreate)
+                        findNavController().popBackStack()
                     }
                 }
                 binding.btnSaveExerciseTemplate.setOnClickListener {
@@ -60,8 +75,18 @@ class ExerciseTemplateEditorFragment : Fragment() {
                 }
             }
         }
+
         setupUI()
+        setupNavBackStackEntryObservers()
         observeExerciseTemplateState()
+
+        binding.infoMuscle.setDebouncedOnClickListener {
+            val action =
+                ExerciseTemplateEditorFragmentDirections.actionExerciseTemplateEditorFragmentToExerciseMuscleSelectDialog(
+                    exerciseMuscle = exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.exerciseMuscle as ExerciseMuscle
+                )
+            findNavController().navigate(action)
+        }
     }
 
     override fun onDestroyView() {
@@ -95,6 +120,51 @@ class ExerciseTemplateEditorFragment : Fragment() {
         }
     }
 
+    private fun setupNavBackStackEntryObservers() {
+        val navBackStackEntry =
+            findNavController().getBackStackEntry(R.id.exerciseTemplateEditorFragment)
+
+        val exerciseMuscleObserver = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME
+                && navBackStackEntry.savedStateHandle.contains(EXERCISE_MUSCLE)
+            ) {
+                val exerciseMuscle =
+                    navBackStackEntry.savedStateHandle.get<ExerciseMuscle>(EXERCISE_MUSCLE)
+                if (exerciseMuscle != null) {
+                    exerciseTemplateEditorViewModel.onEvent(
+                        ExerciseTemplateEditorEvent.UpdateExerciseMuscle(
+                            exerciseMuscle
+                        )
+                    )
+                }
+            }
+        }
+        val exerciseResistanceObserver = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME
+                && navBackStackEntry.savedStateHandle.contains(EXERCISE_RESISTANCE)
+            ) {
+                val exerciseResistance =
+                    navBackStackEntry.savedStateHandle.get<ExerciseResistance>(EXERCISE_RESISTANCE)
+                if (exerciseResistance != null) {
+                    exerciseTemplateEditorViewModel.onEvent(
+                        ExerciseTemplateEditorEvent.UpdateExerciseResistance(
+                            exerciseResistance
+                        )
+                    )
+                }
+            }
+        }
+        navBackStackEntry.lifecycle.addObserver(exerciseMuscleObserver)
+        navBackStackEntry.lifecycle.addObserver(exerciseResistanceObserver)
+
+        viewLifecycleOwner.lifecycle.addObserver(LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                navBackStackEntry.lifecycle.removeObserver(exerciseMuscleObserver)
+                navBackStackEntry.lifecycle.removeObserver(exerciseResistanceObserver)
+            }
+        })
+    }
+
     private fun observeExerciseTemplateState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -106,6 +176,19 @@ class ExerciseTemplateEditorFragment : Fragment() {
                             exerciseTemplate.exerciseResistance.displayName
                     }
                 }
+            }
+        }
+    }
+
+    private fun setBackButtonListener() {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            showDiscardDialog(
+                requireContext()
+            ) {
+                exerciseTemplateEditorViewModel.onEvent(
+                    ExerciseTemplateEditorEvent.CancelCreate
+                )
+                findNavController().popBackStack()
             }
         }
     }

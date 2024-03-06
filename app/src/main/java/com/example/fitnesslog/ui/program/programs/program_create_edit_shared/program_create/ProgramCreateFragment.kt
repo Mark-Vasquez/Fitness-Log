@@ -144,7 +144,7 @@ class ProgramCreateFragment : Fragment() {
                     // Do something with the passed in data from modal
                     programCreateViewModel.onEvent(
                         ProgramCreateEvent.UpdateScheduledDays(
-                            scheduledDays!!
+                            scheduledDays
                         )
                     )
                 }
@@ -159,7 +159,7 @@ class ProgramCreateFragment : Fragment() {
                 if (restDurationSeconds != null) {
                     programCreateViewModel.onEvent(
                         ProgramCreateEvent.UpdateRestDurationSeconds(
-                            restDurationSeconds!!
+                            restDurationSeconds
                         )
                     )
                 }
