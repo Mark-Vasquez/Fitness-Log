@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
-            tools:text="Bulgarian Split OogeyBoogeyMan hahahhaahh"
+            tools:text="Default Exercise Name"
             android:gravity="center"
             android:maxLines="1"
             android:ellipsize="end"

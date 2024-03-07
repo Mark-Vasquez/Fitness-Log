@@ -83,7 +83,14 @@ class ExerciseTemplateEditorFragment : Fragment() {
         binding.infoMuscle.setDebouncedOnClickListener {
             val action =
                 ExerciseTemplateEditorFragmentDirections.actionExerciseTemplateEditorFragmentToExerciseMuscleSelectDialog(
-                    exerciseMuscle = exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.exerciseMuscle as ExerciseMuscle
+                    exerciseMuscle = exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.exerciseMuscle!!
+                )
+            findNavController().navigate(action)
+        }
+        binding.infoResistance.setDebouncedOnClickListener {
+            val action =
+                ExerciseTemplateEditorFragmentDirections.actionExerciseTemplateEditorFragmentToExerciseResistanceSelectDialog(
+                    exerciseResistance = exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.exerciseResistance!!
                 )
             findNavController().navigate(action)
         }

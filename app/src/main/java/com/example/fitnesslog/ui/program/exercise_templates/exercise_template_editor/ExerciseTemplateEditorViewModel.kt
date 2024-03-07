@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.core.enums.ExerciseMuscle
+import com.example.fitnesslog.core.enums.ExerciseResistance
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.domain.use_case.exercise_template.ExerciseTemplateUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +43,10 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
                 updateExerciseMuscle(event.exerciseMuscle)
             }
 
-            is ExerciseTemplateEditorEvent.UpdateExerciseResistance -> TODO()
+            is ExerciseTemplateEditorEvent.UpdateExerciseResistance -> {
+                updateExerciseResistance(event.exerciseResistance)
+            }
+
             is ExerciseTemplateEditorEvent.UpdateName -> TODO()
         }
     }
@@ -117,6 +121,20 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
                 exerciseTemplateUseCases.editExerciseTemplate(
                     currentExerciseTemplate.copy(
                         exerciseMuscle = exerciseMuscle,
+                        updatedAt = System.currentTimeMillis()
+                    )
+                )
+            }
+        }
+    }
+
+    private fun updateExerciseResistance(exerciseResistance: ExerciseResistance) {
+        val currentExerciseTemplate = exerciseTemplateState.value.exerciseTemplate ?: return
+        viewModelScope.launch {
+            if (exerciseResistance != currentExerciseTemplate.exerciseResistance) {
+                exerciseTemplateUseCases.editExerciseTemplate(
+                    currentExerciseTemplate.copy(
+                        exerciseResistance = exerciseResistance,
                         updatedAt = System.currentTimeMillis()
                     )
                 )
