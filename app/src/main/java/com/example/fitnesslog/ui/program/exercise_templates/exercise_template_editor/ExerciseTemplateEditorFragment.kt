@@ -24,6 +24,7 @@ import com.example.fitnesslog.core.utils.constants.EXERCISE_RESISTANCE
 import com.example.fitnesslog.core.utils.constants.EXERCISE_TEMPLATE_ID
 import com.example.fitnesslog.core.utils.extensions.setThrottledOnClickListener
 import com.example.fitnesslog.core.utils.extensions.textChangeFlow
+import com.example.fitnesslog.core.utils.ui.showDeleteDialog
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentExerciseTemplateEditorBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -92,6 +93,19 @@ class ExerciseTemplateEditorFragment : Fragment() {
                 }
                 binding.btnNavigateBack.setOnClickListener {
                     findNavController().popBackStack()
+                }
+                binding.btnDeleteExercise.setOnClickListener {
+                    val exerciseTemplateName =
+                        exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.name
+                    val message = if (exerciseTemplateName.isNullOrEmpty()) {
+                        "Are you sure you want to delete this exercise?"
+                    } else {
+                        "Are you sure you want to delete \"${exerciseTemplateName}\" exercise?"
+                    }
+                    showDeleteDialog(requireContext(), "Delete Exercise", message) {
+                        exerciseTemplateEditorViewModel.onEvent(ExerciseTemplateEditorEvent.Delete)
+                        findNavController().popBackStack()
+                    }
                 }
             }
         }

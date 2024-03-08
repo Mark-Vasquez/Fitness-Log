@@ -54,6 +54,10 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
             is ExerciseTemplateEditorEvent.UpdateName -> {
                 updateName(event.name)
             }
+
+            ExerciseTemplateEditorEvent.Delete -> {
+                deleteExerciseTemplate()
+            }
         }
     }
 
@@ -159,6 +163,14 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
                     )
                 )
             }
+        }
+    }
+
+    private fun deleteExerciseTemplate() {
+        val currentExerciseTemplate = exerciseTemplateState.value.exerciseTemplate ?: return
+        val exerciseTemplateId = currentExerciseTemplate.id ?: return
+        viewModelScope.launch {
+            exerciseTemplateUseCases.deleteExerciseTemplate(exerciseTemplateId)
         }
     }
 }

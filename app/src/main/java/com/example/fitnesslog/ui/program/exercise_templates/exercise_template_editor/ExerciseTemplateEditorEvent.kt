@@ -15,4 +15,6 @@ sealed class ExerciseTemplateEditorEvent {
 
     data class UpdateExerciseResistance(val exerciseResistance: ExerciseResistance) :
         ExerciseTemplateEditorEvent()
+
+    data object Delete : ExerciseTemplateEditorEvent()
 }

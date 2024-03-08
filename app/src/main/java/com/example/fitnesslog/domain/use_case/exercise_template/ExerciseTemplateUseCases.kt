@@ -6,5 +6,6 @@ data class ExerciseTemplateUseCases(
     val editExerciseTemplate: EditExerciseTemplate,
     val getExerciseTemplateById: GetExerciseTemplateById,
     val initializeExerciseTemplate: InitializeExerciseTemplate,
-    val discardInitializedTemplate: DiscardInitializedTemplate
+    val discardInitializedTemplate: DiscardInitializedTemplate,
+    val deleteExerciseTemplate: DeleteExerciseTemplate
 )

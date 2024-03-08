@@ -65,7 +65,7 @@ class WorkoutTemplateFragment : Fragment() {
             val message = if (workoutTemplateName.isNullOrEmpty()) {
                 "Are you sure you want to delete this workout?"
             } else {
-                "Are you sure you wan to delete \"${workoutTemplateName}\" workout?"
+                "Are you sure you want to delete \"${workoutTemplateName}\" workout?"
             }
             showDeleteDialog(requireContext(), "Delete Workout", message) {
                 workoutTemplateViewModel.onEvent(WorkoutTemplateEvent.Delete)
