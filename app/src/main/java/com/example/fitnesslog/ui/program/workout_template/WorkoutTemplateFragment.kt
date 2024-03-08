@@ -53,7 +53,7 @@ class WorkoutTemplateFragment : Fragment() {
         setupRecyclerView()
         observeWorkoutTemplateState()
         observeWorkoutTemplateExerciseState()
-        setupWorkoutTemplateNameChangeListener()
+        setupTextChangeListener()
 
         binding.btnNavigateBack.setOnClickListener {
             findNavController().popBackStack()
@@ -109,7 +109,7 @@ class WorkoutTemplateFragment : Fragment() {
         }
     }
 
-    private fun setupWorkoutTemplateNameChangeListener() {
+    private fun setupTextChangeListener() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 binding.etNameWorkoutTemplate.textChangeFlow()

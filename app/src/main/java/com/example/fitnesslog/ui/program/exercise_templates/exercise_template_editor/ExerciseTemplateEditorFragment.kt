@@ -21,9 +21,12 @@ import com.example.fitnesslog.core.enums.ExerciseMuscle
 import com.example.fitnesslog.core.enums.ExerciseResistance
 import com.example.fitnesslog.core.utils.constants.EXERCISE_MUSCLE
 import com.example.fitnesslog.core.utils.constants.EXERCISE_RESISTANCE
-import com.example.fitnesslog.core.utils.extensions.setDebouncedOnClickListener
+import com.example.fitnesslog.core.utils.extensions.setThrottledOnClickListener
+import com.example.fitnesslog.core.utils.extensions.textChangeFlow
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.databinding.FragmentExerciseTemplateEditorBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 class ExerciseTemplateEditorFragment : Fragment() {
@@ -79,15 +82,16 @@ class ExerciseTemplateEditorFragment : Fragment() {
         setupUI()
         setupNavBackStackEntryObservers()
         observeExerciseTemplateState()
+        setupTextChangeListener()
 
-        binding.infoMuscle.setDebouncedOnClickListener {
+        binding.infoMuscle.setThrottledOnClickListener {
             val action =
                 ExerciseTemplateEditorFragmentDirections.actionExerciseTemplateEditorFragmentToExerciseMuscleSelectDialog(
                     exerciseMuscle = exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.exerciseMuscle!!
                 )
             findNavController().navigate(action)
         }
-        binding.infoResistance.setDebouncedOnClickListener {
+        binding.infoResistance.setThrottledOnClickListener {
             val action =
                 ExerciseTemplateEditorFragmentDirections.actionExerciseTemplateEditorFragmentToExerciseResistanceSelectDialog(
                     exerciseResistance = exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.exerciseResistance!!
@@ -103,6 +107,22 @@ class ExerciseTemplateEditorFragment : Fragment() {
 
     private fun initializeCreateMode() {
         exerciseTemplateEditorViewModel.onEvent(ExerciseTemplateEditorEvent.InitializeExerciseTemplate)
+    }
+
+    private fun setupTextChangeListener() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                binding.etNameExerciseTemplate.textChangeFlow()
+                    .debounce(500)
+                    .collectLatest { name ->
+                        exerciseTemplateEditorViewModel.onEvent(
+                            ExerciseTemplateEditorEvent.UpdateName(
+                                name
+                            )
+                        )
+                    }
+            }
+        }
     }
 
     private fun setupUI() {
@@ -177,7 +197,10 @@ class ExerciseTemplateEditorFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 exerciseTemplateEditorViewModel.exerciseTemplateState.collect { state ->
                     state.exerciseTemplate?.let { exerciseTemplate ->
-                        binding.etNameExerciseTemplate.setText(exerciseTemplate.name)
+                        if (binding.etNameExerciseTemplate.text.toString() != exerciseTemplate.name) {
+                            binding.etNameExerciseTemplate.setText(exerciseTemplate.name)
+                            binding.etNameExerciseTemplate.setSelection(binding.etNameExerciseTemplate.length())
+                        }
                         binding.tvMuscleType.text = exerciseTemplate.exerciseMuscle.displayName
                         binding.tvResistanceType.text =
                             exerciseTemplate.exerciseResistance.displayName

@@ -21,7 +21,7 @@ import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.constants.REST_DURATION_SECONDS
 import com.example.fitnesslog.core.utils.constants.SCHEDULED_DAYS
-import com.example.fitnesslog.core.utils.extensions.setDebouncedOnClickListener
+import com.example.fitnesslog.core.utils.extensions.setThrottledOnClickListener
 import com.example.fitnesslog.core.utils.extensions.textChangeFlow
 import com.example.fitnesslog.core.utils.ui.showDeleteDialog
 import com.example.fitnesslog.data.entity.WorkoutTemplate
@@ -74,11 +74,11 @@ class ProgramEditFragment : Fragment() {
         setupNavBackStackEntryObservers()
         observeProgramState()
         observeWorkoutTemplatesState()
-        setupProgramNameChangeListener()
+        setupTextChangeListener()
 
 
-        // Debounce to eliminate trying to navigate to same location twice
-        binding.btnScheduleProgram.setDebouncedOnClickListener {
+        // Throttle to eliminate trying to navigate to same location twice on fast multiple clicks
+        binding.btnScheduleProgram.setThrottledOnClickListener {
             // To pass data to the modal child via navigation
             val action =
                 ProgramEditFragmentDirections.actionProgramEditFragmentToScheduleSelectModal(
@@ -87,7 +87,7 @@ class ProgramEditFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        binding.btnRestTimeProgram.setDebouncedOnClickListener {
+        binding.btnRestTimeProgram.setThrottledOnClickListener {
             val action =
                 ProgramEditFragmentDirections.actionProgramEditFragmentToRestTimeSelectDialog(
                     restDurationSeconds = programEditViewModel.programState.value.program?.restDurationSeconds as Int
@@ -156,7 +156,7 @@ class ProgramEditFragment : Fragment() {
         }
     }
 
-    private fun setupProgramNameChangeListener() {
+    private fun setupTextChangeListener() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 binding.etNameProgram.textChangeFlow()

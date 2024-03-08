@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.EditorMode
+import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.databinding.FragmentExerciseTemplatesBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -49,8 +50,9 @@ class ExerciseTemplatesFragment : Fragment() {
         observeCheckedExerciseTemplatesState()
 
         binding.btnCancel.setOnClickListener {
-            findNavController().popBackStack()
-            // dialog to ensure cancel
+            showDiscardDialog(requireContext()) {
+                findNavController().popBackStack()
+            }
         }
 
         binding.fabCreateExercise.setOnClickListener {

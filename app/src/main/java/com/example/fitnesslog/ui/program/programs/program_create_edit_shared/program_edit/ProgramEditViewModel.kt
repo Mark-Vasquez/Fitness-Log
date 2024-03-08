@@ -149,7 +149,7 @@ class ProgramEditViewModel(
     private fun updateName(name: String) {
         val currentProgram = programState.value.program ?: return
         viewModelScope.launch {
-            // Only update if text input is not the current Program name state (will update on rotate when name is same)
+            // Only update if text input is not the current Program name state (prevent update on rotate when name is same)
             if (name != currentProgram.name) {
                 programUseCases.editProgram(
                     currentProgram.copy(

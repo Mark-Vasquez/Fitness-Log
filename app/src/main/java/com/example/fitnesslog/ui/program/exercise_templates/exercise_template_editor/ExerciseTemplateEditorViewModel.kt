@@ -47,7 +47,9 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
                 updateExerciseResistance(event.exerciseResistance)
             }
 
-            is ExerciseTemplateEditorEvent.UpdateName -> TODO()
+            is ExerciseTemplateEditorEvent.UpdateName -> {
+                updateName(event.name)
+            }
         }
     }
 
@@ -136,6 +138,19 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
                     currentExerciseTemplate.copy(
                         exerciseResistance = exerciseResistance,
                         updatedAt = System.currentTimeMillis()
+                    )
+                )
+            }
+        }
+    }
+
+    private fun updateName(name: String) {
+        val currentExerciseTemplate = exerciseTemplateState.value.exerciseTemplate ?: return
+        viewModelScope.launch {
+            if (name != currentExerciseTemplate.name) {
+                exerciseTemplateUseCases.editExerciseTemplate(
+                    currentExerciseTemplate.copy(
+                        name = name, updatedAt = System.currentTimeMillis()
                     )
                 )
             }

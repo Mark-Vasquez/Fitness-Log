@@ -21,7 +21,7 @@ import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.Day
 import com.example.fitnesslog.core.utils.constants.REST_DURATION_SECONDS
 import com.example.fitnesslog.core.utils.constants.SCHEDULED_DAYS
-import com.example.fitnesslog.core.utils.extensions.setDebouncedOnClickListener
+import com.example.fitnesslog.core.utils.extensions.setThrottledOnClickListener
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.data.entity.WorkoutTemplate
 import com.example.fitnesslog.databinding.FragmentProgramBinding
@@ -93,7 +93,7 @@ class ProgramCreateFragment : Fragment() {
 
 
         // Debounce to eliminate trying to navigate to same location twice
-        binding.btnScheduleProgram.setDebouncedOnClickListener {
+        binding.btnScheduleProgram.setThrottledOnClickListener {
             // To pass data to the modal child via navigation
             val action =
                 ProgramCreateFragmentDirections.actionProgramCreateFragmentToScheduleSelectModal(
@@ -102,7 +102,7 @@ class ProgramCreateFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        binding.btnRestTimeProgram.setDebouncedOnClickListener {
+        binding.btnRestTimeProgram.setThrottledOnClickListener {
             val action =
                 ProgramCreateFragmentDirections.actionProgramCreateFragmentToRestTimeSelectDialog(
                     restDurationSeconds = programCreateViewModel.programState.value.restDurationSeconds
