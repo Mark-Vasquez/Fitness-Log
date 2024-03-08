@@ -114,13 +114,17 @@ class ExerciseTemplatesFragment : Fragment() {
 
             override fun onIconClicked(exerciseTemplate: ExerciseTemplate) {
                 if (exerciseTemplate.id == null) return
-                if (exerciseTemplate.isDefault) {
-                    val action =
-                        ExerciseTemplatesFragmentDirections.actionExerciseTemplatesFragmentToDefaultExerciseInfoFragment(
-                            exerciseTemplateId = exerciseTemplate.id
-                        )
-                    findNavController().navigate(action)
+                val action = if (exerciseTemplate.isDefault) {
+                    ExerciseTemplatesFragmentDirections.actionExerciseTemplatesFragmentToDefaultExerciseInfoFragment(
+                        exerciseTemplateId = exerciseTemplate.id
+                    )
+                } else {
+                    ExerciseTemplatesFragmentDirections.actionExerciseTemplatesFragmentToExerciseTemplateEditorFragment(
+                        exerciseTemplateId = exerciseTemplate.id,
+                        editorMode = EditorMode.EDIT
+                    )
                 }
+                findNavController().navigate(action)
             }
 
         })
