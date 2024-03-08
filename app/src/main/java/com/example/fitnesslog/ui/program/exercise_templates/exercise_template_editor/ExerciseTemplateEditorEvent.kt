@@ -5,6 +5,9 @@ import com.example.fitnesslog.core.enums.ExerciseResistance
 
 sealed class ExerciseTemplateEditorEvent {
     data object InitializeExerciseTemplate : ExerciseTemplateEditorEvent()
+    data class RetrieveExistingExerciseTemplate(val exerciseTemplateId: Int) :
+        ExerciseTemplateEditorEvent()
+
     data object CancelCreate : ExerciseTemplateEditorEvent()
     data class UpdateName(val name: String) : ExerciseTemplateEditorEvent()
     data class UpdateExerciseMuscle(val exerciseMuscle: ExerciseMuscle) :

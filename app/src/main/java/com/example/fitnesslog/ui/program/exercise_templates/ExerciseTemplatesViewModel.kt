@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ExerciseTemplatesViewModel(
-    workoutTemplateId: Int,
+    private val workoutTemplateId: Int,
     private val exerciseTemplateUseCases: ExerciseTemplateUseCases,
     private val workoutTemplateUseCases: WorkoutTemplateUseCases
 ) :
@@ -51,6 +51,10 @@ class ExerciseTemplatesViewModel(
             is ExerciseTemplateEvent.ToggleCheckbox -> {
                 toggleCheckbox(event.exerciseTemplateId)
             }
+
+            ExerciseTemplateEvent.SubmitSelectedExercises -> {
+                submitSelectedExercises()
+            }
         }
     }
 
@@ -79,6 +83,16 @@ class ExerciseTemplatesViewModel(
             }
         _checkedExerciseTemplatesState.update {
             newCheckedExerciseTemplates
+        }
+    }
+
+    private fun submitSelectedExercises() {
+        viewModelScope.launch {
+            val selectedTemplatesList = checkedExerciseTemplatesState.value.toList()
+            workoutTemplateUseCases.addExercisesToWorkoutTemplate(
+                exerciseTemplateIds = selectedTemplatesList,
+                workoutTemplateId = workoutTemplateId
+            )
         }
     }
 }

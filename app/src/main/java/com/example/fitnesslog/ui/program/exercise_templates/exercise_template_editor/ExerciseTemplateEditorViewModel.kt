@@ -35,6 +35,10 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
                 initializeExerciseTemplate()
             }
 
+            is ExerciseTemplateEditorEvent.RetrieveExistingExerciseTemplate -> {
+                collectLatestExerciseTemplate(event.exerciseTemplateId)
+            }
+
             is ExerciseTemplateEditorEvent.CancelCreate -> {
                 cancelCreate()
             }
@@ -71,6 +75,7 @@ class ExerciseTemplateEditorViewModel(private val exerciseTemplateUseCases: Exer
             }
         }
     }
+
 
     private fun collectLatestExerciseTemplate(exerciseTemplateId: Int) {
         viewModelScope.launch {

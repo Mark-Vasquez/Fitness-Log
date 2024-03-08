@@ -21,6 +21,7 @@ import com.example.fitnesslog.core.enums.ExerciseMuscle
 import com.example.fitnesslog.core.enums.ExerciseResistance
 import com.example.fitnesslog.core.utils.constants.EXERCISE_MUSCLE
 import com.example.fitnesslog.core.utils.constants.EXERCISE_RESISTANCE
+import com.example.fitnesslog.core.utils.constants.EXERCISE_TEMPLATE_ID
 import com.example.fitnesslog.core.utils.extensions.setThrottledOnClickListener
 import com.example.fitnesslog.core.utils.extensions.textChangeFlow
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
@@ -66,13 +67,29 @@ class ExerciseTemplateEditorFragment : Fragment() {
                         findNavController().popBackStack()
                     }
                 }
-                binding.btnSaveExerciseTemplate.setOnClickListener {
-                    findNavController().popBackStack()
 
+                binding.btnSaveExerciseTemplate.setOnClickListener {
+                    val navController = findNavController()
+                    // add newly created template to the selected list
+                    val exerciseTemplateId =
+                        exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.id
+                            ?: return@setOnClickListener
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        EXERCISE_TEMPLATE_ID, exerciseTemplateId
+
+                    )
+                    navController.popBackStack()
                 }
             }
 
             EditorMode.EDIT -> {
+                if (savedInstanceState == null) {
+                    exerciseTemplateEditorViewModel.onEvent(
+                        ExerciseTemplateEditorEvent.RetrieveExistingExerciseTemplate(
+                            args.exerciseTemplateId
+                        )
+                    )
+                }
                 binding.btnNavigateBack.setOnClickListener {
                     findNavController().popBackStack()
                 }
@@ -135,6 +152,7 @@ class ExerciseTemplateEditorFragment : Fragment() {
 
             EditorMode.EDIT -> {
                 binding.tvTitleExerciseTemplate.text = getString(R.string.edit_exercise)
+                binding.btnSaveExerciseTemplate.visibility = View.GONE
                 binding.btnNavigateBack.apply {
                     text = getString(R.string.back)
                     val backArrowIcon = ContextCompat.getDrawable(

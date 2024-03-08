@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.EditorMode
+import com.example.fitnesslog.core.utils.constants.EXERCISE_TEMPLATE_ID
+import com.example.fitnesslog.core.utils.extensions.setThrottledOnClickListener
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.databinding.FragmentExerciseTemplatesBinding
@@ -49,10 +51,15 @@ class ExerciseTemplatesFragment : Fragment() {
         observeExerciseTemplatesState()
         observeCheckedExerciseTemplatesState()
 
-        binding.btnCancel.setOnClickListener {
+        binding.btnCancel.setThrottledOnClickListener {
             showDiscardDialog(requireContext()) {
                 findNavController().popBackStack()
             }
+        }
+
+        binding.btnAdd.setThrottledOnClickListener {
+            exerciseTemplatesViewModel.onEvent(ExerciseTemplateEvent.SubmitSelectedExercises)
+            findNavController().popBackStack()
         }
 
         binding.fabCreateExercise.setOnClickListener {
@@ -61,6 +68,23 @@ class ExerciseTemplatesFragment : Fragment() {
                     editorMode = EditorMode.CREATE
                 )
             findNavController().navigate(action)
+        }
+
+        // Retrieve new id from ExerciseTemplateEditor after creating a new Exercise Template
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(
+            EXERCISE_TEMPLATE_ID
+        )?.observe(viewLifecycleOwner) { exerciseTemplateId ->
+            exerciseTemplatesViewModel.onEvent(
+                ExerciseTemplateEvent.ToggleCheckbox(
+                    exerciseTemplateId
+                )
+            )
+
+            // Remove the savedStateHandle value after consuming it once, so that the observe callback
+            // does not re-run again on screen rotation, un-toggling the new template
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Int>(
+                EXERCISE_TEMPLATE_ID
+            )
         }
     }
 
@@ -88,11 +112,13 @@ class ExerciseTemplatesFragment : Fragment() {
                         binding.btnAdd.apply {
                             text = getString(R.string.btn_add_count, it.size)
                             alpha = 1F
+                            isEnabled = true
                         }
                     } else {
                         binding.btnAdd.apply {
                             text = getString(R.string.add)
                             alpha = 0.3F
+                            isEnabled = false
                         }
                     }
                 }
