@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.EditorMode
+import com.example.fitnesslog.core.enums.ExerciseTemplateOperation
 import com.example.fitnesslog.core.utils.constants.EXERCISE_TEMPLATE_ID
 import com.example.fitnesslog.core.utils.extensions.setThrottledOnClickListener
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
@@ -56,6 +57,7 @@ class ExerciseTemplatesFragment : Fragment() {
         setupRecyclerView()
         observeExerciseTemplatesState()
         observeCheckedExerciseTemplatesState()
+        retrievePreviousDestinationResult()
 
         binding.btnCancel.setThrottledOnClickListener {
             showDiscardDialog(requireContext()) {
@@ -76,22 +78,6 @@ class ExerciseTemplatesFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        // Retrieve new id from ExerciseTemplateEditor after creating a new Exercise Template
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(
-            EXERCISE_TEMPLATE_ID
-        )?.observe(viewLifecycleOwner) { exerciseTemplateId ->
-            exerciseTemplatesViewModel.onEvent(
-                ExerciseTemplateEvent.ToggleCheckbox(
-                    exerciseTemplateId
-                )
-            )
-
-            // Remove the savedStateHandle value after consuming it once, so that the observe callback
-            // does not re-run again on screen rotation, un-toggling the new template
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Int>(
-                EXERCISE_TEMPLATE_ID
-            )
-        }
     }
 
     override fun onDestroyView() {
@@ -112,7 +98,7 @@ class ExerciseTemplatesFragment : Fragment() {
     private fun observeCheckedExerciseTemplatesState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                exerciseTemplatesViewModel.checkedExerciseTemplatesState.collectLatest {
+                exerciseTemplatesViewModel.selectedExerciseTemplatesState.collectLatest {
                     exerciseTemplatesAdapter.submitSet(it)
                     if (it.isNotEmpty()) {
                         binding.btnAdd.apply {
@@ -132,13 +118,46 @@ class ExerciseTemplatesFragment : Fragment() {
         }
     }
 
+    private fun retrievePreviousDestinationResult() {
+        // Retrieve new id from ExerciseTemplateEditor after creating or deleting an Exercise Template
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Pair<Int, ExerciseTemplateOperation>>(
+            EXERCISE_TEMPLATE_ID
+        )?.observe(viewLifecycleOwner) { (exerciseTemplateId, operation) ->
+            when (operation) {
+                ExerciseTemplateOperation.CREATE -> {
+                    exerciseTemplatesViewModel.onEvent(
+                        ExerciseTemplateEvent.AddToTemplateSelect(exerciseTemplateId)
+                    )
+                    // Notify the view holder with the template id to update its ui to reflect checked state
+                    val adapterPosition =
+                        exerciseTemplatesAdapter.currentList.indexOfFirst { it.id == exerciseTemplateId }
+                    if (adapterPosition != -1) {
+                        exerciseTemplatesAdapter.notifyItemChanged(adapterPosition)
+                    }
+                }
+
+                ExerciseTemplateOperation.DELETE -> {
+                    exerciseTemplatesViewModel.onEvent(
+                        ExerciseTemplateEvent.RemoveFromTemplateSelect(exerciseTemplateId)
+                    )
+                }
+            }
+
+            // Remove the savedStateHandle value after consuming it once, so that the observe callback
+            // does not re-run again on screen rotation,
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Pair<Int, ExerciseTemplateOperation>>(
+                EXERCISE_TEMPLATE_ID
+            )
+        }
+    }
+
     private fun setupRecyclerView() {
         val rvExerciseTemplates = binding.rvExerciseTemplates
         exerciseTemplatesAdapter = ExerciseTemplatesAdapter(object :
             ExerciseTemplatesAdapter.ExerciseTemplateClickListener {
             override fun onExerciseTemplateClicked(exerciseTemplateId: Int) {
                 exerciseTemplatesViewModel.onEvent(
-                    ExerciseTemplateEvent.ToggleCheckbox(
+                    ExerciseTemplateEvent.ToggleTemplateSelect(
                         exerciseTemplateId
                     )
                 )

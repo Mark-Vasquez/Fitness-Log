@@ -19,6 +19,7 @@ import com.example.fitnesslog.R
 import com.example.fitnesslog.core.enums.EditorMode
 import com.example.fitnesslog.core.enums.ExerciseMuscle
 import com.example.fitnesslog.core.enums.ExerciseResistance
+import com.example.fitnesslog.core.enums.ExerciseTemplateOperation
 import com.example.fitnesslog.core.utils.constants.EXERCISE_MUSCLE
 import com.example.fitnesslog.core.utils.constants.EXERCISE_RESISTANCE
 import com.example.fitnesslog.core.utils.constants.EXERCISE_TEMPLATE_ID
@@ -74,11 +75,13 @@ class ExerciseTemplateEditorFragment : Fragment() {
                     // add newly created template to the selected list
                     val exerciseTemplateId =
                         exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.id
-                            ?: return@setOnClickListener
-                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                        EXERCISE_TEMPLATE_ID, exerciseTemplateId
+                    if (exerciseTemplateId != null) {
+                        navController.previousBackStackEntry?.savedStateHandle?.set(
+                            EXERCISE_TEMPLATE_ID,
+                            Pair(exerciseTemplateId, ExerciseTemplateOperation.CREATE)
 
-                    )
+                        )
+                    }
                     navController.popBackStack()
                 }
             }
@@ -104,7 +107,18 @@ class ExerciseTemplateEditorFragment : Fragment() {
                     }
                     showDeleteDialog(requireContext(), "Delete Exercise", message) {
                         exerciseTemplateEditorViewModel.onEvent(ExerciseTemplateEditorEvent.Delete)
-                        findNavController().popBackStack()
+                        val navController = findNavController()
+                        // Remove the deleted template from the selected list
+                        val exerciseTemplateId =
+                            exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.id
+                        if (exerciseTemplateId != null) {
+                            navController.previousBackStackEntry?.savedStateHandle?.set(
+                                EXERCISE_TEMPLATE_ID,
+                                Pair(exerciseTemplateId, ExerciseTemplateOperation.DELETE)
+
+                            )
+                        }
+                        navController.popBackStack()
                     }
                 }
             }

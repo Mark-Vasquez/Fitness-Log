@@ -22,8 +22,8 @@ class ExerciseTemplatesViewModel(
     private val _exerciseTemplatesState = MutableStateFlow(ExerciseTemplatesState())
     val exerciseTemplatesState = _exerciseTemplatesState.asStateFlow()
 
-    private val _checkedExerciseTemplatesState = MutableStateFlow<Set<Int>>(emptySet())
-    val checkedExerciseTemplatesState = _checkedExerciseTemplatesState.asStateFlow()
+    private val _selectedExerciseTemplatesState = MutableStateFlow<Set<Int>>(emptySet())
+    val selectedExerciseTemplatesState = _selectedExerciseTemplatesState.asStateFlow()
 
     init {
         collectLatestExerciseTemplates()
@@ -48,13 +48,22 @@ class ExerciseTemplatesViewModel(
 
     fun onEvent(event: ExerciseTemplateEvent) {
         when (event) {
-            is ExerciseTemplateEvent.ToggleCheckbox -> {
-                toggleCheckbox(event.exerciseTemplateId)
+            is ExerciseTemplateEvent.ToggleTemplateSelect -> {
+                toggleTemplateSelect(event.exerciseTemplateId)
+            }
+
+            is ExerciseTemplateEvent.AddToTemplateSelect -> {
+                addToTemplateSelect(event.exerciseTemplateId)
+            }
+
+            is ExerciseTemplateEvent.RemoveFromTemplateSelect -> {
+                removeFromTemplateSelect(event.exerciseTemplateId)
             }
 
             ExerciseTemplateEvent.SubmitSelectedExercises -> {
                 submitSelectedExercises()
             }
+
         }
     }
 
@@ -74,21 +83,34 @@ class ExerciseTemplatesViewModel(
         }
     }
 
-    private fun toggleCheckbox(exerciseTemplateId: Int) {
-        val newCheckedExerciseTemplates =
-            if (exerciseTemplateId in checkedExerciseTemplatesState.value) {
-                checkedExerciseTemplatesState.value - exerciseTemplateId
+    private fun toggleTemplateSelect(exerciseTemplateId: Int) {
+        val newSelectedExerciseTemplates =
+            if (exerciseTemplateId in selectedExerciseTemplatesState.value) {
+                selectedExerciseTemplatesState.value - exerciseTemplateId
             } else {
-                checkedExerciseTemplatesState.value + exerciseTemplateId
+                selectedExerciseTemplatesState.value + exerciseTemplateId
             }
-        _checkedExerciseTemplatesState.update {
-            newCheckedExerciseTemplates
+        _selectedExerciseTemplatesState.update {
+            newSelectedExerciseTemplates
+        }
+    }
+
+    private fun addToTemplateSelect(exerciseTemplateId: Int) {
+        val newSelectedExerciseTemplates = selectedExerciseTemplatesState.value + exerciseTemplateId
+        _selectedExerciseTemplatesState.update { newSelectedExerciseTemplates }
+    }
+
+    private fun removeFromTemplateSelect(exerciseTemplateId: Int) {
+        if (exerciseTemplateId in selectedExerciseTemplatesState.value) {
+            val newSelectedExerciseTemplate =
+                selectedExerciseTemplatesState.value - exerciseTemplateId
+            _selectedExerciseTemplatesState.update { newSelectedExerciseTemplate }
         }
     }
 
     private fun submitSelectedExercises() {
         viewModelScope.launch {
-            val selectedTemplatesList = checkedExerciseTemplatesState.value.toList()
+            val selectedTemplatesList = selectedExerciseTemplatesState.value.toList()
             workoutTemplateUseCases.addExercisesToWorkoutTemplate(
                 exerciseTemplateIds = selectedTemplatesList,
                 workoutTemplateId = workoutTemplateId
