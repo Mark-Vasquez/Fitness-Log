@@ -22,8 +22,8 @@ class ExerciseTemplatesViewModel(
     private val _exerciseTemplatesState = MutableStateFlow(ExerciseTemplatesState())
     val exerciseTemplatesState = _exerciseTemplatesState.asStateFlow()
 
-    private val _selectedExerciseTemplatesState = MutableStateFlow<Set<Int>>(emptySet())
-    val selectedExerciseTemplatesState = _selectedExerciseTemplatesState.asStateFlow()
+    private val _selectedExercisesToIsDefaultState = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
+    val selectedExercisesToIsDefaultState = _selectedExercisesToIsDefaultState.asStateFlow()
 
     init {
         collectLatestExerciseTemplates()
@@ -49,19 +49,23 @@ class ExerciseTemplatesViewModel(
     fun onEvent(event: ExerciseTemplateEvent) {
         when (event) {
             is ExerciseTemplateEvent.ToggleTemplateSelect -> {
-                toggleTemplateSelect(event.exerciseTemplateId)
+                toggleTemplateSelect(event.exerciseTemplateId, event.isDefault)
             }
 
             is ExerciseTemplateEvent.AddToTemplateSelect -> {
-                addToTemplateSelect(event.exerciseTemplateId)
+                addToTemplateSelect(event.exerciseTemplateId, event.isDefault)
             }
 
             is ExerciseTemplateEvent.RemoveFromTemplateSelect -> {
-                removeFromTemplateSelect(event.exerciseTemplateId)
+                removeFromTemplatesSelect(listOf(event.exerciseTemplateId))
             }
 
             ExerciseTemplateEvent.SubmitSelectedExercises -> {
                 submitSelectedExercises()
+            }
+
+            is ExerciseTemplateEvent.DeleteSelectedExercises -> {
+                deleteSelectedExercises(event.exerciseTemplateIds)
             }
 
         }
@@ -83,38 +87,60 @@ class ExerciseTemplatesViewModel(
         }
     }
 
-    private fun toggleTemplateSelect(exerciseTemplateId: Int) {
-        val newSelectedExerciseTemplates =
-            if (exerciseTemplateId in selectedExerciseTemplatesState.value) {
-                selectedExerciseTemplatesState.value - exerciseTemplateId
+    private fun toggleTemplateSelect(exerciseTemplateId: Int, isDefault: Boolean) {
+        val currentSelectedTemplateMap = selectedExercisesToIsDefaultState.value
+        val newSelectedTemplateMap = currentSelectedTemplateMap.toMutableMap().apply {
+            if (exerciseTemplateId in currentSelectedTemplateMap) {
+                remove(exerciseTemplateId)
             } else {
-                selectedExerciseTemplatesState.value + exerciseTemplateId
+                put(exerciseTemplateId, isDefault)
             }
-        _selectedExerciseTemplatesState.update {
-            newSelectedExerciseTemplates
+        }
+        _selectedExercisesToIsDefaultState.update {
+            newSelectedTemplateMap.toMap()
         }
     }
 
-    private fun addToTemplateSelect(exerciseTemplateId: Int) {
-        val newSelectedExerciseTemplates = selectedExerciseTemplatesState.value + exerciseTemplateId
-        _selectedExerciseTemplatesState.update { newSelectedExerciseTemplates }
+    private fun addToTemplateSelect(exerciseTemplateId: Int, isDefault: Boolean) {
+        val currentSelectedTemplateMap = selectedExercisesToIsDefaultState.value
+        val newSelectedTemplateMap = currentSelectedTemplateMap.toMutableMap().apply {
+            put(exerciseTemplateId, isDefault)
+        }
+        _selectedExercisesToIsDefaultState.update { newSelectedTemplateMap }
     }
 
-    private fun removeFromTemplateSelect(exerciseTemplateId: Int) {
-        if (exerciseTemplateId in selectedExerciseTemplatesState.value) {
-            val newSelectedExerciseTemplate =
-                selectedExerciseTemplatesState.value - exerciseTemplateId
-            _selectedExerciseTemplatesState.update { newSelectedExerciseTemplate }
+    private fun removeFromTemplatesSelect(exerciseTemplateIds: List<Int>) {
+        val currentSelectedTemplateMap = selectedExercisesToIsDefaultState.value
+        val newSelectedTemplateMap = currentSelectedTemplateMap.toMutableMap()
+        exerciseTemplateIds.forEach { exerciseTemplateId ->
+            if (exerciseTemplateId in currentSelectedTemplateMap) {
+                newSelectedTemplateMap.remove(exerciseTemplateId)
+
+            }
         }
+        _selectedExercisesToIsDefaultState.update { newSelectedTemplateMap }
     }
 
     private fun submitSelectedExercises() {
         viewModelScope.launch {
-            val selectedTemplatesList = selectedExerciseTemplatesState.value.toList()
+            val selectedTemplatesList = selectedExercisesToIsDefaultState.value.keys.toList()
             workoutTemplateUseCases.addExercisesToWorkoutTemplate(
                 exerciseTemplateIds = selectedTemplatesList,
                 workoutTemplateId = workoutTemplateId
             )
+        }
+    }
+
+    private fun deleteSelectedExercises(exerciseTemplateIds: List<Int>) {
+        viewModelScope.launch {
+            when (val resource =
+                exerciseTemplateUseCases.deleteExerciseTemplates(exerciseTemplateIds)) {
+                is Resource.Success -> {
+                    removeFromTemplatesSelect(exerciseTemplateIds)
+                }
+
+                is Resource.Error -> _exerciseTemplatesState.update { it.copy(error = resource.errorMessage) }
+            }
         }
     }
 }

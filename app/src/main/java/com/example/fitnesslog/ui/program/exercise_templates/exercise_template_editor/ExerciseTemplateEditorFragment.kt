@@ -73,12 +73,16 @@ class ExerciseTemplateEditorFragment : Fragment() {
                 binding.btnSaveExerciseTemplate.setOnClickListener {
                     val navController = findNavController()
                     // add newly created template to the selected list
-                    val exerciseTemplateId =
-                        exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.id
-                    if (exerciseTemplateId != null) {
+                    val exerciseTemplate =
+                        exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate
+                    exerciseTemplate?.id?.let { exerciseTemplateId ->
                         navController.previousBackStackEntry?.savedStateHandle?.set(
                             EXERCISE_TEMPLATE_ID,
-                            Pair(exerciseTemplateId, ExerciseTemplateOperation.CREATE)
+                            Triple(
+                                exerciseTemplateId,
+                                ExerciseTemplateOperation.CREATE,
+                                exerciseTemplate.isDefault
+                            )
 
                         )
                     }
@@ -109,12 +113,16 @@ class ExerciseTemplateEditorFragment : Fragment() {
                         exerciseTemplateEditorViewModel.onEvent(ExerciseTemplateEditorEvent.Delete)
                         val navController = findNavController()
                         // Remove the deleted template from the selected list
-                        val exerciseTemplateId =
-                            exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate?.id
-                        if (exerciseTemplateId != null) {
+                        val exerciseTemplate =
+                            exerciseTemplateEditorViewModel.exerciseTemplateState.value.exerciseTemplate
+                        exerciseTemplate?.id?.let { exerciseTemplateId ->
                             navController.previousBackStackEntry?.savedStateHandle?.set(
                                 EXERCISE_TEMPLATE_ID,
-                                Pair(exerciseTemplateId, ExerciseTemplateOperation.DELETE)
+                                Triple(
+                                    exerciseTemplateId,
+                                    ExerciseTemplateOperation.DELETE,
+                                    exerciseTemplate.isDefault
+                                )
 
                             )
                         }

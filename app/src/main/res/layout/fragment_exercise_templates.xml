@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fillViewport="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -55,7 +56,7 @@
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fabCreateExercise"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:backgroundTint="?attr/colorTertiaryContainer"
@@ -66,14 +67,16 @@
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabDeleteExercises"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:backgroundTint="?attr/colorErrorContainer"
             android:textColor="?attr/colorOnErrorContainer"
             app:iconTint="?attr/colorOnErrorContainer"
-            android:text="Delete(1)"
             app:icon="@drawable/delete_24px"
+            tools:text="Delete (1)"
+            android:enabled="false"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/rvExerciseTemplates"
             app:layout_constraintBottom_toBottomOf="parent"

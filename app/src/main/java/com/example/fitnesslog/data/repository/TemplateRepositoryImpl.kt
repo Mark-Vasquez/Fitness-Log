@@ -169,4 +169,8 @@ class TemplateRepositoryImpl(
         return safeCall { exerciseTemplateDao.deleteExerciseTemplate(exerciseTemplateId) }
     }
 
+    override suspend fun deleteExerciseTemplates(exerciseTemplateIds: List<Int>): Resource<Unit> {
+        return safeCall { exerciseTemplateDao.deleteExerciseTemplates(exerciseTemplateIds) }
+    }
+
 }

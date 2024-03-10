@@ -56,4 +56,5 @@ interface TemplateRepository {
     fun getExerciseTemplateById(exerciseTemplateId: Int): Flow<Resource<ExerciseTemplate>>
 
     suspend fun deleteExerciseTemplate(exerciseTemplateId: Int): Resource<Unit>
+    suspend fun deleteExerciseTemplates(exerciseTemplateIds: List<Int>): Resource<Unit>
 }

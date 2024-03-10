@@ -30,4 +30,6 @@ interface ExerciseTemplateDao {
     @Query("DELETE FROM exercise_template WHERE id = :exerciseTemplateId")
     suspend fun deleteExerciseTemplate(exerciseTemplateId: Int)
 
+    @Query("DELETE FROM exercise_template WHERE id in (:exerciseTemplateIds)")
+    suspend fun deleteExerciseTemplates(exerciseTemplateIds: List<Int>)
 }

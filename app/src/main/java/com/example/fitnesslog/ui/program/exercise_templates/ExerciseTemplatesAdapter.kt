@@ -17,14 +17,14 @@ class ExerciseTemplatesAdapter(private val exerciseTemplateClickListener: Exerci
         ExerciseTemplatesDiffUtil
     ) {
 
-    private lateinit var checkedExerciseTemplates: Set<Int>
+    private lateinit var selectedExerciseToIsDefaultMap: Map<Int, Boolean>
 
-    fun submitSet(newSet: Set<Int>) {
-        checkedExerciseTemplates = newSet
+    fun submitMap(newMap: Map<Int, Boolean>) {
+        selectedExerciseToIsDefaultMap = newMap
     }
 
     interface ExerciseTemplateClickListener {
-        fun onExerciseTemplateClicked(exerciseTemplateId: Int)
+        fun onExerciseTemplateClicked(exerciseTemplateId: Int, isDefault: Boolean)
         fun onIconClicked(exerciseTemplate: ExerciseTemplate)
     }
 
@@ -71,13 +71,16 @@ class ExerciseTemplatesAdapter(private val exerciseTemplateClickListener: Exerci
             .inflate(R.layout.item_exercise_template, parent, false)
         return ViewHolder(itemView) { position, view ->
             val exerciseTemplate = getItem(position)
-            exerciseTemplate.id?.let {
+            exerciseTemplate.id?.let { exerciseTemplateId ->
                 if (view.id == R.id.ivInfoEditIcon) {
                     // If only icon view clicked
                     exerciseTemplateClickListener.onIconClicked(exerciseTemplate)
                 } else {
                     // If whole item clicked
-                    exerciseTemplateClickListener.onExerciseTemplateClicked(it)
+                    exerciseTemplateClickListener.onExerciseTemplateClicked(
+                        exerciseTemplateId,
+                        exerciseTemplate.isDefault
+                    )
                     notifyItemChanged(position)
                 }
             }
@@ -87,7 +90,7 @@ class ExerciseTemplatesAdapter(private val exerciseTemplateClickListener: Exerci
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val exerciseTemplate = getItem(position)
         holder.apply {
-            cbExercise.isChecked = exerciseTemplate.id in checkedExerciseTemplates
+            cbExercise.isChecked = exerciseTemplate.id in selectedExerciseToIsDefaultMap
             tvNameItemExerciseTemplate.text = exerciseTemplate.name
             val exerciseTemplateIcon =
                 if (exerciseTemplate.isDefault) R.drawable.info_24px else R.drawable.baseline_edit_note_24

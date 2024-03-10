@@ -19,6 +19,7 @@ import com.example.fitnesslog.core.enums.EditorMode
 import com.example.fitnesslog.core.enums.ExerciseTemplateOperation
 import com.example.fitnesslog.core.utils.constants.EXERCISE_TEMPLATE_ID
 import com.example.fitnesslog.core.utils.extensions.setThrottledOnClickListener
+import com.example.fitnesslog.core.utils.ui.showDeleteDialog
 import com.example.fitnesslog.core.utils.ui.showDiscardDialog
 import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.databinding.FragmentExerciseTemplatesBinding
@@ -56,7 +57,7 @@ class ExerciseTemplatesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeExerciseTemplatesState()
-        observeCheckedExerciseTemplatesState()
+        observeSelectedExercisesToIsDefaultState()
         retrievePreviousDestinationResult()
 
         binding.btnCancel.setThrottledOnClickListener {
@@ -78,6 +79,28 @@ class ExerciseTemplatesFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        binding.fabDeleteExercises.setOnClickListener {
+            val selectedCustomExercises =
+                exerciseTemplatesViewModel.selectedExercisesToIsDefaultState.value.filter { !it.value }.keys.toList()
+            if (selectedCustomExercises.isNotEmpty()) {
+                val title = if (selectedCustomExercises.size > 1) {
+                    "Delete Custom Exercises?"
+                } else {
+                    "Delete Custom Exercise?"
+                }
+                val message =
+                    "Deleting these exercises will remove them only from this list, not from any of your individual workouts."
+                showDeleteDialog(requireContext(), title, message) {
+                    exerciseTemplatesViewModel.onEvent(
+                        ExerciseTemplateEvent.DeleteSelectedExercises(
+                            selectedCustomExercises
+                        )
+                    )
+                }
+            }
+
+        }
+
     }
 
     override fun onDestroyView() {
@@ -95,14 +118,17 @@ class ExerciseTemplatesFragment : Fragment() {
         }
     }
 
-    private fun observeCheckedExerciseTemplatesState() {
+    private fun observeSelectedExercisesToIsDefaultState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                exerciseTemplatesViewModel.selectedExerciseTemplatesState.collectLatest {
-                    exerciseTemplatesAdapter.submitSet(it)
-                    if (it.isNotEmpty()) {
+                exerciseTemplatesViewModel.selectedExercisesToIsDefaultState.collectLatest { selectedExercisesToIsDefaultMap ->
+                    exerciseTemplatesAdapter.submitMap(selectedExercisesToIsDefaultMap)
+                    if (selectedExercisesToIsDefaultMap.isNotEmpty()) {
                         binding.btnAdd.apply {
-                            text = getString(R.string.btn_add_count, it.size)
+                            text = getString(
+                                R.string.btn_add_count,
+                                selectedExercisesToIsDefaultMap.size
+                            )
                             alpha = 1F
                             isEnabled = true
                         }
@@ -113,6 +139,22 @@ class ExerciseTemplatesFragment : Fragment() {
                             isEnabled = false
                         }
                     }
+
+                    val selectedCustomExerciseCount =
+                        selectedExercisesToIsDefaultMap.count { !it.value }
+                    if (selectedCustomExerciseCount > 0) {
+                        binding.fabDeleteExercises.apply {
+                            text = getString(R.string.btn_delete_count, selectedCustomExerciseCount)
+                            isEnabled = true
+                            visibility = View.VISIBLE
+                            extend()
+                        }
+                    } else {
+                        binding.fabDeleteExercises.apply {
+                            isEnabled = false
+                            visibility = View.GONE
+                        }
+                    }
                 }
             }
         }
@@ -120,13 +162,13 @@ class ExerciseTemplatesFragment : Fragment() {
 
     private fun retrievePreviousDestinationResult() {
         // Retrieve new id from ExerciseTemplateEditor after creating or deleting an Exercise Template
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Pair<Int, ExerciseTemplateOperation>>(
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Triple<Int, ExerciseTemplateOperation, Boolean>>(
             EXERCISE_TEMPLATE_ID
-        )?.observe(viewLifecycleOwner) { (exerciseTemplateId, operation) ->
+        )?.observe(viewLifecycleOwner) { (exerciseTemplateId, operation, isDefault) ->
             when (operation) {
                 ExerciseTemplateOperation.CREATE -> {
                     exerciseTemplatesViewModel.onEvent(
-                        ExerciseTemplateEvent.AddToTemplateSelect(exerciseTemplateId)
+                        ExerciseTemplateEvent.AddToTemplateSelect(exerciseTemplateId, isDefault)
                     )
                     // Notify the view holder with the template id to update its ui to reflect checked state
                     val adapterPosition =
@@ -145,7 +187,7 @@ class ExerciseTemplatesFragment : Fragment() {
 
             // Remove the savedStateHandle value after consuming it once, so that the observe callback
             // does not re-run again on screen rotation,
-            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Pair<Int, ExerciseTemplateOperation>>(
+            findNavController().currentBackStackEntry?.savedStateHandle?.remove<Triple<Int, ExerciseTemplateOperation, Boolean>>(
                 EXERCISE_TEMPLATE_ID
             )
         }
@@ -155,10 +197,10 @@ class ExerciseTemplatesFragment : Fragment() {
         val rvExerciseTemplates = binding.rvExerciseTemplates
         exerciseTemplatesAdapter = ExerciseTemplatesAdapter(object :
             ExerciseTemplatesAdapter.ExerciseTemplateClickListener {
-            override fun onExerciseTemplateClicked(exerciseTemplateId: Int) {
+            override fun onExerciseTemplateClicked(exerciseTemplateId: Int, isDefault: Boolean) {
                 exerciseTemplatesViewModel.onEvent(
                     ExerciseTemplateEvent.ToggleTemplateSelect(
-                        exerciseTemplateId
+                        exerciseTemplateId, isDefault
                     )
                 )
             }
