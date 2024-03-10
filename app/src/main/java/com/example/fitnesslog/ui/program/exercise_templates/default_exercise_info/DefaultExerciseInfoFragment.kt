@@ -57,7 +57,7 @@ class DefaultExerciseInfoFragment : Fragment() {
                 defaultExerciseInfoViewModel.exerciseInfoState.collectLatest {
                     it.exerciseTemplate?.let { exerciseTemplate ->
                         binding.apply {
-                            tvWorkoutNameTitle.text = exerciseTemplate.name
+                            tvExerciseNameTitle.text = exerciseTemplate.name
                             tvMuscleType.text = exerciseTemplate.exerciseMuscle.displayName
                             tvResistanceType.text = exerciseTemplate.exerciseResistance.displayName
                         }

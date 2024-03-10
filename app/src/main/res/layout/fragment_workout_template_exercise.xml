@@ -51,61 +51,63 @@
             app:layout_constraintBottom_toBottomOf="@id/tvExerciseNameTitle"
             app:layout_constraintEnd_toEndOf="parent" />
 
-
         <LinearLayout
-            android:id="@id/infoMuscle"
-            style="@style/ActionInfoButton"
-            android:layout_marginHorizontal="24dp"
+            android:id="@+id/headerContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3"
             android:layout_marginTop="24dp"
+            android:layout_marginHorizontal="14dp"
+            app:layout_constraintTop_toBottomOf="@+id/tvExerciseNameTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvExerciseNameTitle">
+            app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                style="@style/ActionInfoTitle"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvLabelSets"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:alpha="0.3"
-                android:text="@string/muscle" />
+                android:gravity="start"
+                android:paddingStart="15dp"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:text="@string/sets" />
 
             <TextView
-                android:id="@+id/tvMuscleType"
-                style="@style/ActionInfoContent"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvLabelReps"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:alpha="0.3"
                 android:layout_weight="1"
-                tools:text="Muscle Type" />
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:text="@string/reps" />
+
+            <TextView
+                android:id="@+id/tvLabelWeight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:paddingEnd="15dp"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:text="@string/lbs" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/infoResistance"
-            style="@style/ActionInfoButton"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/infoMuscle">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardRvContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="6dp"
+            app:layout_constraintStart_toStartOf="@+id/headerContainer"
+            app:layout_constraintEnd_toEndOf="@+id/headerContainer"
+            app:layout_constraintTop_toBottomOf="@+id/headerContainer">
 
-            <TextView
-                style="@style/ActionInfoTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:alpha="0.3"
-                android:text="@string/resistance" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvExerciseSets"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-            <TextView
-                android:id="@+id/tvResistanceType"
-                style="@style/ActionInfoContent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.3"
-                android:layout_weight="1"
-                tools:text="Resistance Type" />
-        </LinearLayout>
-
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

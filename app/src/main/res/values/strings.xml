@@ -61,4 +61,7 @@
     <string name="body_weight">Body Weight</string>
     <string name="dumbbell">Dumbbell</string>
     <string name="barbell">Barbell</string>
+    <string name="sets">Sets</string>
+    <string name="reps">Reps</string>
+    <string name="lbs">Lbs</string>
 </resources>
