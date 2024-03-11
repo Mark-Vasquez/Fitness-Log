@@ -34,6 +34,7 @@ interface TemplateRepository {
 
     fun getWorkoutTemplateExercisesOrderedByPosition(workoutTemplateId: Int): Flow<Resource<List<WorkoutTemplateExercise>>>
 
+    fun getWorkoutTemplateExerciseById(workoutTemplateExerciseId: Int): Flow<Resource<WorkoutTemplateExercise>>
 
     suspend fun updateAllExercisePositionsForWorkoutTemplate(workoutTemplateExercises: List<WorkoutTemplateExercise>): Resource<Unit>
 

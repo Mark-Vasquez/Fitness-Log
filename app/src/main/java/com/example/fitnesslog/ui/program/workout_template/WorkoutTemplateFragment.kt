@@ -30,7 +30,6 @@ class WorkoutTemplateFragment : Fragment() {
         WorkoutTemplateViewModel.Factory(
             args.workoutTemplateId,
             appModule.workoutTemplateUseCases,
-            appModule.exerciseTemplateUseCases
         )
     }
 
@@ -133,7 +132,12 @@ class WorkoutTemplateFragment : Fragment() {
         workoutTemplateExercisesAdapter = WorkoutTemplateExercisesAdapter(object :
             WorkoutTemplateExercisesAdapter.WorkoutTemplateExerciseClickListener {
             override fun onExerciseClicked(workoutTemplateExercise: WorkoutTemplateExercise) {
-                return
+                if (workoutTemplateExercise.id == null) return
+                val action =
+                    WorkoutTemplateFragmentDirections.actionWorkoutTemplateFragmentToWorkoutTemplateExerciseFragment(
+                        workoutTemplateExerciseId = workoutTemplateExercise.id
+                    )
+                findNavController().navigate(action)
             }
         })
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)

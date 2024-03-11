@@ -21,6 +21,9 @@ interface WorkoutTemplateExerciseDao {
     @Query("SELECT * FROM workout_template_exercise WHERE workout_template_exercise.workout_template_id = :workoutTemplateId")
     fun getWorkoutTemplateExercisesOrderedByPosition(workoutTemplateId: Int): Flow<List<WorkoutTemplateExercise>>
 
+    @Query("SELECT * FROM workout_template_exercise WHERE id = :workoutTemplateExerciseId")
+    fun getWorkoutTemplateExerciseById(workoutTemplateExerciseId: Int): Flow<WorkoutTemplateExercise>
+
     @Update
     suspend fun updateWorkoutTemplateExercise(workoutTemplateExercise: WorkoutTemplateExercise): Int
 

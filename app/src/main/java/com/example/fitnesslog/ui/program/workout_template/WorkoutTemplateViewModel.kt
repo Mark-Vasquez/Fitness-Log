@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.data.entity.WorkoutTemplateExercise
-import com.example.fitnesslog.domain.use_case.exercise_template.ExerciseTemplateUseCases
 import com.example.fitnesslog.domain.use_case.workout_template.WorkoutTemplateUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +15,6 @@ import kotlinx.coroutines.launch
 class WorkoutTemplateViewModel(
     workoutTemplateId: Int,
     private val workoutTemplateUseCases: WorkoutTemplateUseCases,
-    private val exerciseTemplateUseCases: ExerciseTemplateUseCases
 ) : ViewModel() {
 
     private val _workoutTemplateState = MutableStateFlow(WorkoutTemplateState())
@@ -32,7 +30,6 @@ class WorkoutTemplateViewModel(
     class Factory(
         private val workoutTemplateId: Int,
         private val workoutTemplateUseCases: WorkoutTemplateUseCases,
-        private val exerciseTemplateUseCases: ExerciseTemplateUseCases
     ) : ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -40,7 +37,6 @@ class WorkoutTemplateViewModel(
                 return WorkoutTemplateViewModel(
                     workoutTemplateId,
                     workoutTemplateUseCases,
-                    exerciseTemplateUseCases
                 ) as T
             }
             throw IllegalArgumentException("ViewModel type passed in the Provider does not match ViewModel configured in the Factory")

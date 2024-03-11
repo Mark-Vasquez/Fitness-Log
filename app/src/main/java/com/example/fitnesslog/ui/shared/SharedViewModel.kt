@@ -36,9 +36,6 @@ class SharedViewModel(
 
     init {
         viewModelScope.launch {
-//            if (!isSeeded()) {
-//                seedInitialApplication()
-//            }
             getSelectedProgram()
         }
     }
@@ -51,14 +48,6 @@ class SharedViewModel(
         }
     }
 
-    private suspend fun seedInitialApplication() {
-        val resource = sharedUseCases.seedInitialApplication()
-        if (resource is Resource.Error) {
-            _stateFlow.value = stateFlow.value.copy(
-                error = resource.errorMessage ?: "Error Seeding Program on Launch"
-            )
-        }
-    }
 
     private suspend fun getSelectedProgram() {
         sharedUseCases.getSelectedProgram().collectLatest { resource ->

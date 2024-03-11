@@ -38,13 +38,13 @@ import com.example.fitnesslog.domain.use_case.program.InitializeProgram
 import com.example.fitnesslog.domain.use_case.program.ProgramUseCases
 import com.example.fitnesslog.domain.use_case.program.SelectProgram
 import com.example.fitnesslog.domain.use_case.shared.GetSelectedProgram
-import com.example.fitnesslog.domain.use_case.shared.SeedInitialApplication
 import com.example.fitnesslog.domain.use_case.shared.SharedUseCases
 import com.example.fitnesslog.domain.use_case.workout_template.AddExercisesToWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.CreateWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.DeleteExerciseFromWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.DeleteWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.EditWorkoutTemplate
+import com.example.fitnesslog.domain.use_case.workout_template.GetExerciseByIdForWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.GetExercisesForWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.GetWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.GetWorkoutTemplates
@@ -129,6 +129,7 @@ class AppModuleImpl(
             deleteWorkoutTemplate = DeleteWorkoutTemplate(templateRepository),
             addExercisesToWorkoutTemplate = AddExercisesToWorkoutTemplate(templateRepository),
             getExercisesForWorkoutTemplate = GetExercisesForWorkoutTemplate(templateRepository),
+            getExerciseByIdForWorkoutTemplate = GetExerciseByIdForWorkoutTemplate(templateRepository),
             reorderExercisesForWorkoutTemplate = ReorderExercisesForWorkoutTemplate(
                 templateRepository
             ),
@@ -139,7 +140,6 @@ class AppModuleImpl(
     override val sharedUseCases: SharedUseCases by lazy {
         SharedUseCases(
             getSelectedProgram = GetSelectedProgram(programRepository),
-            seedInitialApplication = SeedInitialApplication(sharedRepository)
         )
     }
 

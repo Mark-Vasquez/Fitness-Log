@@ -110,6 +110,9 @@
             app:exitAnim="@anim/slide_out_top"
             app:popEnterAnim="@anim/slide_in_top"
             app:popExitAnim="@anim/slide_out_bottom" />
+        <action
+            android:id="@+id/action_workoutTemplateFragment_to_workoutTemplateExerciseFragment"
+            app:destination="@id/workoutTemplateExerciseFragment" />
     </fragment>
     <fragment
         android:id="@+id/exerciseTemplatesFragment"
@@ -180,6 +183,15 @@
             android:name="exerciseResistance"
             app:argType="com.example.fitnesslog.core.enums.ExerciseResistance" />
     </dialog>
+    <fragment
+        android:id="@+id/workoutTemplateExerciseFragment"
+        android:name="com.example.fitnesslog.ui.program.workout_template.workout_template_exercise.WorkoutTemplateExerciseFragment"
+        android:label="WorkoutTemplateExerciseFragment"
+        tools:layout="@layout/fragment_workout_template_exercise">
+        <argument
+            android:name="workoutTemplateExerciseId"
+            app:argType="integer" />
+    </fragment>
 
 
 </navigation>

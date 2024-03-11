@@ -112,6 +112,12 @@ class TemplateRepositoryImpl(
 
     }
 
+    override fun getWorkoutTemplateExerciseById(workoutTemplateExerciseId: Int): Flow<Resource<WorkoutTemplateExercise>> {
+        return workoutTemplateExerciseDao.getWorkoutTemplateExerciseById(workoutTemplateExerciseId)
+            .map { Resource.Success(it) as Resource<WorkoutTemplateExercise> }
+            .catch { emit(Resource.Error(it.toErrorMessage())) }
+    }
+
     override suspend fun updateAllExercisePositionsForWorkoutTemplate(workoutTemplateExercises: List<WorkoutTemplateExercise>): Resource<Unit> {
         return safeCall {
             workoutTemplateExerciseDao.updateAllExercisePositionsForWorkoutTemplate(

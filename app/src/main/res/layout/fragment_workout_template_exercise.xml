@@ -97,6 +97,7 @@
             android:id="@+id/cardRvContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             app:cardCornerRadius="6dp"
             app:layout_constraintStart_toStartOf="@+id/headerContainer"
             app:layout_constraintEnd_toEndOf="@+id/headerContainer"
