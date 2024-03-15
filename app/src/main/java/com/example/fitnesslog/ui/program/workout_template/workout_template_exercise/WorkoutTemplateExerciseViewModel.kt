@@ -19,8 +19,11 @@ class WorkoutTemplateExerciseViewModel(
     private val _workoutTemplateExerciseState = MutableStateFlow(WorkoutTemplateExerciseState())
     val workoutTemplateExerciseState = _workoutTemplateExerciseState.asStateFlow()
 
+
     private val _workoutTemplateExerciseSetsState =
         MutableStateFlow(WorkoutTemplateExerciseSetsState())
+    val workoutTemplateExerciseSetsState = _workoutTemplateExerciseSetsState.asStateFlow()
+
 
     class Factory(
         private val workoutTemplateExerciseId: Int,
@@ -67,6 +70,23 @@ class WorkoutTemplateExerciseViewModel(
     }
 
     private fun collectLatestWorkoutTemplateExerciseSets(workoutTemplateExerciseId: Int) {
+        viewModelScope.launch {
+            workoutTemplateUseCases.getSetsForWorkoutTemplateExerciseId(workoutTemplateExerciseId)
+                .collectLatest { resource ->
+                    when (resource) {
+                        is Resource.Success -> _workoutTemplateExerciseSetsState.update {
+                            it.copy(
+                                workoutTemplateExerciseSets = resource.data
+                            )
+                        }
 
+                        is Resource.Error -> _workoutTemplateExerciseState.update {
+                            it.copy(
+                                error = resource.errorMessage
+                            )
+                        }
+                    }
+                }
+        }
     }
 }

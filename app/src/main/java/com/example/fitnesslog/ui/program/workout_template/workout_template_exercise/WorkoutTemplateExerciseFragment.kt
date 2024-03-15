@@ -10,7 +10,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
+import com.example.fitnesslog.data.entity.WorkoutTemplateExerciseSet
 import com.example.fitnesslog.databinding.FragmentWorkoutTemplateExerciseBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -25,6 +27,7 @@ class WorkoutTemplateExerciseFragment : Fragment() {
     private var _binding: FragmentWorkoutTemplateExerciseBinding? = null
     private val binding: FragmentWorkoutTemplateExerciseBinding get() = _binding!!
     private val args: WorkoutTemplateExerciseFragmentArgs by navArgs()
+    private lateinit var workoutTemplateExerciseSetsAdapter: WorkoutTemplateExerciseSetsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +40,9 @@ class WorkoutTemplateExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
         observeWorkoutTemplateExerciseState()
+        observeWorkoutTemplateExerciseSetsState()
     }
 
 
@@ -55,6 +60,40 @@ class WorkoutTemplateExerciseFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun observeWorkoutTemplateExerciseSetsState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                workoutTemplateExerciseViewModel.workoutTemplateExerciseSetsState.collectLatest {
+                    workoutTemplateExerciseSetsAdapter.submitList(it.workoutTemplateExerciseSets)
+                }
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
+        val rvExerciseSets = binding.rvExerciseSets
+        workoutTemplateExerciseSetsAdapter = WorkoutTemplateExerciseSetsAdapter(object :
+            WorkoutTemplateExerciseSetsAdapter.WorkoutTemplateExerciseSetClickListener {
+            override fun onSetNumberClicked(workoutTemplateExerciseSet: WorkoutTemplateExerciseSet) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onRepNumberChanged(adapterPosition: Int, newGoalRep: Int?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onWeightNumberChanged(adapterPosition: Int, newGoalRep: Int?) {
+                TODO("Not yet implemented")
+            }
+
+
+        })
+        rvExerciseSets.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = workoutTemplateExerciseSetsAdapter
         }
     }
 }

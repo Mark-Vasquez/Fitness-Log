@@ -12,6 +12,7 @@ import com.example.fitnesslog.data.dao.WorkoutTemplateExerciseSetDao
 import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.data.entity.WorkoutTemplate
 import com.example.fitnesslog.data.entity.WorkoutTemplateExercise
+import com.example.fitnesslog.data.entity.WorkoutTemplateExerciseSet
 import com.example.fitnesslog.domain.repository.TemplateRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -136,6 +137,15 @@ class TemplateRepositoryImpl(
                 workoutTemplateId
             )
         }
+    }
+
+    // **Workout Template Exercise Set**
+    override fun getWorkoutTemplateExerciseSetsOrderedByPosition(workoutTemplateExerciseId: Int): Flow<Resource<List<WorkoutTemplateExerciseSet>>> {
+        return workoutTemplateExerciseSetDao.getWorkoutTemplateExerciseSetsOrderedByPosition(
+            workoutTemplateExerciseId
+        )
+            .map { Resource.Success(it) as Resource<List<WorkoutTemplateExerciseSet>> }
+            .catch { emit(Resource.Error(it.toErrorMessage())) }
     }
 
     // **Exercise Template**

@@ -16,23 +16,27 @@
         android:textAppearance="?attr/textAppearanceTitleMedium"
         tools:text="1" />
 
-    <TextView
-        android:id="@+id/tvRepNumber"
+    <EditText
+        android:id="@+id/etRepNumber"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
+        android:inputType="number"
         android:textAppearance="?attr/textAppearanceTitleMedium"
-        tools:text="12" />
+        tools:text="12"
+        android:background="@android:color/transparent" />
 
-    <TextView
-        android:id="@+id/tvWeightNumber"
+    <EditText
+        android:id="@+id/etWeightNumber"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="end|center_vertical"
         android:paddingEnd="15dp"
+        android:inputType="number"
         android:textAppearance="?attr/textAppearanceTitleMedium"
-        tools:text="45" />
+        tools:text="45"
+        android:background="@android:color/transparent" />
 
 </LinearLayout>

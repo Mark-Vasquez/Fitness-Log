@@ -4,6 +4,7 @@ import com.example.fitnesslog.core.utils.Resource
 import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.data.entity.WorkoutTemplate
 import com.example.fitnesslog.data.entity.WorkoutTemplateExercise
+import com.example.fitnesslog.data.entity.WorkoutTemplateExerciseSet
 import kotlinx.coroutines.flow.Flow
 
 interface TemplateRepository {
@@ -44,7 +45,7 @@ interface TemplateRepository {
     ): Resource<Unit>
 
     // **Workout Template Exercise Set
-
+    fun getWorkoutTemplateExerciseSetsOrderedByPosition(workoutTemplateExerciseId: Int): Flow<Resource<List<WorkoutTemplateExerciseSet>>>
 
     // **Exercise Template**
     suspend fun insertExerciseTemplate(exerciseTemplate: ExerciseTemplate): Resource<Long>
