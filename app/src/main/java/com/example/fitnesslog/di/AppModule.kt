@@ -43,6 +43,7 @@ import com.example.fitnesslog.domain.use_case.workout_template.AddExercisesToWor
 import com.example.fitnesslog.domain.use_case.workout_template.CreateWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.DeleteExerciseFromWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.DeleteWorkoutTemplate
+import com.example.fitnesslog.domain.use_case.workout_template.EditTemplateExerciseSet
 import com.example.fitnesslog.domain.use_case.workout_template.EditWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.GetExerciseByIdForWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.GetExercisesForWorkoutTemplate
@@ -137,7 +138,8 @@ class AppModuleImpl(
             deleteExerciseFromWorkoutTemplate = DeleteExerciseFromWorkoutTemplate(templateRepository),
             getSetsForWorkoutTemplateExerciseId = GetSetsForWorkoutTemplateExerciseId(
                 templateRepository
-            )
+            ),
+            editTemplateExerciseSet = EditTemplateExerciseSet(templateRepository)
         )
     }
 

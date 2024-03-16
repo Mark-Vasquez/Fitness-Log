@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesslog.core.utils.Resource
+import com.example.fitnesslog.data.entity.WorkoutTemplateExerciseSet
 import com.example.fitnesslog.domain.use_case.workout_template.WorkoutTemplateUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,6 +44,18 @@ class WorkoutTemplateExerciseViewModel(
     init {
         collectLatestWorkoutTemplateExercise(workoutTemplateExerciseId)
         collectLatestWorkoutTemplateExerciseSets(workoutTemplateExerciseId)
+    }
+
+    fun onEvent(event: WorkoutTemplateExerciseEvent) {
+        when (event) {
+            is WorkoutTemplateExerciseEvent.UpdateSetGoalRep -> {
+                updateSetGoalRep(event.workoutTemplateExerciseSet, event.newGoalRep)
+            }
+
+            is WorkoutTemplateExerciseEvent.UpdateSetWeight -> {
+                updateSetWeight(event.workoutTemplateExerciseSet, event.newWeight)
+            }
+        }
     }
 
     private fun collectLatestWorkoutTemplateExercise(workoutTemplateExerciseId: Int) {
@@ -87,6 +100,26 @@ class WorkoutTemplateExerciseViewModel(
                         }
                     }
                 }
+        }
+    }
+
+    private fun updateSetGoalRep(
+        workoutTemplateExerciseSet: WorkoutTemplateExerciseSet,
+        newRep: Int
+    ) {
+        viewModelScope.launch {
+            workoutTemplateUseCases.editTemplateExerciseSet(workoutTemplateExerciseSet.copy(goalReps = newRep))
+        }
+    }
+
+    private fun updateSetWeight(
+        workoutTemplateExerciseSet: WorkoutTemplateExerciseSet,
+        newWeight: Int
+    ) {
+        viewModelScope.launch {
+            workoutTemplateUseCases.editTemplateExerciseSet(
+                workoutTemplateExerciseSet.copy(weightInLbs = newWeight)
+            )
         }
     }
 }

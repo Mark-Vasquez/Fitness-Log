@@ -20,8 +20,8 @@ class WorkoutTemplateExerciseSetsAdapter(private val workoutTemplateExerciseSetC
 
     interface WorkoutTemplateExerciseSetClickListener {
         fun onSetNumberClicked(workoutTemplateExerciseSet: WorkoutTemplateExerciseSet)
-        fun onRepNumberChanged(adapterPosition: Int, newGoalRep: Int?)
-        fun onWeightNumberChanged(adapterPosition: Int, newGoalRep: Int?)
+        fun onRepNumberChanged(adapterPosition: Int, newGoalRep: Int)
+        fun onWeightNumberChanged(adapterPosition: Int, newWeight: Int)
     }
 
     object WorkoutTemplateExerciseSetsDiffUtil :
@@ -106,8 +106,16 @@ class WorkoutTemplateExerciseSetsAdapter(private val workoutTemplateExerciseSetC
                 R.string.set_number,
                 workoutTemplateExerciseSet.position + 1
             )
-            etRepNumber.setText(workoutTemplateExerciseSet.goalReps.toString())
-            etWeightNumber.setText(workoutTemplateExerciseSet.weightInLbs.toString())
+            val newRepText = workoutTemplateExerciseSet.goalReps.toString()
+            if (etRepNumber.text.toString() != newRepText) {
+                etRepNumber.setText(newRepText)
+                etRepNumber.setSelection(etRepNumber.length())
+            }
+            val newWeightText = workoutTemplateExerciseSet.weightInLbs.toString()
+            if (etWeightNumber.text.toString() != newWeightText) {
+                etWeightNumber.setText(newWeightText)
+                etWeightNumber.setSelection((etWeightNumber.length()))
+            }
         }
     }
 
@@ -121,24 +129,26 @@ class WorkoutTemplateExerciseSetsAdapter(private val workoutTemplateExerciseSetC
         holder.disableTextWatcher()
     }
 
-    inner class RepNumberTextWatcher(private val onRepNumberChanged: (Int?) -> Unit) :
+    inner class RepNumberTextWatcher(private val onRepNumberChanged: (Int) -> Unit) :
         TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: Editable?) {
-            val repNumber = s?.toString()?.toIntOrNull()
-            onRepNumberChanged(repNumber)
+            val newRepNumber = when {
+                s.isNullOrEmpty() || s.toString() == "0" -> 1
+                else -> s.toString().toIntOrNull() ?: 1
+            }
+            onRepNumberChanged(newRepNumber)
         }
     }
 
-
-    inner class WeightNumberTextWatcher(private val onWeightNumberChanged: (Int?) -> Unit) :
+    inner class WeightNumberTextWatcher(private val onWeightNumberChanged: (Int) -> Unit) :
         TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: Editable?) {
-            val weightNumber = s?.toString()?.toIntOrNull()
-            onWeightNumberChanged(weightNumber)
+            val newWeightNumber = s?.toString()?.toIntOrNull() ?: 0
+            onWeightNumberChanged(newWeightNumber)
         }
     }
 }

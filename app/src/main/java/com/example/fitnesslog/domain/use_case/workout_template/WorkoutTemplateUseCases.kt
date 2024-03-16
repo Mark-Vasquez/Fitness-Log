@@ -12,5 +12,6 @@ data class WorkoutTemplateUseCases(
     val getExerciseByIdForWorkoutTemplate: GetExerciseByIdForWorkoutTemplate,
     val reorderExercisesForWorkoutTemplate: ReorderExercisesForWorkoutTemplate,
     val deleteExerciseFromWorkoutTemplate: DeleteExerciseFromWorkoutTemplate,
-    val getSetsForWorkoutTemplateExerciseId: GetSetsForWorkoutTemplateExerciseId
+    val getSetsForWorkoutTemplateExerciseId: GetSetsForWorkoutTemplateExerciseId,
+    val editTemplateExerciseSet: EditTemplateExerciseSet
 )

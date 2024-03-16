@@ -6,6 +6,7 @@ import com.example.fitnesslog.databinding.FragmentProgramBinding
 
 fun updateNameInputView(binding: FragmentProgramBinding, name: String) {
     // This allow the text input to only populate on initial Edit or on configuration changes
+    // Prevent infinite text update loop
     if (binding.etNameProgram.text.toString() != name) {
         binding.etNameProgram.setText(name)
         binding.etNameProgram.setSelection(binding.etNameProgram.length())

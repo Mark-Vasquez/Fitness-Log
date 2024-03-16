@@ -22,7 +22,7 @@ interface WorkoutTemplateExerciseSetDao {
     fun getWorkoutTemplateExerciseSetsOrderedByPosition(workoutTemplateExerciseId: Int): Flow<List<WorkoutTemplateExerciseSet>>
 
     @Update
-    suspend fun updateWorkoutTemplateExerciseSet(workoutTemplateExerciseSet: WorkoutTemplateExerciseSet)
+    suspend fun updateWorkoutTemplateExerciseSet(workoutTemplateExerciseSet: WorkoutTemplateExerciseSet): Int
 
     @Transaction
     suspend fun updateAllSetPositionsForWorkoutTemplateExercise(

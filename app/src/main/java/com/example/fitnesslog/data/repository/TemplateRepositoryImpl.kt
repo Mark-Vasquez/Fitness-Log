@@ -148,6 +148,14 @@ class TemplateRepositoryImpl(
             .catch { emit(Resource.Error(it.toErrorMessage())) }
     }
 
+    override suspend fun updateWorkoutTemplateExerciseSet(workoutTemplateExerciseSet: WorkoutTemplateExerciseSet): Resource<Int> {
+        return safeCall {
+            workoutTemplateExerciseSetDao.updateWorkoutTemplateExerciseSet(
+                workoutTemplateExerciseSet
+            )
+        }
+    }
+
     // **Exercise Template**
     override suspend fun insertExerciseTemplate(exerciseTemplate: ExerciseTemplate): Resource<Long> {
         return safeCall { exerciseTemplateDao.insertExerciseTemplate(exerciseTemplate) }

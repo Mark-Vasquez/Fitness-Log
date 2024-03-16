@@ -75,18 +75,37 @@ class WorkoutTemplateExerciseFragment : Fragment() {
 
     private fun setupRecyclerView() {
         val rvExerciseSets = binding.rvExerciseSets
+        rvExerciseSets.itemAnimator = null
         workoutTemplateExerciseSetsAdapter = WorkoutTemplateExerciseSetsAdapter(object :
             WorkoutTemplateExerciseSetsAdapter.WorkoutTemplateExerciseSetClickListener {
             override fun onSetNumberClicked(workoutTemplateExerciseSet: WorkoutTemplateExerciseSet) {
-                TODO("Not yet implemented")
+//
             }
 
-            override fun onRepNumberChanged(adapterPosition: Int, newGoalRep: Int?) {
-                TODO("Not yet implemented")
+            override fun onRepNumberChanged(adapterPosition: Int, newGoalRep: Int) {
+                val workoutTemplateExerciseSet =
+                    workoutTemplateExerciseSetsAdapter.currentList[adapterPosition]
+                if (workoutTemplateExerciseSet != null) {
+                    workoutTemplateExerciseViewModel.onEvent(
+                        WorkoutTemplateExerciseEvent.UpdateSetGoalRep(
+                            workoutTemplateExerciseSet,
+                            newGoalRep
+                        )
+                    )
+                }
             }
 
-            override fun onWeightNumberChanged(adapterPosition: Int, newGoalRep: Int?) {
-                TODO("Not yet implemented")
+            override fun onWeightNumberChanged(adapterPosition: Int, newWeight: Int) {
+                val workoutTemplateExerciseSet =
+                    workoutTemplateExerciseSetsAdapter.currentList[adapterPosition]
+                if (workoutTemplateExerciseSet != null) {
+                    workoutTemplateExerciseViewModel.onEvent(
+                        WorkoutTemplateExerciseEvent.UpdateSetWeight(
+                            workoutTemplateExerciseSet,
+                            newWeight
+                        )
+                    )
+                }
             }
 
 
