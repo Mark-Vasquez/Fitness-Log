@@ -99,6 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             app:cardCornerRadius="6dp"
+            app:cardBackgroundColor="?attr/colorSecondaryContainer"
             app:layout_constraintStart_toStartOf="@+id/headerContainer"
             app:layout_constraintEnd_toEndOf="@+id/headerContainer"
             app:layout_constraintTop_toBottomOf="@+id/headerContainer">
@@ -110,5 +111,17 @@
 
         </androidx.cardview.widget.CardView>
 
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabAddSet"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:backgroundTint="?attr/colorTertiaryContainer"
+            android:text="@string/add_set"
+            app:icon="@drawable/baseline_add_24"
+            app:iconGravity="textStart"
+            android:layout_marginTop="2dp"
+            app:layout_constraintStart_toStartOf="@id/cardRvContainer"
+            app:layout_constraintEnd_toEndOf="@id/cardRvContainer"
+            app:layout_constraintTop_toBottomOf="@id/cardRvContainer" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

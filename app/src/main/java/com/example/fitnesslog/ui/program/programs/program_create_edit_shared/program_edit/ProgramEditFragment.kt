@@ -230,7 +230,6 @@ class ProgramEditFragment : Fragment() {
 
     private fun setupRecyclerView() {
         val rvWorkoutTemplates = binding.rvWorkoutTemplates
-        rvWorkoutTemplates.layoutManager = LinearLayoutManager(requireContext())
         workoutTemplatesAdapter =
             WorkoutTemplatesAdapter(object : WorkoutTemplatesAdapter.WorkoutTemplateClickListener {
                 override fun onWorkoutTemplateClicked(workoutTemplate: WorkoutTemplate) {
@@ -242,13 +241,16 @@ class ProgramEditFragment : Fragment() {
                     findNavController().navigate(action)
                 }
             })
-        rvWorkoutTemplates.adapter = workoutTemplatesAdapter
 
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         divider.apply {
             isLastItemDecorated = false
         }
-        rvWorkoutTemplates.addItemDecoration(divider)
+        rvWorkoutTemplates.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = workoutTemplatesAdapter
+            addItemDecoration(divider)
+        }
 
         class ItemTouchHelperCallback(private val adapter: WorkoutTemplatesAdapter) :
             ItemTouchHelper.Callback() {
