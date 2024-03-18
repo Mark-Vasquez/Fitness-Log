@@ -55,6 +55,10 @@ class WorkoutTemplateExerciseViewModel(
             is WorkoutTemplateExerciseEvent.UpdateSetWeight -> {
                 updateSetWeight(event.workoutTemplateExerciseSet, event.newWeight)
             }
+
+            is WorkoutTemplateExerciseEvent.DeleteSet -> {
+                deleteSet(event.workoutTemplateExerciseSetId, event.workoutTemplateExerciseId)
+            }
         }
     }
 
@@ -119,6 +123,15 @@ class WorkoutTemplateExerciseViewModel(
         viewModelScope.launch {
             workoutTemplateUseCases.editTemplateExerciseSet(
                 workoutTemplateExerciseSet.copy(weightInLbs = newWeight)
+            )
+        }
+    }
+
+    private fun deleteSet(workoutTemplateExerciseSetId: Int, workoutTemplateExerciseId: Int) {
+        viewModelScope.launch {
+            workoutTemplateUseCases.deleteSetFromWorkoutTemplateExercise(
+                workoutTemplateExerciseSetId,
+                workoutTemplateExerciseId
             )
         }
     }

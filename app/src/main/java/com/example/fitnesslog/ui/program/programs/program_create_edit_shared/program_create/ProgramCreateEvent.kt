@@ -12,4 +12,7 @@ sealed class ProgramCreateEvent {
     data object CreateWorkoutTemplate : ProgramCreateEvent()
     data class UpdateWorkoutTemplatesOrder(val workoutTemplates: List<WorkoutTemplate>) :
         ProgramCreateEvent()
+
+    data class DeleteWorkoutTemplate(val workoutTemplateId: Int, val programId: Int) :
+        ProgramCreateEvent()
 }

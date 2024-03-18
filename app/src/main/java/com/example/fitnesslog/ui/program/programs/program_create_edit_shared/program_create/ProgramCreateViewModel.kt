@@ -81,6 +81,9 @@ class ProgramCreateViewModel(
                 createWorkoutTemplate()
             }
 
+            is ProgramCreateEvent.DeleteWorkoutTemplate -> {
+                deleteWorkoutTemplate(event.workoutTemplateId, event.programId)
+            }
         }
     }
 
@@ -222,6 +225,12 @@ class ProgramCreateViewModel(
         val programId = programState.value.program?.id ?: return
         viewModelScope.launch {
             workoutTemplateUseCases.createWorkoutTemplate(programId)
+        }
+    }
+
+    private fun deleteWorkoutTemplate(workoutTemplateId: Int, programId: Int) {
+        viewModelScope.launch {
+            workoutTemplateUseCases.deleteWorkoutTemplate(workoutTemplateId, programId)
         }
     }
 

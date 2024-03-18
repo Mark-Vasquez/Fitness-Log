@@ -14,4 +14,9 @@ sealed class WorkoutTemplateExerciseEvent {
         val newWeight: Int
     ) :
         WorkoutTemplateExerciseEvent()
+
+    data class DeleteSet(
+        val workoutTemplateExerciseSetId: Int,
+        val workoutTemplateExerciseId: Int
+    ) : WorkoutTemplateExerciseEvent()
 }

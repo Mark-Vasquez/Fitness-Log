@@ -156,6 +156,18 @@ class TemplateRepositoryImpl(
         }
     }
 
+    override suspend fun deleteWorkoutTemplateExerciseSetAndRearrange(
+        workoutTemplateExerciseSetId: Int,
+        workoutTemplateExerciseId: Int
+    ): Resource<Unit> {
+        return safeCall {
+            workoutTemplateExerciseSetDao.deleteSetInWorkoutTemplateExerciseAndRearrange(
+                workoutTemplateExerciseSetId,
+                workoutTemplateExerciseId
+            )
+        }
+    }
+
     // **Exercise Template**
     override suspend fun insertExerciseTemplate(exerciseTemplate: ExerciseTemplate): Resource<Long> {
         return safeCall { exerciseTemplateDao.insertExerciseTemplate(exerciseTemplate) }
