@@ -8,4 +8,8 @@ sealed class WorkoutTemplateEvent {
         WorkoutTemplateEvent()
 
     data object Delete : WorkoutTemplateEvent()
+    data class DeleteWorkoutTemplateExercise(
+        val workoutTemplateExerciseId: Int,
+        val workoutTemplateId: Int
+    ) : WorkoutTemplateEvent()
 }

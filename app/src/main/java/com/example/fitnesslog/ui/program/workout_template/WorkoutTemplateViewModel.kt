@@ -61,6 +61,13 @@ class WorkoutTemplateViewModel(
             is WorkoutTemplateEvent.Delete -> {
                 deleteWorkoutTemplate()
             }
+
+            is WorkoutTemplateEvent.DeleteWorkoutTemplateExercise -> {
+                deleteWorkoutTemplateExercise(
+                    event.workoutTemplateExerciseId,
+                    event.workoutTemplateId
+                )
+            }
         }
     }
 
@@ -132,6 +139,18 @@ class WorkoutTemplateViewModel(
             workoutTemplateUseCases.deleteWorkoutTemplate(
                 workoutTemplateId,
                 workoutTemplate.programId
+            )
+        }
+    }
+
+    private fun deleteWorkoutTemplateExercise(
+        workoutTemplateExerciseId: Int,
+        workoutTemplateId: Int
+    ) {
+        viewModelScope.launch {
+            workoutTemplateUseCases.deleteExerciseFromWorkoutTemplate(
+                workoutTemplateExerciseId,
+                workoutTemplateId
             )
         }
     }
