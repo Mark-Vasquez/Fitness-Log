@@ -13,4 +13,6 @@ sealed class ProgramEditEvent {
 
     data object CreateWorkoutTemplate : ProgramEditEvent()
     data object Delete : ProgramEditEvent()
+    data class DeleteWorkoutTemplate(val workoutTemplateId: Int, val programId: Int) :
+        ProgramEditEvent()
 }

@@ -238,57 +238,6 @@ class ProgramCreateFragment : Fragment() {
         }
         rvWorkoutTemplates.addItemDecoration(divider)
 
-//        class ItemTouchHelperCallback(private val adapter: WorkoutTemplatesAdapter) :
-//            ItemTouchHelper.Callback() {
-//
-//            override fun getMovementFlags(
-//                recyclerView: RecyclerView,
-//                viewHolder: RecyclerView.ViewHolder
-//            ): Int {
-//                val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-//                val swipeFlags = ItemTouchHelper.LEFT
-//                return makeMovementFlags(dragFlags, swipeFlags)
-//            }
-//
-//            override fun onMove(
-//                recyclerView: RecyclerView,
-//                viewHolder: RecyclerView.ViewHolder,
-//                target: RecyclerView.ViewHolder
-//            ): Boolean {
-//                val oldIndex = viewHolder.adapterPosition
-//                val newIndex = target.adapterPosition
-//                val updatedList = adapter.currentList.toMutableList()
-//                Collections.swap(updatedList, oldIndex, newIndex)
-//                adapter.submitList(updatedList)
-//                return true
-//            }
-//
-//            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-//                super.onSelectedChanged(viewHolder, actionState)
-//                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-//                    viewHolder?.itemView?.alpha = 0.5f
-//                }
-//            }
-//
-//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
-//
-//
-//            override fun clearView(
-//                recyclerView: RecyclerView,
-//                viewHolder: RecyclerView.ViewHolder
-//            ) {
-//                viewHolder.itemView.alpha = 1.0f
-//                super.clearView(recyclerView, viewHolder)
-//
-//                val updatedList = workoutTemplatesAdapter.currentList
-//                programCreateViewModel.onEvent(
-//                    ProgramCreateEvent.UpdateWorkoutTemplatesOrder(
-//                        updatedList
-//                    )
-//                )
-//            }
-//        }
-
         val swipeAndDragCallback = object : CustomItemTouchHelperCallback(
             requireContext(),
             dragDirections = ItemTouchHelper.UP or ItemTouchHelper.DOWN,
@@ -320,14 +269,17 @@ class ProgramCreateFragment : Fragment() {
                     requireContext(),
                     "Delete Workout",
                     message,
-                    { workoutTemplatesAdapter.notifyItemChanged(position) }) {
-                    programCreateViewModel.onEvent(
-                        ProgramCreateEvent.DeleteWorkoutTemplate(
-                            workoutTemplateId,
-                            workoutTemplate.programId
+                    onCancel = {},
+                    onDiscard = {
+                        programCreateViewModel.onEvent(
+                            ProgramCreateEvent.DeleteWorkoutTemplate(
+                                workoutTemplateId,
+                                workoutTemplate.programId
+                            )
                         )
-                    )
-                }
+                    })
+                // Re-render the item UI without waiting for the dialog result because the dialog interferes
+                // with the item from swiping it's view completely out of the recyclerview
                 workoutTemplatesAdapter.notifyItemChanged(position)
             }
 

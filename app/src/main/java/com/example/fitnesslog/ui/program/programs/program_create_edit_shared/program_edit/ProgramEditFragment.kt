@@ -23,7 +23,9 @@ import com.example.fitnesslog.core.utils.constants.REST_DURATION_SECONDS
 import com.example.fitnesslog.core.utils.constants.SCHEDULED_DAYS
 import com.example.fitnesslog.core.utils.extensions.setThrottledOnClickListener
 import com.example.fitnesslog.core.utils.extensions.textChangeFlow
+import com.example.fitnesslog.core.utils.helpers.CustomItemTouchHelperCallback
 import com.example.fitnesslog.core.utils.ui.showDeleteDialog
+import com.example.fitnesslog.core.utils.ui.showSwipeDeleteDialog
 import com.example.fitnesslog.data.entity.WorkoutTemplate
 import com.example.fitnesslog.databinding.FragmentProgramBinding
 import com.example.fitnesslog.ui.program.programs.program_create_edit_shared.WorkoutTemplatesAdapter
@@ -251,19 +253,13 @@ class ProgramEditFragment : Fragment() {
             adapter = workoutTemplatesAdapter
             addItemDecoration(divider)
         }
+        
 
-        class ItemTouchHelperCallback(private val adapter: WorkoutTemplatesAdapter) :
-            ItemTouchHelper.Callback() {
-
-            override fun getMovementFlags(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ): Int {
-                val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                val swipeFlags = 0
-                return makeMovementFlags(dragFlags, swipeFlags)
-            }
-
+        val swipeAndDragCallback = object : CustomItemTouchHelperCallback(
+            requireContext(),
+            dragDirections = ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            swipeDirections = ItemTouchHelper.LEFT
+        ) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -271,42 +267,56 @@ class ProgramEditFragment : Fragment() {
             ): Boolean {
                 val oldIndex = viewHolder.adapterPosition
                 val newIndex = target.adapterPosition
-                val updatedList = adapter.currentList.toMutableList()
+                val updatedList = workoutTemplatesAdapter.currentList.toMutableList()
                 Collections.swap(updatedList, oldIndex, newIndex)
-                adapter.submitList(updatedList)
+                workoutTemplatesAdapter.submitList(updatedList)
                 return true
             }
 
-            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-                super.onSelectedChanged(viewHolder, actionState)
-                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                    // Make semi-transparent on drag
-                    viewHolder?.itemView?.alpha = 0.5f
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val workoutTemplate = workoutTemplatesAdapter.currentList[position]
+                val workoutTemplateId = workoutTemplate.id ?: return
+                val message = if (workoutTemplate.name.isNullOrEmpty()) {
+                    "Are you sure you want to delete this workout?"
+                } else {
+                    "Are you sure you want to delete \"${workoutTemplate.name}\" workout?"
                 }
+                showSwipeDeleteDialog(
+                    requireContext(),
+                    "Delete Workout",
+                    message,
+                    onCancel = {},
+                    onDiscard = {
+                        programEditViewModel.onEvent(
+                            ProgramEditEvent.DeleteWorkoutTemplate(
+                                workoutTemplateId,
+                                workoutTemplate.programId
+                            )
+                        )
+                    })
+                // Re-render the item UI without waiting for the dialog result because the dialog interferes
+                // with the item from swiping it's view completely out of the recyclerview
+                workoutTemplatesAdapter.notifyItemChanged(position)
             }
 
             override fun clearView(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder
             ) {
-                super.clearView(recyclerView, viewHolder)
-                // Take away transparency after finish dragging and dropped
                 viewHolder.itemView.alpha = 1.0f
-
-                val updatedList = adapter.currentList
+                val updatedList = workoutTemplatesAdapter.currentList
                 programEditViewModel.onEvent(
                     ProgramEditEvent.UpdateWorkoutTemplatesOrder(
                         updatedList
                     )
                 )
             }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
-
         }
 
+
         val itemTouchHelper =
-            ItemTouchHelper(ItemTouchHelperCallback(adapter = workoutTemplatesAdapter))
+            ItemTouchHelper(swipeAndDragCallback)
         itemTouchHelper.attachToRecyclerView(rvWorkoutTemplates)
 
     }

@@ -83,6 +83,10 @@ class ProgramEditViewModel(
             is ProgramEditEvent.Delete -> {
                 deleteProgram()
             }
+
+            is ProgramEditEvent.DeleteWorkoutTemplate -> {
+                deleteWorkoutTemplate(event.workoutTemplateId, event.programId)
+            }
         }
     }
 
@@ -210,5 +214,9 @@ class ProgramEditViewModel(
         }
     }
 
-
+    private fun deleteWorkoutTemplate(workoutTemplateId: Int, programId: Int) {
+        viewModelScope.launch {
+            workoutTemplateUseCases.deleteWorkoutTemplate(workoutTemplateId, programId)
+        }
+    }
 }
