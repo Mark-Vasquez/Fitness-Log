@@ -158,7 +158,8 @@ class AppModuleImpl(
             exerciseTemplateDao,
             workoutTemplateDao,
             workoutTemplateExerciseDao,
-            workoutTemplateExerciseSetDao
+            workoutTemplateExerciseSetDao,
+            db
         )
     }
     private val sharedRepository: SharedRepository by lazy {

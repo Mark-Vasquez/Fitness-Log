@@ -5,11 +5,11 @@ import com.example.fitnesslog.domain.repository.TemplateRepository
 
 class DeleteExerciseFromWorkoutTemplate(private val templateRepository: TemplateRepository) {
     suspend operator fun invoke(
-        workooutTemplateExerciseId: Int,
+        workoutTemplateExerciseId: Int,
         workoutTemplateId: Int
     ): Resource<Unit> {
         return templateRepository.deleteExerciseInWorkoutTemplateAndRearrange(
-            workooutTemplateExerciseId,
+            workoutTemplateExerciseId,
             workoutTemplateId
         )
     }

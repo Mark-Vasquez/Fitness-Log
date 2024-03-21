@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.first
 
 @Dao
 interface WorkoutTemplateExerciseDao {
+    @Insert
+    suspend fun insertWorkoutTemplateExercise(workoutTemplateExercise: WorkoutTemplateExercise): Long
 
     @Insert
     suspend fun insertWorkoutTemplateExercises(workoutTemplateExercises: List<WorkoutTemplateExercise>): LongArray

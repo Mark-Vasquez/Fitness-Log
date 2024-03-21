@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,6 +50,10 @@ class WorkoutTemplateExerciseFragment : Fragment() {
         setupRecyclerView()
         observeWorkoutTemplateExerciseState()
         observeWorkoutTemplateExerciseSetsState()
+
+        binding.btnNavigateBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
 

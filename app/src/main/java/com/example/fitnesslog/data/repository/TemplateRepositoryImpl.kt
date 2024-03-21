@@ -1,5 +1,6 @@
 package com.example.fitnesslog.data.repository
 
+import androidx.room.withTransaction
 import com.example.fitnesslog.core.enums.ExerciseMuscle
 import com.example.fitnesslog.core.enums.ExerciseResistance
 import com.example.fitnesslog.core.utils.Resource
@@ -9,6 +10,7 @@ import com.example.fitnesslog.data.dao.ExerciseTemplateDao
 import com.example.fitnesslog.data.dao.WorkoutTemplateDao
 import com.example.fitnesslog.data.dao.WorkoutTemplateExerciseDao
 import com.example.fitnesslog.data.dao.WorkoutTemplateExerciseSetDao
+import com.example.fitnesslog.data.database.FitnessLogDatabase
 import com.example.fitnesslog.data.entity.ExerciseTemplate
 import com.example.fitnesslog.data.entity.WorkoutTemplate
 import com.example.fitnesslog.data.entity.WorkoutTemplateExercise
@@ -22,7 +24,8 @@ class TemplateRepositoryImpl(
     private val exerciseTemplateDao: ExerciseTemplateDao,
     private val workoutTemplateDao: WorkoutTemplateDao,
     private val workoutTemplateExerciseDao: WorkoutTemplateExerciseDao,
-    private val workoutTemplateExerciseSetDao: WorkoutTemplateExerciseSetDao
+    private val workoutTemplateExerciseSetDao: WorkoutTemplateExerciseSetDao,
+    private val db: FitnessLogDatabase
 ) :
     TemplateRepository {
     // **Workout Template**
@@ -98,9 +101,32 @@ class TemplateRepositoryImpl(
                 )
             }
         return safeCall {
-            workoutTemplateExerciseDao.insertWorkoutTemplateExercises(
-                newWorkoutTemplateExercises
-            )
+            db.withTransaction {
+                newWorkoutTemplateExercises.forEach { workoutTemplateExercise ->
+                    val workoutTemplateExerciseId =
+                        workoutTemplateExerciseDao.insertWorkoutTemplateExercise(
+                            workoutTemplateExercise
+                        )
+                    // insert WorkoutTemplateExercise sets for the inserted Exercise
+                    val weightInLbs = when (workoutTemplateExercise.exerciseResistance) {
+                        ExerciseResistance.BARBELL, ExerciseResistance.MACHINE, ExerciseResistance.OTHER -> 45
+                        ExerciseResistance.BODY_WEIGHT -> 0
+                        ExerciseResistance.DUMBBELL -> 15
+                    }
+                    // insert 3 WorkoutTemplateExerciseSets for the newly inserted Exercise
+                    repeat(3) { position ->
+                        val newSet = WorkoutTemplateExerciseSet(
+                            workoutTemplateExerciseId = workoutTemplateExerciseId.toInt(),
+                            goalReps = 10,
+                            weightInLbs = weightInLbs,
+                            position = position,
+                            createdAt = System.currentTimeMillis(),
+                            updatedAt = System.currentTimeMillis()
+                        )
+                        workoutTemplateExerciseSetDao.insertSetTemplate(newSet)
+                    }
+                }
+            }
         }
     }
 
