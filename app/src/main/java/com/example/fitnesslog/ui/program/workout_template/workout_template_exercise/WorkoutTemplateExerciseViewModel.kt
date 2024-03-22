@@ -63,6 +63,10 @@ class WorkoutTemplateExerciseViewModel(
             is WorkoutTemplateExerciseEvent.DeleteSet -> {
                 deleteSet(event.workoutTemplateExerciseSetId, event.workoutTemplateExerciseId)
             }
+
+            is WorkoutTemplateExerciseEvent.DeleteWorkoutTemplateExercise -> {
+                deleteWorkoutTemplateExercise()
+            }
         }
     }
 
@@ -144,6 +148,18 @@ class WorkoutTemplateExerciseViewModel(
             workoutTemplateUseCases.deleteSetFromWorkoutTemplateExercise(
                 workoutTemplateExerciseSetId,
                 workoutTemplateExerciseId
+            )
+        }
+    }
+
+    private fun deleteWorkoutTemplateExercise() {
+        val workoutTemplateExercise =
+            workoutTemplateExerciseState.value.workoutTemplateExercise ?: return
+        val workoutTemplateExerciseId = workoutTemplateExercise.id ?: return
+        viewModelScope.launch {
+            workoutTemplateUseCases.deleteExerciseFromWorkoutTemplate(
+                workoutTemplateExerciseId,
+                workoutTemplateExercise.workoutTemplateId
             )
         }
     }

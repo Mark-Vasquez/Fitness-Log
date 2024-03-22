@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.FitnessLogApp.Companion.appModule
 import com.example.fitnesslog.core.utils.helpers.CustomItemTouchHelperCallback
+import com.example.fitnesslog.core.utils.ui.showDeleteDialog
 import com.example.fitnesslog.data.entity.WorkoutTemplateExerciseSet
 import com.example.fitnesslog.databinding.FragmentWorkoutTemplateExerciseBinding
 import com.google.android.material.color.MaterialColors
@@ -57,6 +58,20 @@ class WorkoutTemplateExerciseFragment : Fragment() {
 
         binding.fabAddSet.setOnClickListener {
             workoutTemplateExerciseViewModel.onEvent(WorkoutTemplateExerciseEvent.AddNewSet)
+        }
+
+        binding.btnDeleteExercise.setOnClickListener {
+            val workoutTemplateExerciseName =
+                workoutTemplateExerciseViewModel.workoutTemplateExerciseState.value.workoutTemplateExercise?.name
+            val message = if (workoutTemplateExerciseName.isNullOrEmpty()) {
+                "Are you sure you want to delete this exercise from your workout?"
+            } else {
+                "Are you sure you want to delete \"${workoutTemplateExerciseName}\" from your workout?"
+            }
+            showDeleteDialog(requireContext(), "Delete Exercise", message) {
+                workoutTemplateExerciseViewModel.onEvent(WorkoutTemplateExerciseEvent.DeleteWorkoutTemplateExercise)
+                findNavController().popBackStack()
+            }
         }
     }
 
@@ -168,11 +183,6 @@ class WorkoutTemplateExerciseFragment : Fragment() {
                 )
             }
 
-            override fun clearView(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ) {
-            }
         }
 
         val itemTouchHelper =

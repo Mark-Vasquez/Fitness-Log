@@ -151,7 +151,7 @@ class WorkoutTemplateFragment : Fragment() {
             adapter = workoutTemplateExercisesAdapter
             addItemDecoration(divider)
         }
-        
+
         val swipeAndDragCallback = object : CustomItemTouchHelperCallback(
             requireContext(),
             dragDirections = ItemTouchHelper.UP or ItemTouchHelper.DOWN,
@@ -183,7 +183,7 @@ class WorkoutTemplateFragment : Fragment() {
                     requireContext(),
                     "Delete Exercise",
                     message,
-                    onCancel = {},
+                    onCancel = { workoutTemplateExercisesAdapter.notifyItemChanged(position) },
                     onDiscard = {
                         workoutTemplateViewModel.onEvent(
                             WorkoutTemplateEvent.DeleteWorkoutTemplateExercise(
@@ -192,15 +192,13 @@ class WorkoutTemplateFragment : Fragment() {
                             )
                         )
                     })
-                // Re-render the item UI without waiting for the dialog result because the dialog interferes
-                // with the item from swiping it's view completely out of the recyclerview
-                workoutTemplateExercisesAdapter.notifyItemChanged(position)
             }
 
             override fun clearView(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder
             ) {
+                super.clearView(recyclerView, viewHolder)
                 viewHolder.itemView.alpha = 1.0f
                 val updatedList = workoutTemplateExercisesAdapter.currentList
                 workoutTemplateViewModel.onEvent(

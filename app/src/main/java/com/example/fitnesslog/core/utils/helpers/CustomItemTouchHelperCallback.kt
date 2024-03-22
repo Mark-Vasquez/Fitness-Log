@@ -78,7 +78,8 @@ abstract class CustomItemTouchHelperCallback(
 
         // When a user doesn't swipe all the way and it springs back
         if (isCancelled || deleteIconDrawable == null) {
-            super.onChildDraw(
+            // can be used to delete the temporarily drawn icon if a user cancels swipe
+            return super.onChildDraw(
                 c,
                 recyclerView,
                 viewHolder,
@@ -87,8 +88,8 @@ abstract class CustomItemTouchHelperCallback(
                 actionState,
                 isCurrentlyActive
             )
-            return
         }
+
 
         // Sets the red delete background position to show only how far dX swiped left from right
         deleteBackgroundDrawable.setBounds(
@@ -130,11 +131,4 @@ abstract class CustomItemTouchHelperCallback(
             viewHolder?.itemView?.alpha = 0.5f
         }
     }
-
-    abstract override fun clearView(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
-    )
-
-
 }
