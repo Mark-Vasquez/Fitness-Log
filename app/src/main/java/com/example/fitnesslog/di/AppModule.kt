@@ -40,6 +40,7 @@ import com.example.fitnesslog.domain.use_case.program.SelectProgram
 import com.example.fitnesslog.domain.use_case.shared.GetSelectedProgram
 import com.example.fitnesslog.domain.use_case.shared.SharedUseCases
 import com.example.fitnesslog.domain.use_case.workout_template.AddExercisesToWorkoutTemplate
+import com.example.fitnesslog.domain.use_case.workout_template.AddNewSet
 import com.example.fitnesslog.domain.use_case.workout_template.CreateWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.DeleteExerciseFromWorkoutTemplate
 import com.example.fitnesslog.domain.use_case.workout_template.DeleteSetFromWorkoutTemplateExercise
@@ -143,7 +144,8 @@ class AppModuleImpl(
             editTemplateExerciseSet = EditTemplateExerciseSet(templateRepository),
             deleteSetFromWorkoutTemplateExercise = DeleteSetFromWorkoutTemplateExercise(
                 templateRepository
-            )
+            ),
+            addNewSet = AddNewSet(templateRepository)
         )
     }
 

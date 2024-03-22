@@ -45,6 +45,7 @@ interface TemplateRepository {
     ): Resource<Unit>
 
     // **Workout Template Exercise Set
+    suspend fun insertNewCopyOfLastSet(workoutTemplateExerciseId: Int): Resource<Long>
     fun getWorkoutTemplateExerciseSetsOrderedByPosition(workoutTemplateExerciseId: Int): Flow<Resource<List<WorkoutTemplateExerciseSet>>>
     suspend fun updateWorkoutTemplateExerciseSet(workoutTemplateExerciseSet: WorkoutTemplateExerciseSet): Resource<Int>
     suspend fun deleteWorkoutTemplateExerciseSetAndRearrange(

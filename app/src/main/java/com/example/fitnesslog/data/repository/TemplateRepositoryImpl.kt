@@ -166,6 +166,30 @@ class TemplateRepositoryImpl(
     }
 
     // **Workout Template Exercise Set**
+    override suspend fun insertNewCopyOfLastSet(workoutTemplateExerciseId: Int): Resource<Long> {
+        val lastSet = workoutTemplateExerciseSetDao.getLastWorkoutTemplateExerciseSet(
+            workoutTemplateExerciseId
+        )
+        val newSet = if (lastSet != null) {
+            lastSet.copy(
+                id = null,
+                position = lastSet.position + 1,
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis()
+            )
+        } else {
+            WorkoutTemplateExerciseSet(
+                workoutTemplateExerciseId = workoutTemplateExerciseId,
+                goalReps = 10,
+                weightInLbs = 45,
+                position = 0,
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis()
+            )
+        }
+        return safeCall { workoutTemplateExerciseSetDao.insertSetTemplate(newSet) }
+    }
+
     override fun getWorkoutTemplateExerciseSetsOrderedByPosition(workoutTemplateExerciseId: Int): Flow<Resource<List<WorkoutTemplateExerciseSet>>> {
         return workoutTemplateExerciseSetDao.getWorkoutTemplateExerciseSetsOrderedByPosition(
             workoutTemplateExerciseId

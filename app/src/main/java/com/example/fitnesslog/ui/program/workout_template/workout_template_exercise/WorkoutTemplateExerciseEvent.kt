@@ -3,6 +3,7 @@ package com.example.fitnesslog.ui.program.workout_template.workout_template_exer
 import com.example.fitnesslog.data.entity.WorkoutTemplateExerciseSet
 
 sealed class WorkoutTemplateExerciseEvent {
+    data object AddNewSet : WorkoutTemplateExerciseEvent()
     data class UpdateSetGoalRep(
         val workoutTemplateExerciseSet: WorkoutTemplateExerciseSet,
         val newGoalRep: Int

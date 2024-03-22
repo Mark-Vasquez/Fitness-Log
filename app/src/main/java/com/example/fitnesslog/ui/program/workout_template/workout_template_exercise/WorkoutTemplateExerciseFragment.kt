@@ -54,6 +54,10 @@ class WorkoutTemplateExerciseFragment : Fragment() {
         binding.btnNavigateBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        binding.fabAddSet.setOnClickListener {
+            workoutTemplateExerciseViewModel.onEvent(WorkoutTemplateExerciseEvent.AddNewSet)
+        }
     }
 
 

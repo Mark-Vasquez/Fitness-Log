@@ -48,6 +48,10 @@ class WorkoutTemplateExerciseViewModel(
 
     fun onEvent(event: WorkoutTemplateExerciseEvent) {
         when (event) {
+            is WorkoutTemplateExerciseEvent.AddNewSet -> {
+                addNewSet()
+            }
+
             is WorkoutTemplateExerciseEvent.UpdateSetGoalRep -> {
                 updateSetGoalRep(event.workoutTemplateExerciseSet, event.newGoalRep)
             }
@@ -104,6 +108,14 @@ class WorkoutTemplateExerciseViewModel(
                         }
                     }
                 }
+        }
+    }
+
+    private fun addNewSet() {
+        val workoutTemplateExerciseId =
+            workoutTemplateExerciseState.value.workoutTemplateExercise?.id ?: return
+        viewModelScope.launch {
+            workoutTemplateUseCases.addNewSet(workoutTemplateExerciseId)
         }
     }
 
