@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesslog.core.utils.ui.GridSpacingItemDecoration
 import com.example.fitnesslog.databinding.FragmentProgramsBinding
 import com.example.fitnesslog.domain.model.ProgramWithWorkoutCount
-import com.example.fitnesslog.ui.shared.SharedViewModel
+import com.example.fitnesslog.ui.SharedViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 

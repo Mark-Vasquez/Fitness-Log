@@ -1,6 +1,5 @@
 package com.example.fitnesslog.ui.program.workout_template.workout_template_exercise
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +19,6 @@ import com.example.fitnesslog.core.utils.helpers.CustomItemTouchHelperCallback
 import com.example.fitnesslog.core.utils.ui.showDeleteDialog
 import com.example.fitnesslog.data.entity.WorkoutTemplateExerciseSet
 import com.example.fitnesslog.databinding.FragmentWorkoutTemplateExerciseBinding
-import com.google.android.material.color.MaterialColors
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -140,14 +138,8 @@ class WorkoutTemplateExerciseFragment : Fragment() {
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         divider.apply {
             isLastItemDecorated = false
-            dividerThickness = 4
             dividerInsetStart = 15
             dividerInsetEnd = 15
-            dividerColor = MaterialColors.getColor(
-                requireContext(),
-                com.google.android.material.R.attr.colorOnPrimaryContainer,
-                Color.BLACK
-            )
         }
         rvExerciseSets.apply {
             layoutManager = LinearLayoutManager(requireContext())

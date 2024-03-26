@@ -19,8 +19,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesslog.R
 import com.example.fitnesslog.databinding.ActivityMainBinding
-import com.example.fitnesslog.ui.shared.SharedEvent
-import com.example.fitnesslog.ui.shared.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -32,11 +30,6 @@ class MainActivity : AppCompatActivity() {
     private val sharedViewModel: SharedViewModel by viewModels { SharedViewModel.Factory }
     private lateinit var binding: ActivityMainBinding
     private lateinit var bottomNavigation: BottomNavigationView
-
-    companion object {
-        const val TAG = "MainActivity"
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

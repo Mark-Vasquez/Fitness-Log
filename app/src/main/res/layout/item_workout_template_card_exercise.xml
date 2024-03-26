@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingVertical="6dp">
+
+    <TextView
+        android:id="@+id/tvNameItemWorkoutTemplateExercise"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="Bench Press super long name that is very long indeed"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvExerciseSetsInfo"
+        app:layout_constraintHorizontal_weight="1" />
+
+    <TextView
+        android:id="@+id/tvExerciseSetsInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="2x12 140lb, 1x12 130lb, 1x12 125lb,2x12 115lb2x12 140lb, 1x12 130lb, 1x12 125lb, 2x12 115lb"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:gravity="end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvNameItemWorkoutTemplateExercise"
+        app:layout_constraintHorizontal_weight="1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

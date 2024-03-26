@@ -66,4 +66,5 @@
     <string name="lbs">Lbs</string>
     <string name="set_number">%1$d</string>
     <string name="add_set">Add Set</string>
+    <string name="fitness_log">Fitness Log</string>
 </resources>

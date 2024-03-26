@@ -1,7 +1,6 @@
-package com.example.fitnesslog.ui.workout
+package com.example.fitnesslog.ui.workout.workout_templates
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,18 +10,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.fitnesslog.databinding.FragmentWorkoutTemplatesBinding
-import com.example.fitnesslog.ui.shared.SharedViewModel
+import com.example.fitnesslog.ui.SharedViewModel
 import kotlinx.coroutines.launch
 
 
-class WorkoutsFragment : Fragment() {
+class WorkoutTemplatesFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModels { SharedViewModel.Factory }
     private var _binding: FragmentWorkoutTemplatesBinding? = null
     private val binding get() = _binding!!
-
-    companion object {
-        const val TAG = "WorkoutHomeFragment"
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,9 +31,6 @@ class WorkoutsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 sharedViewModel.stateFlow.collect { sharedState ->
-                    Log.d(TAG, sharedState.toString())
-                    binding.tvWorkoutTemp.text =
-                        sharedState.selectedProgram?.name ?: sharedState.toString()
 
                 }
             }

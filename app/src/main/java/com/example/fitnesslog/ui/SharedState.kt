@@ -1,4 +1,4 @@
-package com.example.fitnesslog.ui.shared
+package com.example.fitnesslog.ui
 
 import com.example.fitnesslog.data.entity.Program
 

@@ -1,4 +1,4 @@
-package com.example.fitnesslog.ui.shared
+package com.example.fitnesslog.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
